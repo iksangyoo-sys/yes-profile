@@ -37,7 +37,6 @@ a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-rad
 .map line { stroke-width: 2; stroke-linecap: round; }
 .map line.a { stroke: #e3b6a3; }
 .map line.b { stroke: #b7c7ad; }
-.map line.soon { stroke-dasharray: 3 7; }
 .map line.ab { stroke: url(#abGrad); stroke-width: 14; }
 .map line.ab-glow { stroke: url(#abGrad); stroke-width: 34; opacity: .14; }
 .bridge { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; background: var(--paper); border: 2px solid #b98a6c; color: var(--ink); border-radius: 999px; padding: .55cqw 1.4cqw; font-family: var(--serif); font-weight: 700; font-size: 1.25cqw; box-shadow: 0 .8cqw 2cqw -1cqw rgba(20,20,19,.35); }
@@ -55,9 +54,7 @@ a.leaf-wrap:hover .leaf, a.leaf-wrap:focus-visible .leaf { background: var(--c);
 a.leaf-wrap:focus-visible { outline: none; }
 .leaf-wrap { position: absolute; transform: translate(-50%, -4.8cqw); display: flex; flex-direction: column; align-items: center; width: 17cqw; }
 .desc { margin-top: .8cqw; padding: .3cqw .6cqw; background: var(--bg); border-radius: 6px; text-align: center; color: var(--ink-2); font-size: max(11.5px, 1.06cqw); line-height: 1.45; }
-.leaf-wrap.soon .leaf { border-style: dashed; background: var(--bg); }
 .leaf-wrap.soon .leaf::after { content: none; }
-.badge { position: absolute; left: 50%; bottom: -.7cqw; transform: translateX(-50%); white-space: nowrap; font-style: normal; font-size: .9cqw; font-weight: 600; color: #fff; background: var(--c); border-radius: 999px; padding: .1cqw .7cqw; }
 .ga { --c: var(--a); }
 .gb { --c: var(--b); }
 
@@ -80,9 +77,7 @@ a.leaf-wrap:focus-visible { outline: none; }
   .s-list li::before { content: ""; position: absolute; left: -26px; top: 26px; width: 22px; border-top: 2px solid var(--line); }
   .s-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 14px; transition: border-color .15s; }
   .s-item:hover { border-color: var(--c); }
-  .s-item.soon { border-style: dashed; background: transparent; }
   .s-item.soon:hover { border-color: var(--line); }
-  .s-item .badge { position: static; transform: none; display: inline-block; vertical-align: 2px; font-size: 11px; padding: 0 7px; margin-left: 4px; }
   .s-dot { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--c); display: grid; place-items: center; color: var(--c); font-size: 13px; }
   .s-item b { display: block; font-size: 15.5px; color: var(--c); }
   .s-item span { display: block; font-size: 13px; color: var(--ink-2); line-height: 1.45; margin-top: 1px; }
@@ -117,12 +112,12 @@ const HUBS = [
   {
     key: "b", x: 900, y: 420, title: "데이터<br>사이언스", tag: "데이터로 일을 바꾸는 AI",
     leaves: [
-      { x: 900,  y: 95,  title: "나만의<br>AI 리본",       url: GH + "/RibBuilder/", desc: "자주 쓰는 기능을 모아 나만의 엑셀 리본메뉴를 만드는 도구" },
-      { x: 1095, y: 190, title: "제조 데이터<br>대시보드", url: "https://gen.yesana.workers.dev/", desc: "제조 데이터를 넣으면 지표와 차트가 자동으로 바뀌는 분석 대시보드" },
-      { x: 1140, y: 420, title: "판매 데이터<br>대시보드", url: "https://yes-report.yes100.workers.dev/", desc: "판매 실적과 흐름을 한눈에 보여 주는 분석 대시보드" },
-      // url이 없는 항목은 '준비 중'으로 보이고 눌리지 않는다. 웹이 생기면 url만 넣으면 된다.
-      { x: 1095, y: 650, title: "머신러닝·딥러닝<br>콘텐츠", desc: "현업 데이터로 직접 배우는 머신러닝·딥러닝 실습 콘텐츠" },
-      { x: 900,  y: 735, title: "AI Agent<br>제품",       desc: "생산관리·안전관리·사무자동화를 맡는 AI 에이전트 제품" }
+      // url이 없는 항목은 눌리지 않는다. 웹이 생기면 url만 넣으면 된다.
+      { x: 900,  y: 95,  title: "AI Agent",                desc: "생산관리·안전관리·사무자동화를 위한 AI Agent 교육과 개발" },
+      { x: 1095, y: 190, title: "머신러닝·딥러닝",          desc: "현업 데이터로 직접 배우는 머신러닝·딥러닝" },
+      { x: 1140, y: 420, title: "제조 데이터<br>대시보드", url: "https://gen.yesana.workers.dev/", desc: "제조 데이터를 넣으면 지표와 차트가 자동으로 바뀌는 분석 대시보드 개발" },
+      { x: 1095, y: 650, title: "판매 데이터<br>대시보드", url: "https://yes-report.yes100.workers.dev/", desc: "판매 실적과 흐름을 한눈에 보여 주는 분석 대시보드 개발" },
+      { x: 900,  y: 735, title: "나만의<br>AI 리본",       url: GH + "/RibBuilder/", desc: "자주 쓰는 기능을 모아 나만의 엑셀 리본메뉴를 만드는 도구 개발" }
     ]
   }
 ];
@@ -138,7 +133,7 @@ svg += '<defs><linearGradient id="abGrad" gradientUnits="userSpaceOnUse" x1="' +
   svg += '<line class="' + c + '" x1="' + HUBS[0].x + '" y1="' + HUBS[0].y + '" x2="' + HUBS[1].x + '" y2="' + HUBS[1].y + '"/>';
 });
 HUBS.forEach((h) => h.leaves.forEach((l) => {
-  svg += '<line class="' + h.key + (l.url ? "" : " soon") + '" x1="' + h.x + '" y1="' + h.y + '" x2="' + l.x + '" y2="' + l.y + '"/>';
+  svg += '<line class="' + h.key + '" x1="' + h.x + '" y1="' + h.y + '" x2="' + l.x + '" y2="' + l.y + '"/>';
 }));
 svg += "</svg>";
 let html = svg;
@@ -149,7 +144,7 @@ HUBS.forEach((h) => {
     html += l.url
       ? '<a class="leaf-wrap g' + h.key + '" href="' + l.url + '" target="_blank" rel="noopener" ' + pos + ' aria-label="' + plain(l.title) + ": " + l.desc + '">' +
         '<span class="leaf" style="position:relative">' + l.title + '</span><span class="desc">' + l.desc + "</span></a>"
-      : '<div class="leaf-wrap soon g' + h.key + '" ' + pos + '><span class="leaf" style="position:relative">' + l.title + '<i class="badge">준비 중</i></span><span class="desc">' + l.desc + "</span></div>";
+      : '<div class="leaf-wrap soon g' + h.key + '" ' + pos + '><span class="leaf" style="position:relative">' + l.title + '</span><span class="desc">' + l.desc + "</span></div>";
   });
 });
 html += '<div class="bridge" style="left:' + pct((HUBS[0].x + HUBS[1].x) / 2, W) + ";top:" + pct(HUBS[0].y, H) + '"><span>프롬프트</span> × <em>데이터</em></div>';
@@ -161,7 +156,7 @@ document.getElementById("stack").innerHTML = HUBS.map((h) =>
   '<ul class="s-list">' + h.leaves.map((l) =>
     (l.url
       ? '<li><a class="s-item" href="' + l.url + '" target="_blank" rel="noopener"><span class="s-dot">↗</span><span><b>' + plain(l.title) + "</b><span>" + l.desc + "</span></span></a></li>"
-      : '<li><div class="s-item soon"><span class="s-dot">…</span><span><b>' + plain(l.title) + ' <i class="badge">준비 중</i></b><span>' + l.desc + "</span></span></div></li>")
+      : '<li><div class="s-item soon"><span class="s-dot"></span><span><b>' + plain(l.title) + '</b><span>' + l.desc + "</span></span></div></li>")
   ).join("") + "</ul></section>"
 ).join('<div class="s-bridge" aria-hidden="true"><span><b>프롬프트</b> × <em>데이터</em></span></div>');
 </script>
