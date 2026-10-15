@@ -105,24 +105,24 @@ a.leaf-wrap:focus-visible { outline: none; }
 const GH = "https://iksangyoo-sys.github.io";
 const HUBS = [
   {
-    key: "a", x: 380, y: 420, title: "프롬프트·보고서<br>엔지니어링", tag: "보고서를 잘 쓰게 하는 AI",
+    key: "a", x: 340, y: 420, title: "프롬프트<br>엔지니어링", tag: "보고서를 잘 쓰게 하는 AI",
     leaves: [
-      { x: 380, y: 95,  title: "보고서<br>작성 스킬",   url: GH + "/koreport-skill/", desc: "한국 기업 보고서의 구조·논리·문장을 AI에게 가르친 스킬" },
-      { x: 700, y: 210, title: "프롬프트<br>편집기",     url: GH + "/yes_prom/",       desc: "보고서 유형별로 골라 고쳐 쓰는 프롬프트 템플릿 82가지" },
-      { x: 105, y: 420, title: "프롬프트<br>생성 LLM",   url: "https://report-prompt-agent.onrender.com/", desc: "보고서를 설명하면 알맞은 프롬프트를 설계해 주는 LLM" },
-      { x: 700, y: 630, title: "기획<br>프레임워크",     url: "../framework/",         desc: "기획 목적과 업무 분야로 찾아 쓰는 기획 프레임워크 지도" },
-      { x: 380, y: 735, title: "한자<br>사용 가이드",    url: "../hanja/",             desc: "보고서 문장을 짧고 단단하게 만드는 한자 쓰임과 사례" }
+      { x: 340, y: 95,  title: "프롬프트<br>생성 LLM",   url: "https://report-prompt-agent.onrender.com/", desc: "보고서를 설명하면 알맞은 프롬프트를 설계해 주는 LLM" },
+      { x: 145, y: 190, title: "프롬프트<br>편집기",     url: GH + "/yes_prom/",       desc: "보고서 유형별로 골라 고쳐 쓰는 프롬프트 템플릿 82가지" },
+      { x: 100, y: 420, title: "보고서<br>작성 스킬",   url: GH + "/koreport-skill/", desc: "한국 기업 보고서의 구조·논리·문장을 AI에게 가르친 스킬" },
+      { x: 145, y: 650, title: "기획<br>프레임워크",     url: "../framework/",         desc: "기획 목적과 업무 분야로 찾아 쓰는 기획 프레임워크 지도" },
+      { x: 340, y: 735, title: "한자<br>사용 가이드",    url: "../hanja/",             desc: "보고서 문장을 짧고 단단하게 만드는 한자 쓰임과 사례" }
     ]
   },
   {
-    key: "b", x: 920, y: 420, title: "데이터<br>사이언스", tag: "데이터로 일을 바꾸는 AI",
+    key: "b", x: 900, y: 420, title: "데이터<br>사이언스", tag: "데이터로 일을 바꾸는 AI",
     leaves: [
-      { x: 920,  y: 95,  title: "나만의<br>AI 리본",       url: GH + "/RibBuilder/", desc: "자주 쓰는 기능을 모아 나만의 엑셀 리본메뉴를 만드는 도구" },
-      { x: 1120, y: 190, title: "제조 데이터<br>대시보드", url: "https://gen.yesana.workers.dev/", desc: "제조 데이터를 넣으면 지표와 차트가 자동으로 바뀌는 분석 대시보드" },
-      { x: 1160, y: 420, title: "판매 데이터<br>대시보드", url: "https://yes-report.yes100.workers.dev/", desc: "판매 실적과 흐름을 한눈에 보여 주는 분석 대시보드" },
+      { x: 900,  y: 95,  title: "나만의<br>AI 리본",       url: GH + "/RibBuilder/", desc: "자주 쓰는 기능을 모아 나만의 엑셀 리본메뉴를 만드는 도구" },
+      { x: 1095, y: 190, title: "제조 데이터<br>대시보드", url: "https://gen.yesana.workers.dev/", desc: "제조 데이터를 넣으면 지표와 차트가 자동으로 바뀌는 분석 대시보드" },
+      { x: 1140, y: 420, title: "판매 데이터<br>대시보드", url: "https://yes-report.yes100.workers.dev/", desc: "판매 실적과 흐름을 한눈에 보여 주는 분석 대시보드" },
       // url이 없는 항목은 '준비 중'으로 보이고 눌리지 않는다. 웹이 생기면 url만 넣으면 된다.
-      { x: 1120, y: 650, title: "머신러닝·딥러닝<br>콘텐츠", desc: "현업 데이터로 직접 배우는 머신러닝·딥러닝 실습 콘텐츠" },
-      { x: 920,  y: 735, title: "AI Agent<br>제품",       desc: "생산관리·안전관리·사무자동화를 맡는 AI 에이전트 제품" }
+      { x: 1095, y: 650, title: "머신러닝·딥러닝<br>콘텐츠", desc: "현업 데이터로 직접 배우는 머신러닝·딥러닝 실습 콘텐츠" },
+      { x: 900,  y: 735, title: "AI Agent<br>제품",       desc: "생산관리·안전관리·사무자동화를 맡는 AI 에이전트 제품" }
     ]
   }
 ];
@@ -152,7 +152,7 @@ HUBS.forEach((h) => {
       : '<div class="leaf-wrap soon g' + h.key + '" ' + pos + '><span class="leaf" style="position:relative">' + l.title + '<i class="badge">준비 중</i></span><span class="desc">' + l.desc + "</span></div>";
   });
 });
-html += '<div class="bridge" style="left:' + pct((HUBS[0].x + HUBS[1].x) / 2, W) + ";top:" + pct(HUBS[0].y, H) + '"><span>보고서</span> × <em>데이터</em></div>';
+html += '<div class="bridge" style="left:' + pct((HUBS[0].x + HUBS[1].x) / 2, W) + ";top:" + pct(HUBS[0].y, H) + '"><span>프롬프트</span> × <em>데이터</em></div>';
 document.getElementById("map").innerHTML = html;
 
 // 좁은 화면: 세로 배치
@@ -163,7 +163,7 @@ document.getElementById("stack").innerHTML = HUBS.map((h) =>
       ? '<li><a class="s-item" href="' + l.url + '" target="_blank" rel="noopener"><span class="s-dot">↗</span><span><b>' + plain(l.title) + "</b><span>" + l.desc + "</span></span></a></li>"
       : '<li><div class="s-item soon"><span class="s-dot">…</span><span><b>' + plain(l.title) + ' <i class="badge">준비 중</i></b><span>' + l.desc + "</span></span></div></li>")
   ).join("") + "</ul></section>"
-).join('<div class="s-bridge" aria-hidden="true"><span><b>보고서</b> × <em>데이터</em></span></div>');
+).join('<div class="s-bridge" aria-hidden="true"><span><b>프롬프트</b> × <em>데이터</em></span></div>');
 </script>
 </body>
 </html>
