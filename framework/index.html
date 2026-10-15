@@ -60,7 +60,7 @@ h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
 .chipf[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 .filters .gap { width: 10px; }
 
-.cat-head { margin: 16px 0 12px; padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
+.cat-head { scroll-margin-top: 12px; margin: 16px 0 12px; padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
 .cat-head b { color: var(--accent); }
 .cat-head .why { display: block; margin-top: 2px; color: var(--ink-2); font-size: 14px; }
 .cat-head .cnt { display: block; margin-top: 4px; color: var(--ink-3); font-size: 13px; }
@@ -1561,7 +1561,7 @@ function setHash() {
 document.addEventListener('click', e => {
   const t = e.target.closest('button');
   if (!t) return;
-  if (t.dataset.p) { state.p = t.dataset.p; state.q = ''; $('#q').value = ''; state.open = ''; render(); setHash(); return; }
+  if (t.dataset.p) { state.p = t.dataset.p; state.q = ''; $('#q').value = ''; state.open = ''; render(); setHash(); toResults(); return; }
   if (t.dataset.field !== undefined) { state.field = t.dataset.field; render(); return; }
   if (t.dataset.src !== undefined) { state.src = t.dataset.src; render(); return; }
   if (t.dataset.open) {
@@ -1577,15 +1577,27 @@ document.addEventListener('click', e => {
     document.querySelector('[data-case="' + id + '"]').focus();
     return;
   }
-  if (t.dataset.quick) { $('#q').value = t.dataset.quick; onSearch(); }
+  if (t.dataset.quick) { $('#q').value = t.dataset.quick; onSearch(); toResults(); }
 });
 
+// 결과가 있는 곳으로 화면을 옮긴다
+function toResults() {
+  const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $('#catHead').scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'auto' });
+}
+let searchTimer;
 function onSearch() {
   state.q = $('#q').value.trim();
   state.open = '';
   render(); setHash();
 }
-$('#q').addEventListener('input', onSearch);
+$('#q').addEventListener('input', () => {
+  onSearch();
+  clearTimeout(searchTimer);
+  // 입력을 잠시 멈추면 이동 (한 글자마다 화면이 흔들리지 않게)
+  if (state.q) searchTimer = setTimeout(toResults, 700);
+});
+$('#q').addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(searchTimer); if (state.q) toResults(); } });
 $('#quick').insertAdjacentHTML('beforeend', QUICK.map(w => '<button type="button" data-quick="' + w + '">' + w + '</button>').join(''));
 
 const guide = $('#guide');
