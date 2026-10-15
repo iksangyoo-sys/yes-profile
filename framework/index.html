@@ -1,0 +1,1605 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기획 프레임워크 지도</title>
+<meta name="description" content="업무 분야와 기획 목적별로 정리한 기획 프레임워크 모음. 단계별 특성과 제조업 사례를 함께 봅니다.">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7; --card: #ffffff; --line: #e2e6ec;
+  --ink: #16191e; --ink-2: #555d6b; --ink-3: #9098a6;
+  --accent: #1f4f8a; --accent-soft: #eaf1fa; --blank: #fff6dc; --blank-line: #e5bf55;
+  --warn: #a8431a; --warn-soft: #fdf1ea;
+  --ok: #2d6a4f; --ok-soft: #e9f5ee;
+  --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.6; word-break: keep-all; }
+button, input { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.page { max-width: 980px; margin: 0 auto; padding: 32px 20px 56px; }
+h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+.lead { margin: 4px 0 0; color: var(--ink-2); }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+.guide-btn { flex: none; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+.guide-btn:hover { background: var(--accent-soft); }
+
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
+.step h2 { margin: 0 0 14px; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+.num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; flex: none; }
+.sub { margin: -8px 0 14px; color: var(--ink-3); font-size: 14px; }
+
+/* 찾기 */
+.find-row input[type=search] { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 17px; }
+.find-row input[type=search]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; font-size: 13px; color: var(--ink-3); }
+.quick button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+.quick button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* 목적 고르기 */
+.stage { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px dashed var(--line); }
+.stage:first-of-type { border-top: 0; padding-top: 0; }
+.stage-label { font-size: 13px; font-weight: 700; color: var(--accent); padding-top: 10px; }
+.stage-label span { display: block; font-weight: 400; color: var(--ink-3); font-size: 12px; }
+.kinds { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.kind { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 9px 12px; cursor: pointer; }
+.kind:hover { border-color: var(--accent); }
+.kind b { display: block; font-size: 15px; }
+.kind span { display: block; font-size: 12.5px; color: var(--ink-3); }
+.kind em { font-style: normal; font-size: 12px; color: var(--accent); margin-left: 4px; font-weight: 600; }
+.kind[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.kind[aria-pressed="true"] span { color: var(--accent); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 14px 0 0; font-size: 13px; color: var(--ink-3); }
+.filters .lbl { margin-right: 2px; }
+.chipf { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 3px 11px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+.chipf:hover { border-color: var(--accent); color: var(--accent); }
+.chipf[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.filters .gap { width: 10px; }
+
+.cat-head { margin: 16px 0 12px; padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
+.cat-head b { color: var(--accent); }
+.cat-head .why { display: block; margin-top: 2px; color: var(--ink-2); font-size: 14px; }
+.cat-head .cnt { display: block; margin-top: 4px; color: var(--ink-3); font-size: 13px; }
+
+/* 프레임 카드 */
+.list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
+.fw { border: 1px solid var(--line); border-radius: 12px; background: #fff; overflow: hidden; }
+.fw.open { grid-column: 1 / -1; border-color: var(--accent); box-shadow: 0 6px 20px rgba(31, 79, 138, .08); }
+.fw-head { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 12px 14px; cursor: pointer; }
+.fw-head:hover { background: #fafbfd; }
+.fw-title { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.fw-title b { font-size: 16.5px; }
+.badge { font-size: 11.5px; border-radius: 999px; padding: 0 8px; border: 1px solid #c9d8ec; color: var(--accent); white-space: nowrap; }
+.badge.add { border-color: #b7dcc5; color: var(--ok); background: var(--ok-soft); }
+.badge.pur { border-color: var(--line); color: var(--ink-3); }
+.fw-sub { display: block; color: var(--ink-2); font-size: 14px; margin-top: 2px; }
+.flow { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.flow span { font-size: 12.5px; background: #f3f5f8; color: var(--ink-2); border-radius: 6px; padding: 1px 7px; }
+.flow span + span::before { content: "›"; color: var(--ink-3); margin: 0 5px 0 -1px; }
+.more { float: right; color: var(--ink-3); font-size: 13px; margin-left: 8px; }
+.fw.open .more { color: var(--accent); }
+
+.fw-body { padding: 0 14px 16px; }
+.when { margin: 0 0 12px; font-size: 14px; color: var(--ink-2); }
+.when b { color: var(--accent); margin-right: 6px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.steps li { display: grid; grid-template-columns: 26px minmax(120px, 210px) 1fr; gap: 10px; align-items: start; padding: 9px 12px; border-radius: 10px; background: #f8f9fb; font-size: 14.5px; }
+.steps li i { font-style: normal; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 12.5px; margin-top: 1px; }
+.steps li b { font-weight: 700; }
+.steps li span { color: var(--ink-2); }
+.note { margin: 10px 0 0; font-size: 13px; color: var(--ink-3); padding-left: 10px; border-left: 3px solid var(--line); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+.btn { border: 1.5px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 6px 16px; cursor: pointer; font-weight: 600; font-size: 15px; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: #fff; color: var(--accent); }
+.btn.ghost:hover { background: var(--accent-soft); filter: none; }
+.case { margin-top: 12px; border: 1px solid var(--blank-line); background: var(--blank); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
+.case .kind-tag { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 0 7px; margin-right: 6px; background: var(--accent); color: #fff; }
+.case .kind-tag.ex { background: #8a6d1f; }
+.case h4 { display: inline; margin: 0; font-size: 15px; }
+.case p { margin: 6px 0 0; color: var(--ink); }
+.case small { display: block; margin-top: 6px; color: var(--ink-3); font-size: 12.5px; }
+.empty { padding: 24px; text-align: center; color: var(--ink-3); }
+.case-k { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 0 7px; background: var(--accent); color: #fff; white-space: nowrap; }
+tr:last-child .case-k { background: #8a6d1f; }
+mark { background: var(--blank); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+footer { margin-top: 22px; font-size: 13px; color: var(--ink-3); text-align: center; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* 사용안내 */
+dialog.guide { width: min(820px, calc(100% - 24px)); max-height: calc(100% - 24px); padding: 0; border: 0; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.25); color: var(--ink); }
+dialog.guide::backdrop { background: rgba(15, 20, 30, .45); }
+.guide-head { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: var(--accent); color: #fff; z-index: 1; }
+.guide-head h2 { margin: 0; font-size: 18px; }
+.guide-close { border: 1.5px solid rgba(255,255,255,.6); background: transparent; color: #fff; border-radius: 8px; padding: 4px 12px; cursor: pointer; font-weight: 600; }
+.guide-close:hover { background: rgba(255,255,255,.12); }
+.guide-body { padding: 8px 24px 28px; font-size: 15px; line-height: 1.7; }
+.guide-body h3 { margin: 26px 0 8px; font-size: 17px; color: var(--accent); padding-left: 10px; border-left: 4px solid var(--accent); }
+.guide-body p { margin: 8px 0; }
+.guide-body ol, .guide-body ul { margin: 8px 0; padding-left: 22px; }
+.guide-body li { margin: 4px 0; }
+.guide-body .table-wrap { overflow-x: auto; margin: 10px 0; border: 1px solid var(--line); border-radius: 8px; }
+.guide-body table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.guide-body th, .guide-body td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.guide-body th { background: #f5f7fa; color: var(--ink-2); white-space: nowrap; }
+.guide-body tr:last-child td { border-bottom: 0; }
+
+@media (max-width: 720px) {
+  .list { grid-template-columns: 1fr; }
+  .steps li { grid-template-columns: 26px 1fr; }
+  .steps li span { grid-column: 2; }
+}
+@media (max-width: 560px) {
+  .page { padding: 20px 16px 48px; }
+  .top { flex-direction: column; }
+  .stage { grid-template-columns: 1fr; gap: 4px; }
+  .stage-label { padding-top: 0; }
+  .stage-label span { display: inline; margin-left: 6px; }
+  .kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <div>
+      <h1>기획 프레임워크 지도</h1>
+      <p class="lead">무엇을 기획하는지 고르면, 쓸 만한 틀과 단계별 특성, 제조업 사례가 나옵니다.</p>
+    </div>
+    <button type="button" class="guide-btn" id="openGuide" aria-haspopup="dialog">📘 사용안내</button>
+  </div>
+
+  <section class="step">
+    <h2><span class="num">1</span>이름이나 키워드로 찾기</h2>
+    <div class="find-row">
+      <input type="search" id="q" placeholder="예: SWOT, 원인, 로드맵, 교육, AI, 낭비" autocomplete="off" aria-label="찾을 말">
+    </div>
+    <div class="quick" id="quick"><span>자주 찾는 말</span></div>
+  </section>
+
+  <section class="step" id="browse">
+    <h2><span class="num">2</span>무엇을 기획하나요?</h2>
+    <p class="sub">기획의 흐름대로 목적을 묶었습니다. 목적을 고르면 그 일에 맞는 틀이 나옵니다.</p>
+    <div id="stages"></div>
+    <div class="filters" id="filters"></div>
+    <div id="catHead" class="cat-head"></div>
+    <div id="list" class="list" aria-live="polite"></div>
+  </section>
+
+  <footer>함께 보기: <a href="../report/">보고서 문장 공식</a> · <a href="../hanja/">보고서 한자 사용법</a></footer>
+</div>
+
+<dialog class="guide" id="guide" aria-labelledby="guideTitle">
+  <div class="guide-head">
+    <h2 id="guideTitle">기획 프레임워크 지도 사용안내</h2>
+    <button type="button" class="guide-close" id="closeGuide">닫기</button>
+  </div>
+  <div class="guide-body">
+<h3>이 자료는 무엇인가</h3>
+<p>기획을 하다 보면 「무엇을 빠짐없이, 어떤 순서로 생각해야 하나」에서 막힙니다. 이 자료는 현업에서 모은 기획의 끈(프레임) 정리표에 자주 쓰는 프레임을 보완해, 기획 목적과 업무 분야별로 찾아볼 수 있게 만든 것입니다. 프레임마다 단계별 특성과 제조업 사례를 붙였습니다.</p>
+<h3>사용법</h3>
+<ol>
+<li><strong>목적 고르기:</strong> 지금 하려는 일(상황 분석, 문제 해결, 로드맵 짜기 등)을 고릅니다. 기획 흐름 순서(진단 → 방향 → 실행 내용 → 계획·전달)로 놓여 있습니다.</li>
+<li><strong>업무 분야로 좁히기:</strong> 생산·설비, 인사·교육처럼 내 업무 분야를 누르면 그 분야에서 쓰는 틀만 남습니다.</li>
+<li><strong>카드 열기:</strong> 카드를 누르면 언제 쓰는지와 단계별 설명이 펼쳐집니다.</li>
+<li><strong>사례 보기:</strong> 「제조업 사례 보기」를 누르면 사례가 나옵니다.</li>
+<li><strong>찾기:</strong> 이름(SWOT), 단계(원인), 쓰임(교육) 어느 말로 찾아도 됩니다.</li>
+</ol>
+<h3>표시 읽는 법</h3>
+<div class="table-wrap"><table><thead><tr><th>표시</th><th>뜻</th></tr></thead><tbody>
+<tr><td><span class="badge">원본</span></td><td>정리표에 있던 프레임입니다. 겹치는 것은 하나로 묶고, 오탈자와 잘못된 풀이는 바로잡은 뒤 카드 아래에 적었습니다.</td></tr>
+<tr><td><span class="badge add">보완</span></td><td>정리표에 없어 새로 더한 프레임입니다. PDCA, DMAIC, BSC처럼 기획에 자주 쓰는 표준 틀입니다.</td></tr>
+<tr><td><span class="case-k">공개 사례</span></td><td>기업이 발표했거나 언론·문헌에 널리 알려진 실제 사례입니다. 숫자는 꼭 필요한 것만 넣었으니, 보고서에 인용할 때는 원 출처를 한 번 더 확인하세요.</td></tr>
+<tr><td><span class="case-k">적용 예시</span></td><td>제조 현장에서 이 틀을 쓰는 모습을 보여 주려고 만든 예시입니다. 실제 회사의 사례가 아닙니다.</td></tr>
+</tbody></table></div>
+<h3>잘 쓰는 요령</h3>
+<ul>
+<li>틀은 생각을 빠짐없이 하게 돕는 도구입니다. 칸을 채우는 데서 멈추지 말고 「그래서 무엇을 할 것인가」까지 가야 기획이 됩니다.</li>
+<li>한 보고서에 틀을 여러 개 섞기보다 목적에 맞는 틀 하나를 골라 끝까지 씁니다. 분석에 3C, 전개에 SCR처럼 단계마다 하나씩이면 충분합니다.</li>
+<li>단계 이름은 보고서 목차나 장표 머리말로 그대로 써도 됩니다.</li>
+</ul>
+  </div>
+</dialog>
+
+<script>
+const FW = [];
+function F(n, s, p, f, o, w, st, c, note) {
+  const ci = c.indexOf('|'), cj = c.indexOf('|', ci + 1);
+  FW.push({
+    id: 'f' + (FW.length + 1), n, s, p, f: f.split(''), o, w,
+    st: st.map(x => { const k = x.indexOf('|'); return k < 0 ? [x, ''] : [x.slice(0, k), x.slice(k + 1)]; }),
+    ck: c.slice(0, ci), ct: c.slice(ci + 1, cj), cb: c.slice(cj + 1), note: note || ''
+  });
+}
+</script>
+<script>
+// ① 상황 분석하기
+F('3C','고객·경쟁사·자사를 한 장에 놓고 기회를 찾는다','analyze','SK','o','시장에 들어가거나 전략을 다시 짤 때',
+['Customer 고객|시장 규모, 성장성, 고객이 진짜 원하는 것과 그 변화','Competitor 경쟁사|경쟁사의 강점·약점, 전략, 다음 수','Company 자사|우리의 역량, 자원, 경쟁사보다 나은 점'],
+'r|현대차 미국 「어슈어런스」(2009)|금융위기로 미국 고객은 실직을 걱정해 차 구매를 미뤘고(고객), 경쟁사는 가격 할인에 매달렸다(경쟁사). 현대차는 품질 보증으로 쌓은 신뢰를 살려(자사) 1년 안에 실직하면 차를 되사 주는 프로그램을 내놓았고, 불황 속에서 미국 점유율을 끌어올렸다.');
+
+F('SWOT','내부 강점·약점과 외부 기회·위협을 교차해 전략을 낸다','analyze','S','o','현황을 정리하고 전략 방향을 도출할 때',
+['Strength 강점|경쟁사보다 잘하는 내부 요인','Weakness 약점|부족하거나 뒤처진 내부 요인','Opportunity 기회|우리에게 유리한 외부 변화','Threat 위협|우리에게 불리한 외부 변화','교차 전략(TOWS)|SO 강점으로 기회 잡기, ST 강점으로 위협 막기, WO 약점 보완해 기회 잡기, WT 약점·위협 최소화'],
+'e|철강사 전기로 전환 검토|S 고급강 생산 기술과 고객 기반, W 고로 중심 설비의 높은 탄소 배출, O 저탄소 강재 수요 확대, T 탄소국경조정 같은 규제 강화. 교차하면 SO는 저탄소 프리미엄 강재 출시, WT는 고로 일부의 단계적 전기로 전환이 된다.',
+'원본의 treatment는 Threat(위협)으로 바로잡았다. 네 칸 나열에서 끝내지 않고 교차 전략까지 가야 기획이 된다.');
+
+F('5 Forces','산업의 수익성을 결정하는 다섯 가지 힘','analyze','SB','o','산업 매력도를 판단하거나 진입·철수를 검토할 때',
+['산업 내 경쟁|경쟁사 수와 공급 과잉 정도','공급자 교섭력|원료·부품 공급자가 가격을 좌우하는 힘','구매자 교섭력|고객이 가격 인하를 요구하는 힘','잠재적 진입자|새 경쟁자가 들어오기 쉬운 정도','대체재|다른 제품이 우리 제품을 대신할 가능성'],
+'r|철강 산업 구조|철광석은 소수 대형 광산사가 공급을 과점해 공급자 교섭력이 강하고, 중국의 생산 과잉으로 산업 내 경쟁이 치열하다. 자동차 차체에서는 알루미늄과 탄소섬유가 대체재로 꼽힌다. 그래서 철강사는 원료 조달 다변화와 고부가 강종 개발에 집중한다.');
+
+F('STEEP','거시 환경 변화를 다섯 갈래로 훑는다','analyze','SE','o','중장기 전략이나 신사업 환경을 점검할 때',
+['Social 사회|인구 구조, 가치관, 생활 방식 변화','Technological 기술|신기술 등장과 기술 확산 속도','Economic 경제|성장률, 금리, 환율, 원자재 가격','Environmental 환경|기후, 탄소 규제, 자원 순환','Political 정치·법|정책, 통상 규제, 법 개정'],
+'r|EU 탄소국경조정제도(CBAM)|EU는 2023년 10월 철강·알루미늄·시멘트 등에 CBAM 전환 기간을 시작해 수출품의 내재 탄소 배출량 보고를 요구했다. 환경(E)과 정치(P) 변화가 경제(E) 비용으로 이어지는 사례로, 국내 철강사는 배출량 산정 체계와 저탄소 제품 계획을 서둘러 세웠다.',
+'PESTEL(정치·경제·사회·기술·환경·법률)도 같은 목적의 틀이다.');
+
+F('VUCA','불확실한 경영 환경의 네 가지 성격','analyze','S','o','환경이 왜 어려운지 설명하고 대응 방향을 잡을 때',
+['Volatility 변동성|변화의 속도와 폭이 크다 → 여유 재고·유연 생산으로 대응','Uncertainty 불확실성|앞일을 예측하기 어렵다 → 정보 수집과 시나리오','Complexity 복잡성|요인이 얽혀 있다 → 구조 단순화','Ambiguity 모호성|같은 현상도 해석이 갈린다 → 작게 실험하고 배우기'],
+'r|2021년 차량용 반도체 부족|수요가 예상보다 빨리 회복되자(변동성) 반도체 공급 회복 시점을 알 수 없었고(불확실성), 여러 단계 협력사가 얽혀 원인을 짚기 어려웠다(복잡성). 완성차 업체들은 감산을 겪은 뒤 핵심 부품 재고 정책과 공급망 가시화를 다시 설계했다.',
+'원본의 Uncertainity는 Uncertainty로 바로잡았다.');
+
+F('Value Chain 가치사슬','가치가 만들어지는 활동을 단계별로 나눠 본다','analyze','SM','o','원가·경쟁우위가 어디서 생기는지 찾을 때',
+['R&D|제품·공정 기술 개발','구매|원료·부품 조달','생산|가공·조립·검사','판매|영업, 주문 관리','물류|입고·보관·출하','서비스|설치, A/S, 기술 지원','지원 활동|인사, 재무, IT, 구매 정책 등 전 단계를 받치는 활동'],
+'e|철강사 원가 경쟁력 분석|활동별로 원가를 나눠 보니 원료 구매와 에너지 사용이 원가의 대부분을 차지했다. 구매에서는 장기 계약과 원료 배합 최적화, 생산에서는 부생가스 발전을 과제로 정해 가치사슬 앞단에서 경쟁력을 확보했다.',
+'포터의 원형은 본원적 활동(구매물류·생산·출하물류·마케팅·서비스)과 지원 활동(기반구조·인사·기술개발·조달)으로 나눈다.');
+
+F('7S','조직을 이루는 일곱 요소가 서로 맞는지 본다','analyze','SO','o','조직 진단, 합병 후 통합, 큰 변화 추진 전에',
+['Shared Value 공유가치|조직이 함께 믿는 핵심 가치 (가운데에 둔다)','Strategy 전략|경쟁우위를 얻는 방향','Structure 구조|조직도, 권한과 보고 체계','System 제도|평가·보상, 업무 프로세스, IT','Style 스타일|리더십과 일하는 방식','Staff 구성원|인력 구성과 배치','Skill 역량|조직이 잘하는 기술과 능력'],
+'e|스마트팩토리 추진 조직 진단|전략(데이터 기반 운영)은 세웠지만 평가 제도는 여전히 생산량만 보고(System), 현장에 데이터 역량이 부족했다(Skill). 7S로 어긋난 곳을 짚어 KPI에 데이터 활용도를 넣고 현장 데이터 교육을 함께 추진했다.');
+
+F('경영자원 3M','사람·돈·물자, 기본 경영자원을 점검한다','analyze','S','o','과제에 필요한 자원을 빠짐없이 따질 때',
+['Man 구성원|필요 인력과 역량','Money 재정|투자비, 운영비, 자금 조달','Materials 물자|설비, 원료, 시설'],
+'e|신규 라인 증설 계획|인력(운전·정비 인원 확보와 교육), 재정(설비 투자비와 회수 기간), 물자(설비 조달 기간과 원료 확보)를 나눠 점검해 착공 전에 정비 인력 부족을 미리 발견했다.',
+'제조 현장에서는 Machine, Method를 더한 5M으로도 쓴다.');
+
+F('3P','사람·정책·프로세스, 실행 체계의 세 기둥','analyze','SO','o','전략을 실행할 체계를 설계할 때',
+['People 사람|누가 하는가, 역량과 역할','Policy 정책|어떤 원칙과 규정으로 하는가','Process·System 프로세스|어떤 절차와 시스템으로 하는가'],
+'e|안전관리 체계 개편|사람(관리감독자 역할 재정의와 교육), 정책(작업중지권 같은 원칙 명문화), 프로세스(위험성 평가 절차와 전산 시스템)로 나눠 개편 과제를 정리했다.');
+
+F('경영품질 7요소','기업 경영의 수준을 일곱 분야로 진단한다','analyze','SQ','o','경영 전반을 진단하거나 품질경영상에 도전할 때',
+['수익·재무|성장성, 수익성, 재무 건전성','프로세스|핵심 업무 절차의 효율과 품질','정보 인프라|데이터와 IT 시스템','파트너십|협력사와의 관계와 동반 성장','사회공헌|지역사회와 사회적 책임','고객|고객 만족과 관계','인적자원|인재 확보, 육성, 몰입'],
+'e|제조사 경영 진단|일곱 분야로 점수를 매기니 재무와 프로세스는 높고 정보 인프라와 파트너십이 낮게 나왔다. 협력사 데이터 연계 플랫폼을 다음 해 핵심 과제로 정했다.',
+'국가품질상, 말콤 볼드리지 상의 평가 범주와 비슷한 구성이다.');
+
+F('경쟁 지위 (ADL)','우리 사업의 시장 내 위치를 다섯 단계로 판정한다','analyze','SB','o','사업 포트폴리오에서 사업별 전략을 정할 때',
+['Dominant·Clear leader 지배적|경쟁사가 따라 할 수밖에 없는 위치','Strong 강함|독자 전략을 펼 수 있는 위치','Favorable 우호적|특정 영역에서 강점이 있는 위치','Tenable 유지 가능|틈새에서 버틸 수 있는 위치','Weak 약함|이대로는 지속하기 어려운 위치'],
+'e|사업부별 전략 차등화|조선용 후판은 Strong이라 점유율 방어와 원가 절감, 전기강판은 Favorable이라 고급 강종에 집중 투자, 범용 제품은 Weak이라 구조조정 대상으로 분류했다.',
+'아서 디 리틀(ADL)의 경쟁 지위 분류다. 원본의 Favorate는 Favorable로 바로잡았다.');
+
+F('기술 경쟁 영향도 (ADL)','기술이 경쟁에 미치는 영향을 네 단계로 나눈다','analyze','RS','o','R&D 포트폴리오와 기술 투자 우선순위를 정할 때',
+['Base 기반 기술|누구나 가진 기술, 차별화 효과 없음','Key 핵심 기술|지금 경쟁우위를 결정하는 기술','Pacing 선도 기술|곧 핵심이 될 기술','Emerging 신흥 기술|아직 초기지만 판을 바꿀 수 있는 기술'],
+'e|이차전지 소재 R&D 배분|기존 양극재 공정은 Base, 고니켈 양극재는 Key, 실리콘 음극재는 Pacing, 전고체 전해질은 Emerging으로 나눠 예산을 배분하고 Emerging은 대학·연구소 협력으로 탐색했다.');
+
+F('경영환경 변화 4축','시대 변화를 고객·기업·프로세스·역량으로 쪼갠다','analyze','S','o','기획서 첫 장에서 왜 바뀌어야 하는지 설명할 때',
+['고객의 변화|고객 니즈와 구매 방식의 변화','기업의 변화|경쟁 구도와 사업 모델의 변화','프로세스의 변화|일하는 방식과 기술의 변화','역량의 변화|필요한 인재와 역량의 변화'],
+'e|AI 교육 기획 배경|고객은 맞춤형·빠른 납기를 요구하고, 기업은 데이터 기반 경쟁으로 바뀌며, 프로세스는 AI 자동화로, 필요한 역량은 데이터 해석력으로 바뀐다. 네 축을 차례로 쓰니 교육이 필요한 이유가 한눈에 섰다.');
+
+F('의사결정의 6가지 문제','결정을 어렵게 만드는 문제의 종류를 가린다','analyze','SO','o','결정이 늦어지는 이유를 진단할 때',
+['예측 문제|미래를 알 수 없다','복잡성 문제|변수가 너무 많다','모순성 문제|목표끼리 충돌한다','중의성 문제|관점에 따라 해석이 다르다','분석 문제|데이터와 분석이 부족하다','시간성 문제|문제가 시간에 따라 변한다'],
+'e|설비 투자 결정 지연|수요 예측이 불확실하고(예측) 원가 절감과 탄소 감축 목표가 충돌했다(모순성). 문제를 나눠 보니 예측은 시나리오별 투자안으로, 모순은 탄소 가격을 반영한 원가로 정리해 결정을 앞당겼다.');
+
+F('철강 생산 공정','원료에서 출하까지 일관제철 흐름','analyze','M','o','공정별 원가·품질·에너지 문제를 위치시킬 때',
+['원료|철광석, 석탄 입고와 배합','제선|고로에서 쇳물(용선) 생산','제강|불순물 제거, 성분 조정, 연속주조로 슬래브 생산','열연|슬래브를 고온에서 압연','후판|두꺼운 판재 생산','냉연|상온 압연으로 얇고 정밀한 판재','도금|아연 등 도금으로 내식성 확보','선재|봉 모양 제품 생산','출하|검사, 포장, 운송'],
+'e|공정별 탄소 배출 지도|공정 흐름에 배출량을 표시하니 제선 공정이 대부분을 차지했다. 그래서 감축 과제를 제선(수소환원·원료 개선)에 집중하고 하공정은 에너지 효율 개선으로 나눴다.');
+
+F('철강 제품군','제품별 특성과 주요 용도','analyze','MK','o','제품 포트폴리오와 시장 전략을 짤 때',
+['열연|건설, 강관, 냉연 소재','후판|조선, 교량, 해양구조물','선재|타이어코드, 볼트, 스프링','STS 스테인리스|가전, 주방, 화학설비','냉연|자동차 외판, 가전','도금|자동차, 건자재(내식성 필요)'],
+'e|고객 산업 경기 연동 분석|제품군과 고객 산업을 연결하니 후판은 조선, 냉연·도금은 자동차 경기에 크게 좌우됐다. 조선 수주 회복기에 맞춰 후판 생산 비중을 조정했다.');
+
+F('고객 산업군','핵심 수요 산업으로 시장을 나눈다','analyze','K','o','수요 전망과 영업 전략을 세울 때',
+['조선·에너지|후판, 강관 수요','자동차|고장력 강판, 전기강판','가전|냉연, 도금, STS','건설|철근, 형강, 열연','유통|가공센터를 통한 범용재'],
+'e|산업군별 영업 조직|고객을 산업군으로 나눠 산업별 전담팀을 두고, 자동차팀은 신차 개발 초기부터 강재를 함께 설계하는 방식(EVI)으로 영업을 바꿨다.');
+
+F('에너지 사업 6요소','에너지 사업 기획의 필수 점검 항목','analyze','EB','o','발전·에너지 신사업 타당성을 볼 때',
+['전력 수급|수요 전망, 계통 연계 여건','규제·정책|인허가, 요금 제도, 지원 정책','연료 수급|연료 조달 안정성과 가격','기술|발전 방식과 기술 성숙도','인프라|부지, 송전망, 항만','O&M 역량|정비, 부품, 기자재 조달'],
+'e|해외 가스발전 사업 검토|여섯 항목으로 나눠 보니 기술과 연료는 문제없었지만 송전망(인프라)과 전력구매계약 조건(규제)이 위험 요인이었다. 현지 전력공사와 계통 연계 협약을 먼저 맺는 것으로 일정을 바꿨다.');
+
+F('발전 O&M','발전소 운영·정비 사업의 세 요소','analyze','EM','o','O&M 사업이나 정비 체계를 기획할 때',
+['정비|예방·계획·긴급 정비','부품|핵심 부품 재고와 수리','기자재 소싱|기자재 조달처 확보'],
+'e|O&M 사업 확대 기획|정비 인력은 충분했지만 가스터빈 핵심 부품을 제작사에만 의존했다. 부품 국산화와 공용 재고를 과제로 정해 정비 기간을 줄였다.');
+
+F('연료전지 3요소','연료전지를 공정·시스템·소재로 나눠 본다','analyze','RE','o','연료전지 기술 개발이나 사업 검토 때',
+['Process 공정|스택 제조, 조립 공정','System 시스템|스택, 개질기, 인버터 등 주변 장치 통합','Material 소재|전해질, 촉매, 분리판 소재'],
+'e|연료전지 사업 진입 검토|소재(분리판 강재)는 자사 강점, 시스템은 협력사 의존이었다. 분리판용 STS 소재로 먼저 진입하고 시스템은 제휴하는 전략을 세웠다.');
+
+// ② 전략·방향 세우기
+F('경영전략 3층','규범·전략·업무 경영을 층으로 나눠 본다','strategy','S','o','회사·사업의 전략 체계를 한 장에 그릴 때',
+['규범경영 (본질적 가치)|비전, 가치관, 규범·문화, CI, 업계 관습, 비즈니스 규칙과 스타일','전략경영 (미래 성공잠재력)|핵심역량, 경쟁우위, 상품·시장, 포지셔닝, 비즈니스 프로세스와 모델, 가치경영','업무경영 (현 사업의 성공)|현금흐름, 이윤, 수익률, 소요시간, 매출, 비용, 프로젝트, 목표·결과'],
+'e|중장기 경영계획 구성|1장은 규범경영(비전과 가치), 2장은 전략경영(핵심역량과 사업 포트폴리오), 3장은 업무경영(연도별 매출·이익 목표)으로 층을 나누니 목표 숫자가 비전과 어떻게 이어지는지 보였다.',
+'스위스 장크트갈렌 경영모델(블라이허)의 규범·전략·운영 3층 구조와 같다. 원본의 상세 항목 3행을 하나로 묶었다.');
+
+F('비용 절감 전략','원가를 줄이는 여덟 갈래','strategy','SM','o','원가 혁신 과제를 빠짐없이 뽑을 때',
+['자동화|사람 손을 설비로 대체','표준화|부품·작업 방식 통일','정규화|업무 절차와 규칙 정립','품종 단순화|가짓수를 줄여 효율 확보','구조 개선|조직·공정 구조 재설계','합리화|불필요한 업무 제거','아웃소싱|핵심이 아닌 기능 외부 위탁'],
+'e|부품사 원가 혁신|품종 단순화로 사양 가짓수를 줄이고 표준화로 공용 부품을 늘린 뒤, 남은 수작업 공정은 자동화했다. 순서를 지키니 자동화 투자 규모도 줄었다.');
+
+F('가치 창조·이윤 증가','매출과 이익을 키우는 아홉 갈래','strategy','SK','o','성장 전략 과제를 뽑을 때',
+['신제품 개발|새로운 가치 제공','품질 향상|더 좋은 품질로 가격 프리미엄','고가 전략|프리미엄 포지셔닝','추가 서비스|제품 + 서비스 결합','시장 세분화|세그먼트별 맞춤','틈새시장 공략|대기업이 놓친 시장','대량 맞춤화|대량생산 효율 + 개별 맞춤','개인화 광고|고객별 메시지','브랜드 마케팅|브랜드 가치로 차별화'],
+'r|강재 브랜드화|포스코는 고부가 강재에 「기가스틸」 같은 제품 브랜드를 붙여 범용 강재와 구분해 판매했다. 품질 향상, 브랜드 마케팅, 추가 서비스(이용기술 지원)를 함께 엮은 사례다.');
+
+F('경쟁 지위별 전술 (코틀러)','시장 내 위치에 따라 전술이 다르다','strategy','SK','o','우리 위치에 맞는 경쟁 전술을 고를 때',
+['시장 선도자|시장 확대, 점유율 방어','도전자|선도자 약점 공격','추종자|빠른 모방, 원가 효율','틈새 공략자|특정 고객·제품에 집중'],
+'e|공작기계 업체 전략|국내 1위 업체는 신규 수요 개척과 서비스망 방어(선도자), 2위는 1위가 약한 고속 가공기로 공격(도전자), 중소업체는 특정 부품 가공용 전용기로 틈새를 노렸다.');
+
+F('자사 포지셔닝 전략','경쟁 상황에서 취할 다섯 가지 자세','strategy','S','o','경쟁사 움직임에 대응 방향을 정할 때',
+['회피|정면 경쟁을 피해 다른 시장으로','승계|기존 강자의 자리를 물려받기','공격|점유율을 빼앗으러 들어가기','퇴출|사업을 접고 자원 회수','협력|경쟁사와 제휴·합작'],
+'r|배터리 합작 공장|완성차 업체와 배터리 업체는 경쟁 대신 협력을 택해 미국에 합작 공장을 세웠다. GM과 LG에너지솔루션의 얼티엄셀즈가 대표적이다.');
+
+F('그레이너 성장모델','조직은 성장하며 위기를 거쳐 다음 단계로 간다','strategy','SO','o','회사·조직이 어느 단계에서 어떤 위기를 맞는지 진단할 때',
+['창의력을 통한 성장|창업자 주도 → 리더십 위기','관리(지휘)를 통한 성장|체계와 규율 → 자율성 위기','분권화를 통한 성장|권한 위임 → 통제 위기','조정(협력)을 통한 성장|본사 조정 → 관료주의 위기','협업·네트워킹을 통한 성장|팀과 네트워크 → 새 성장 동력의 위기'],
+'e|중견 제조사 조직 개편|창업자 중심으로 빠르게 컸지만 매출이 커지자 결재가 몰려 의사결정이 늦어졌다(자율성 위기). 사업부제와 권한 위임 규정을 도입해 다음 단계로 넘어갔다.',
+'래리 그레이너(1972)의 모델이다.');
+
+F('8가지 경제 원칙','경쟁우위를 만드는 경제 논리','strategy','S','o','전략의 근거 논리를 설명할 때',
+['규모의 경제|많이 만들수록 단가 하락','범위의 경제|여러 제품이 자원을 공유(시너지)','속도의 경제|빨리 만들고 빨리 파는 이익','노하우의 경제|축적된 경험과 비결','기능의 경제|전문 기능 집중','학습의 경제|경험이 쌓일수록 효율 상승(학습곡선)','역량의 경제|핵심역량을 여러 사업에 활용','파레토 법칙|20%의 원인이 80%의 결과'],
+'e|일관제철소 경쟁력 설명|대형 고로의 규모의 경제, 부생가스를 발전에 쓰는 범위의 경제, 수십 년 조업 경험의 학습의 경제를 근거로 들어 설비 투자 논리를 세웠다.');
+
+F('성장 전략 4축','기술·성장·운영·리스크로 사업 전략을 짠다','strategy','SB','o','사업 계획의 전략 과제를 고르게 뽑을 때',
+['기술혁신|R&D, 신제품 개발','성장전략|생산능력 확장, 신규 시장 개척','운영최적화|제조 효율 개선, 비용 절감','리스크관리|공급망 다변화, 환경 규제, 안전관리'],
+'e|소재 기업 3개년 계획|네 축에 과제를 한두 개씩 배치하니 성장 과제만 많던 초안의 빈칸(리스크관리)이 드러나, 핵심 원료 복수 조달처 확보를 추가했다.');
+
+F('최신 전략 SMART','불확실성 시대의 다섯 가지 전략 키워드','strategy','SO','o','전략 방향의 원칙을 제시할 때',
+['Simplicity 단순화|관행적 절차 간소화','Multi-tasking 다관점|여러 관점의 경쟁우위 동시 추구','Agile 민첩한 결정|빠른 실행을 위한 의사결정','Resilient 탄력적 시나리오|불확실성에 대한 대응 시나리오','Target-oriented 타깃 지향|철저한 목표 고객 집중'],
+'e|공급망 리스크 대응 전략|결재 단계를 줄이고(S), 원가·안정성을 함께 보며(M), 주간 단위로 결정하고(A), 원료 가격 시나리오 3개를 미리 준비해(R), 핵심 고객 물량을 우선 확보했다(T).',
+'목표 설정용 SMART(구체적·측정가능 등)와는 다른 틀이다.');
+
+F('생산기지 위치 전략','생산을 어디에 둘 것인가','strategy','SB','o','공급망 재편, 해외 공장 투자 검토 때',
+['Offshoring|인건비가 싼 해외로 이전','Reshoring|해외 생산을 본국으로 되돌림','Nearshoring|소비 시장 가까운 인접국으로','Friendshoring|동맹·우방국으로 공급망 재편'],
+'r|미국 IRA 이후 배터리·반도체 투자|미국 인플레이션감축법(2022)과 반도체법 이후 삼성, LG, SK, TSMC 등이 미국에 공장을 지었다. 원가보다 보조금과 통상 리스크가 입지를 좌우한 프렌드쇼어링 사례다.');
+
+F('사업 구조조정 3방식','사업을 묶고, 나누고, 접는다','strategy','SB','o','사업 포트폴리오를 재편할 때',
+['통합|중복 사업·조직을 합쳐 시너지','분할|사업을 떼어 독립 회사로','폐지|경쟁력 없는 사업 철수'],
+'r|GE의 3개 회사 분할|GE는 2021년 회사를 항공, 헬스케어, 에너지 3개로 나누겠다고 발표했고, 2023년 GE 헬스케어, 2024년 GE 버노바를 분리해 각 사업이 독자적으로 투자하고 평가받게 했다.');
+
+F('사랑받는 기업 SPICEE','이해관계자 모두에게 사랑받는 기업의 조건','strategy','SO','o','ESG·이해관계자 경영 방향을 세울 때',
+['Society 사회|지역사회 기여','Partner 협력사|공정 거래, 동반 성장','Investor 투자자|지속 가능한 수익','Customer 고객|고객 가치','Employee 직원|일할 맛 나는 직장','Environment 환경|환경 보호'],
+'e|지속가능경영보고서 구성|여섯 이해관계자별로 약속과 성과 지표를 정리해 보고서 목차로 썼다. 협력사 항목에는 대금 지급 기간과 기술 지원 건수를 지표로 넣었다.',
+'라젠드라 시소디어의 「사랑받는 기업(Firms of Endearment)」 이해관계자 모델이다.');
+
+F('Open Innovation','외부 기술·아이디어를 끌어와 혁신한다','strategy','RS','o','외부 협력으로 R&D 속도를 높일 때',
+['Open Platform|외부에 기술·데이터 플랫폼 개방','Open Partnership|스타트업·대학·연구소와 협력','Open Connectivity|이종 산업과 연결'],
+'r|P&G Connect + Develop|P&G는 2000년대 초 외부 아이디어를 공개 모집하는 Connect + Develop을 시작해 신제품의 상당 부분을 외부 기술로 개발했다. 프링글스에 그림을 인쇄하는 기술도 외부에서 들여왔다.');
+
+F('Ansoff 성장 매트릭스','시장과 제품을 기존·신규로 나눠 성장 경로를 고른다','strategy','SB','a','성장 방향과 위험 수준을 비교할 때',
+['시장 침투|기존 제품 × 기존 시장, 점유율 확대 (위험 낮음)','시장 개발|기존 제품 × 신규 시장, 새 지역·고객 진출','제품 개발|신규 제품 × 기존 시장, 신제품 출시','다각화|신규 제품 × 신규 시장 (위험 높음)'],
+'r|후지필름의 다각화|필름 시장이 디지털카메라로 무너지자 후지필름은 필름에서 쌓은 콜라겐·나노 기술을 화장품(아스타리프트)과 의약품·헬스케어로 옮겼다. 같은 처지의 코닥과 달리 다각화로 살아남은 사례로 자주 인용된다.');
+
+F('BCG 매트릭스','시장 성장률과 점유율로 사업을 네 칸에 나눈다','strategy','SB','a','여러 사업에 자원을 어떻게 배분할지 정할 때',
+['Star 스타|고성장·고점유, 계속 투자','Cash Cow 캐시카우|저성장·고점유, 현금 창출','Question Mark 물음표|고성장·저점유, 선별 투자','Dog 개|저성장·저점유, 철수 검토'],
+'e|소재 기업 포트폴리오|범용 철강은 캐시카우로 현금을 만들고, 이차전지 소재는 스타로 집중 투자, 수소 사업은 물음표로 단계적 투자, 저수익 가공 사업은 매각을 검토했다.');
+
+F('본원적 경쟁 전략 (포터)','원가우위·차별화·집중 중 하나를 고른다','strategy','S','a','어떻게 이길 것인지 경쟁 방식을 정할 때',
+['원가우위|가장 싸게 만들어 이긴다','차별화|남과 다른 가치로 높은 가격을 받는다','집중|특정 고객·지역에 원가 또는 차별화로 집중'],
+'r|다이슨의 차별화|다이슨은 먼지봉투 없는 사이클론 청소기와 날개 없는 선풍기처럼 기술로 차별화해 일반 제품보다 훨씬 높은 가격을 받았다. 원가 경쟁 대신 차별화를 택한 대표 사례다.');
+
+F('전략 체계도 (전략 하우스)','비전에서 실행 과제까지 한 장으로 잇는다','strategy','S','a','중장기 전략을 한 장으로 보고할 때',
+['비전·미션|왜 존재하고 어디로 가는가','전략 목표|정량 목표 (예: 매출, 이익률)','전략 방향|목표 달성의 큰 줄기 3~4개','전략 과제|방향별 실행 과제','실행 기반|조직, 인재, 문화, 시스템'],
+'e|제조사 2030 전략|지붕에 비전, 그 아래 「매출 2배, 탄소 30% 감축」 목표, 기둥에 고부가 제품·스마트팩토리·친환경 3대 방향과 과제, 바닥에 인재·디지털 인프라를 둬 임원 보고 한 장으로 끝냈다.');
+
+F('ESG','환경·사회·지배구조로 지속가능성을 관리한다','strategy','SE','a','지속가능경영 전략과 공시를 준비할 때',
+['Environment 환경|탄소 감축, 자원 순환, 오염 관리','Social 사회|안전·보건, 인권, 협력사, 지역사회, DEI','Governance 지배구조|이사회 독립성, 윤리·준법, 투명 공시'],
+'r|철강업계 탄소중립 로드맵|국내 주요 철강사는 2050 탄소중립을 선언하고 수소환원제철과 전기로 전환을 핵심 과제로 정했다. 환경(E) 목표가 설비 투자 계획 자체를 바꾼 사례다.');
+
+F('탄소 배출 Scope 1·2·3','온실가스 배출을 범위별로 나눈다','strategy','E','a','탄소 감축 목표와 공급망 대응을 세울 때',
+['Scope 1 직접 배출|자사 설비에서 연료를 태워 나오는 배출','Scope 2 간접 배출|사서 쓰는 전기·열 생산에서 나오는 배출','Scope 3 가치사슬 배출|원료 조달, 운송, 제품 사용·폐기 등 밖에서 나오는 배출'],
+'r|애플 협력사 청정에너지 프로그램|애플은 자사 제품의 Scope 3를 줄이려고 협력사에 애플 생산분을 재생에너지로 만들겠다는 약속을 요구했다. 국내 부품·소재 협력사도 재생에너지 조달 계획을 세워야 했다.');
+// ③ 신사업·제품 개발하기
+F('사업모델 6 Lever','사업모델을 바꿀 여섯 지렛대','biz','B','o','기존 사업에서 새 사업모델을 찾을 때',
+['Customer 고객·니즈|누구의 어떤 문제를 푸는가','Delivery 전달|어떤 채널로 전달하는가','Offerings 제공물|제품·서비스·경험','Production 생산|어떻게 만드는가','Partner·Network 파트너|누구와 함께하는가','Finance Model 수익모델|어떻게 돈을 버는가'],
+'r|롤스로이스 「Power by the Hour」|롤스로이스는 항공기 엔진을 파는 대신 엔진이 가동된 시간만큼 요금을 받는 정비 포함 계약(TotalCare)을 확대했다. 제공물(엔진 → 가동 시간)과 수익모델(판매 → 사용료)을 함께 바꾼 사례다.');
+
+F('사업모델 15 Lever','6 Lever를 더 잘게 나눈 확장판','biz','B','o','사업모델 아이디어를 폭넓게 뽑을 때',
+['Market 시장|고객과 니즈','Location·Logistics·Occasion·Channel|장소, 물류, 사용 상황, 채널','Product·Service·Experience·Brand|제품, 서비스, 경험, 브랜드','Process·Materials·Technique·Asset|공정, 소재, 기술, 자산','Partner·Network|협력 구조','Finance Model|수익 구조'],
+'r|미쉐린의 타이어 서비스화|미쉐린은 운송회사에 타이어를 파는 대신 주행거리만큼 요금을 받는 서비스를 운영했다. 제품을 서비스(Service)로, 판매를 사용량 과금(Finance)으로 바꾸고 타이어 관리 데이터(Technique)를 더했다.');
+
+F('CSIR 이해관계자','사업을 둘러싼 네 이해관계자','biz','BK','o','신사업의 이해관계자 지도를 그릴 때',
+['Customer 고객|고객과 고객의 고객','Supplier 공급자|원료·부품·기술 공급자','Channel Partner 채널|유통, 대리점, 플랫폼','Influencer·Regulator 영향자·규제자|정부, 인증기관, 여론'],
+'e|수소충전소 사업 검토|고객(수소차 운수사)뿐 아니라 고객의 고객(승객), 공급자(수소 생산사), 채널(충전소 운영사), 규제자(가스안전 인허가)를 한 장에 그려 인허가가 사업 일정의 병목임을 먼저 찾아냈다.');
+
+F('현지 파트너 선택 3C','해외 합작 파트너를 고르는 세 기준','biz','B','o','해외 진출 합작·제휴 파트너를 평가할 때',
+['Competency 경쟁력|현지 영업망, 기술, 인허가 역량','Commitment 기여|자금, 인력, 시간을 실제로 투입할 의지','Compatibility 상호보완|서로 부족한 것을 채우고 문화·목표가 맞는가'],
+'e|동남아 가공센터 합작|후보 세 곳을 3C로 점수화하니 규모가 가장 큰 곳은 투자 의지(Commitment)가 낮았다. 규모는 작아도 현지 자동차 고객망을 가진 곳을 택해 상호보완을 살렸다.');
+
+F('사업 발전 3단계','준비, 도전, 도약','biz','B','o','창업·신사업의 단계별 목표를 정할 때',
+['Warm up 준비|문제 정의, 팀 구성, 시제품','Scale up 도전|첫 고객 확보, 생산 확대','Jump up 도약|시장 확장, 투자 유치, 해외 진출'],
+'e|사내벤처 육성 프로그램|준비 단계는 6개월 안에 시제품과 고객 인터뷰, 도전 단계는 첫 매출, 도약 단계는 분사와 외부 투자 유치로 단계 통과 기준을 정했다.');
+
+F('기업가정신 5단계','문제에서 검증까지 사업을 만드는 순서','biz','B','o','신사업 아이디어를 사업으로 다듬을 때',
+['Problem 문제|고객의 진짜 문제는 무엇인가','Solution 해결책|어떻게 풀 것인가','Model 사업모델|어떻게 돈을 벌 것인가','Prototype 시제품|최소한으로 만들어 본다','Test 검증|고객에게 확인한다'],
+'e|설비 예지보전 사내 창업|문제(돌발 고장)를 현장 인터뷰로 확인하고, 해결책(진동 센서 + AI), 모델(월 구독), 시제품(한 라인 설치), 검증(3개월 고장 예측 적중률) 순으로 진행했다.');
+
+F('기업가 3스킬','기술·제품·시장을 다루는 기업가 역량','biz','BH','o','신사업 리더의 역량을 정의할 때',
+['기술 (협업)|일의 본질과 핵심역량을 아는 힘','제품 (창조)|멍때리기와 스케치로 새로운 것을 만드는 힘','시장 (소통)|관찰, 질문, 경청, 피드백으로 고객과 통하는 힘'],
+'e|사내벤처 선발 기준|지원자를 세 스킬로 평가해 기술은 강하지만 시장 스킬이 약한 팀에 영업 출신 멘토를 붙였다.');
+
+F('지식재산 선순환','지식재산을 만들고 거래하고 사업화한다','biz','RB','o','특허 전략과 기술 사업화를 기획할 때',
+['창출|연구 성과를 특허로 확보','거래|라이선싱, 기술 이전, 매각','사업화|자사 제품에 적용하거나 창업','활용 촉진|분쟁 대응, 포트폴리오 관리, 재투자'],
+'e|장기 미활용 특허 정리|보유 특허를 넷으로 나눠 사업화 계획이 없는 특허는 중소기업에 기술 이전(거래)하고, 수익을 신규 특허 출원(창출)에 재투자했다.');
+
+F('PoC → Prototype → Pilot → MVP','신기술·신제품을 검증하는 네 단계','biz','RD','o','AI·신기술 도입이나 신제품 출시를 단계화할 때',
+['PoC 개념 검증|이 기술이 우리 문제에 통하는가 판단','Prototype 시제품|일부 기능만 갖춘 모형','Pilot 시범 적용|실제 고객·현장에 1회 적용','MVP 최소 기능 제품|여러 고객에게 판매·운영하며 개선'],
+'e|AI 표면결함 검사 도입|PoC는 과거 이미지로 결함 판별 정확도 확인, Prototype은 한 대 카메라로 실시간 판정, Pilot은 한 라인 3개월 병행 운영, MVP는 전 라인 확대 후 판정 결과를 계속 학습시켰다.',
+'원본의 Minium은 Minimum으로 바로잡았다.');
+
+F('엔지니어링 설계 단계','플랜트·설비 설계를 단계적으로 구체화한다','biz','RM','o','설비 투자나 플랜트 사업 일정을 잡을 때',
+['Conceptual Design 개념설계|공정 방식, 규모, 대략 투자비 결정','Basic Design 기본설계|공정 흐름도, 주요 장비 사양','FEED 기본설계 상세화|투자 결정과 EPC 발주에 쓸 수준의 설계','Detailed Design 상세설계|시공·제작용 도면'],
+'e|부생가스 발전소 신설|개념설계로 발전 규모와 투자비 범위를 잡고, FEED 결과로 투자 결정을 받은 뒤 EPC 계약자가 상세설계를 맡았다.',
+'원본에 FEED가 두 번 들어 있어 하나로 정리했다. FEED는 Front End Engineering Design으로, 기본설계를 투자 결정이 가능한 수준까지 구체화하는 단계다.');
+
+F('Business Model Canvas','사업모델을 아홉 블록 한 장으로 그린다','biz','B','a','신사업 모델을 팀이 함께 설계할 때',
+['고객 세그먼트|누구를 위한가','가치 제안|어떤 문제를 풀어 주는가','채널|어떻게 전달하는가','고객 관계|어떻게 관계를 유지하는가','수익원|어떻게 돈을 버는가','핵심 자원|무엇이 필요한가','핵심 활동|무엇을 해야 하는가','핵심 파트너|누구와 함께하는가','비용 구조|돈이 어디에 드는가'],
+'r|힐티 공구 관리 서비스|힐티는 전동공구를 파는 대신 건설사에 공구를 빌려주고 수리·교체·재고 관리까지 맡는 Fleet Management를 도입했다. 가치 제안(공구 → 공구 걱정 없는 현장)과 수익원(판매 → 월 이용료)이 바뀌었다.');
+
+F('Lean Startup','만들고, 재고, 배우는 고리를 빠르게 돈다','biz','BR','a','불확실한 신제품을 적은 비용으로 검증할 때',
+['Build 만들기|가설을 검증할 최소 제품 제작','Measure 측정|고객 반응을 데이터로 측정','Learn 학습|가설 유지 또는 방향 전환(피벗) 결정'],
+'r|GE FastWorks|GE는 2010년대 에릭 리스와 함께 린 스타트업 방식의 FastWorks를 도입해 가전, 엔진 등 개발에 적용했다. 큰 계획 대신 작은 시제품으로 고객 반응을 먼저 보는 방식이다.');
+
+F('Stage-Gate','단계마다 관문 심사로 개발을 걸러 낸다','biz','RB','a','R&D 과제 포트폴리오를 관리할 때',
+['발굴|아이디어 수집 → Gate 1','범위 설정|빠른 시장·기술 검토 → Gate 2','사업성 검토|사업 계획 수립 → Gate 3','개발|제품·공정 개발 → Gate 4','검증|시험 생산, 고객 테스트 → Gate 5','출시|양산과 판매'],
+'e|신강종 개발 관리|강종 후보마다 관문에서 시장성·기술성을 심사해 Gate 3에서 절반을 중단시키고, 남은 과제에 시험 압연 자원을 몰아줬다.',
+'로버트 쿠퍼가 만든 신제품 개발 관리 방식이다.');
+
+F('TRL 기술성숙도','기술이 얼마나 익었는지 9단계로 잰다','biz','R','a','R&D 과제의 진척과 사업화 시점을 판단할 때',
+['TRL 1~3 기초 연구|원리 발견, 개념 정립, 실험실 검증','TRL 4~6 시작품|부품·시스템 시작품을 실험실과 유사 환경에서 검증','TRL 7~9 실증·상용화|실제 환경 실증, 인증, 양산 적용'],
+'e|수소환원제철 기술 관리|기술을 TRL로 표시해 단계마다 다음 관문(예: TRL 6 → 7은 파일럿 설비 실증)과 필요 투자를 연결하니 경영진이 투자 시점을 판단하기 쉬워졌다.',
+'미국 NASA가 만든 척도로, 정부 R&D 과제 평가에 널리 쓰인다.');
+
+F('시스템 분석','기능·구조·동작으로 시스템을 쪼갠다','biz','R','o','복잡한 설비·시스템을 분석할 때',
+['기능 분석|시스템이 무엇을 하는가','구조 분석|어떤 요소로 이루어지는가','동적 분석|시간에 따라 어떻게 움직이는가'],
+'e|크레인 자동화 분석|기능(인양·이동·적치), 구조(호이스트·트롤리·센서), 동작(운전 순서와 흔들림)으로 나눠 자동화가 어려운 지점이 흔들림 제어임을 찾았다.');
+
+F('시스템 요구사항 모델','기능·물리·운영 모델로 요구사항을 정리한다','biz','R','o','시스템 개발 요구사항을 정의할 때',
+['기능 모델|필요한 기능과 흐름','물리 모델|기능을 담을 하드웨어·소프트웨어 구성','운영 모델|실제 사용 시나리오와 운영 조건'],
+'e|무인 지게차 도입|기능 모델(적재·운반), 물리 모델(라이다·제어기), 운영 모델(사람과 섞여 다니는 통로, 2교대)을 나눠 정의하니 안전 요구사항이 빠져 있던 것을 찾았다.');
+
+F('시스템 명세서 요건','요구사항을 네 종류로 나눠 적는다','biz','RD','o','개발 발주나 RFP를 쓸 때',
+['기능 요건|무엇을 해야 하는가','유용성 요건|쓰기 쉬운가','비기능 요건|성능, 보안, 신뢰성','외부 인터페이스 요건|다른 시스템과 어떻게 연결되는가'],
+'e|MES 고도화 RFP|기능 요건만 적던 RFP에 비기능(응답 2초 이내, 24시간 가동)과 외부 인터페이스(ERP, 설비 PLC 연계)를 추가해 개발 후 분쟁을 줄였다.');
+
+F('V-모델','설계를 내려가고 검증으로 올라온다','biz','RD','a','설비·소프트웨어 개발에서 검증 계획을 함께 세울 때',
+['요구사항 정의 ↔ 인수 시험|고객이 원하는 것을 정의하고 마지막에 확인','시스템 설계 ↔ 시스템 시험|전체 구조를 설계하고 통합 시험','상세 설계 ↔ 통합 시험|모듈 간 연결 설계와 시험','구현 ↔ 단위 시험|부품·코드 구현과 개별 시험'],
+'r|자동차 전장 개발|자동차 업계의 소프트웨어 개발 평가 모델(Automotive SPICE)은 V-모델을 기본 구조로 쓴다. 설계 단계마다 짝이 되는 시험 계획을 미리 세워 양산 직전 결함을 줄인다.');
+
+// ④ 문제 해결·개선하기
+F('문제 해결 리더의 3역할','밝히고, 해결하고, 유지한다','solve','OQ','o','리더가 개선 활동에서 할 일을 정리할 때',
+['햇빛 (밝히기)|가시광선처럼 문제를 드러내 보이게 한다','햇볕 (해결하기)|적외선의 온기처럼 힘을 모아 문제를 푼다','햇살 (유지하기)|자외선 살균처럼 개선 상태를 지켜 과거로 돌아가지 않게 한다'],
+'e|설비 고장 감소 활동|팀장이 고장 데이터를 매일 공유해 문제를 드러내고(햇빛), 정비·운전 합동 개선팀을 꾸려 원인을 없앤 뒤(햇볕), 점검 기준서에 반영해 재발을 막았다(햇살).');
+
+F('PONIC 문제 판단','무엇과 비교해 문제인지 판단한다','solve','QM','o','이것이 정말 문제인지 근거를 세울 때',
+['Past 과거|예전보다 나빠졌는가','Objective 목표|목표에 못 미치는가','Norm 상식·표준|업계 상식이나 표준에서 벗어났는가','Input 투입|들인 비용에 비해 성과가 낮은가','Competitor 경쟁사|경쟁사보다 뒤지는가'],
+'e|압연 수율 문제 제기|수율이 전년보다 0.3%p 낮고(Past), 목표에도 미달이며(Objective), 경쟁사 공개 수치보다 낮았다(Competitor). 세 기준을 함께 보여 주니 개선 과제로 바로 채택됐다.');
+
+F('문제의 4단계','문제를 다루는 수준을 높여 간다','solve','QO','o','개선 활동 수준을 진단하고 높일 때',
+['문제 발견|이미 드러난 문제를 조사·정리','문제 발굴|문제를 미리 예지하고 예방','문제 창출|높은 목표를 세워 일부러 문제를 만든다','문제 착상|해결 방법과 수단을 고안한다'],
+'e|정비팀 혁신 수준 진단|고장이 난 뒤 처리(발견)에 머물던 팀이 진동 데이터로 고장을 예지(발굴)하고, 다음 해에는 무고장 목표를 세워(창출) 새 정비 방식을 고안(착상)했다.');
+
+F('문제 유형 3가지','발생형·설정형·탐색형','solve','QS','o','과제의 성격을 구분하고 접근법을 고를 때',
+['발생형 문제|이미 일어난 문제, 원상 회복이 목표 (예: 불량, 고장)','설정형 문제|더 높은 목표를 세워 생기는 문제 (예: 원가 10% 절감)','탐색형 문제|앞으로 생길 위험이나 기회를 찾는 문제 (예: 탄소 규제 대응)'],
+'e|부서 과제 분류|과제를 셋으로 나누니 대부분이 발생형이었다. 경영진 요청으로 설정형·탐색형 과제를 1건씩 반드시 넣도록 과제 등록 기준을 바꿨다.');
+
+F('원인 분석 4M·7M','원인을 사람·설비·자재·방법 등으로 나눠 찾는다','solve','QM','o','불량·고장의 원인을 빠짐없이 찾을 때',
+['Man 사람|숙련도, 실수, 피로','Machine 설비|고장, 정밀도, 마모','Material 자재|원료 품질, 규격','Method 방법|작업 표준, 조건','Measurement 측정|계측기 오차, 검사 방법','Management·Money·Morale|관리 체계, 비용, 동기'],
+'r|특성요인도(피시본)의 기본 틀|도요타와 일본 품질관리 현장에서 쓰기 시작한 4M은 지금도 특성요인도의 큰 가지로 쓰인다. 4M에 Measurement와 Environment를 더한 6M도 널리 쓴다.',
+'원본의 7M(사람·자재·방법·설비·측정·관리·돈·동기)과 3M1I(사람·자재·설비·정보)를 하나로 묶었다.');
+
+F('5 Why','왜를 다섯 번 물어 근본 원인에 닿는다','solve','QM','o','증상이 아닌 근본 원인을 찾을 때',
+['Why 1|현상이 왜 생겼나','Why 2|그 원인은 왜 생겼나','Why 3|한 단계 더','Why 4|한 단계 더','Why 5|근본 원인과 재발 방지책'],
+'r|도요타 오노 다이이치의 기계 정지 사례|기계가 멈췄다 → 과부하로 퓨즈가 끊겼다 → 축 윤활이 부족했다 → 윤활 펌프가 제대로 돌지 않았다 → 펌프 축이 마모됐다 → 거름망이 없어 쇳가루가 들어갔다. 퓨즈 교체가 아니라 거름망 설치가 해결책이었다.');
+
+F('4 Who','누가 하는 것이 맞는지 따진다','solve','O','o','업무 분장이나 개선안의 담당을 정할 때',
+['누가 할 것인가|담당 지정','누가 하고 있는가|현재 담당 확인','누가 하는 것이 바람직한가|가장 잘할 사람','그 밖에 다른 사람은 없는가|대안 검토'],
+'e|설비 일상점검 담당 재정의|정비팀이 하던 일상점검을 4Who로 따져 보니 운전자가 하는 것이 바람직했다. 자주보전 교육 후 운전자에게 넘기고 정비팀은 정밀진단에 집중했다.');
+
+F('ECRS','없애고, 합치고, 바꾸고, 단순하게','solve','MO','o','공정·업무 개선안을 뽑을 때',
+['Eliminate 제거|이 작업을 없앨 수 없는가','Combine 결합|다른 작업과 합칠 수 없는가','Rearrange 재배치|순서·장소를 바꿀 수 없는가','Simplify 단순화|더 쉽게 할 수 없는가'],
+'e|출하 검사 공정 개선|이중으로 하던 외관 검사를 없애고(E), 포장과 라벨 부착을 한 작업으로 합치고(C), 검사대를 포장 라인 옆으로 옮기고(R), 지그로 계측을 단순화했다(S).',
+'원본의 기획·질문 영역에 같은 틀이 두 번 있어 하나로 묶었다.');
+
+F('프로세스 개선 4단계','폐지 → 삭감 → 간소화 → 시스템화','solve','OD','o','사무 업무를 개선할 때 순서를 정할 때',
+['폐지|없애도 되는 업무부터 없앤다','삭감|횟수·양을 줄인다','간소화|절차를 단순하게','시스템화|남은 업무를 전산화·기계화'],
+'e|월간 보고 업무 개선|보고서 12종 중 4종을 폐지하고, 3종은 분기 보고로 줄이고, 양식을 1장으로 간소화한 뒤, 남은 지표는 대시보드로 자동화했다. 순서를 거꾸로 하면 불필요한 업무까지 전산화하게 된다.');
+
+F('PDCA','계획하고, 실행하고, 확인하고, 조치한다','solve','QO','a','개선을 반복 가능한 고리로 돌릴 때',
+['Plan 계획|목표와 방법 결정','Do 실행|계획대로 실행','Check 확인|결과를 목표와 비교','Act 조치|표준화하거나 다시 계획'],
+'r|도요타 생산방식의 개선 고리|도요타는 표준 작업을 정하고(P) 실행해(D) 문제를 확인하고(C) 표준을 고치는(A) 고리를 현장 단위로 매일 돌린다. 데밍이 일본에 전파한 관리 사이클이다.');
+
+F('DMAIC (6시그마)','데이터로 변동을 줄이는 다섯 단계','solve','Q','a','데이터가 있는 품질·공정 문제를 깊게 풀 때',
+['Define 정의|문제, 고객 요구, 목표 정의','Measure 측정|현재 수준 측정, 데이터 수집','Analyze 분석|근본 원인을 통계로 검증','Improve 개선|해결책 도출과 시험 적용','Control 관리|개선 상태 유지 관리'],
+'r|모토로라에서 GE, 삼성으로|6시그마는 1980년대 모토로라에서 시작해 1990년대 GE가 전사로 확산했고, 국내에서는 삼성 등이 도입해 품질 혁신 방법론으로 썼다.');
+
+F('8D','팀으로 문제를 여덟 단계에 걸쳐 해결한다','solve','Q','a','고객 클레임에 공식 대응 보고서를 낼 때',
+['D1 팀 구성','D2 문제 기술|무엇이, 언제, 어디서, 얼마나','D3 임시 조치|고객 피해 확산 차단','D4 근본 원인|발생 원인과 유출 원인','D5 영구 대책 선정','D6 대책 실행·검증','D7 재발 방지|표준·시스템 반영','D8 팀 격려|성과 공유와 마무리'],
+'r|자동차 업계 클레임 대응 표준|8D는 포드가 정리해 널리 퍼졌고, 지금도 완성차 업체가 협력사에 품질 문제 대응 보고서를 요구할 때 기본 양식으로 쓴다.');
+
+F('A3 문제 해결 보고서','문제 해결의 전 과정을 A3 한 장에 담는다','solve','QO','a','개선 과제를 한 장으로 보고·공유할 때',
+['배경|왜 이 문제를 다루는가','현상 파악|현재 상태를 데이터로','목표|어디까지 개선할 것인가','원인 분석|근본 원인','대책|무엇을 할 것인가','실행 계획|누가, 언제까지','후속 조치|확인과 표준화'],
+'r|도요타의 A3 보고|도요타는 문제 해결과 제안을 A3 용지 한 장에 정리하는 문화로 알려져 있다. 왼쪽에 문제와 원인, 오른쪽에 대책과 계획을 둬 한눈에 논리를 따라가게 한다.');
+
+F('QC 7가지 도구','현장 품질 문제를 푸는 기본 도구','solve','Q','a','현장 데이터로 품질 문제를 분석할 때',
+['체크시트|데이터를 쉽게 모은다','히스토그램|분포 모양을 본다','파레토도|중요한 소수를 찾는다','특성요인도|원인을 체계적으로 정리','산점도|두 변수의 관계를 본다','관리도|공정이 안정적인지 본다','층별|데이터를 기준별로 나눠 본다'],
+'e|도장 불량 분석|체크시트로 불량 유형을 모으고, 파레토도로 상위 2개(흘림·기포)가 70%임을 찾고, 특성요인도로 원인을 정리한 뒤, 산점도로 온도와 기포의 관계를 확인했다.',
+'일본 품질관리의 아버지 이시카와 가오루가 정리했다.');
+
+F('로직 트리·MECE','빠짐없이 겹침 없이 쪼갠다','solve','S','a','큰 문제를 풀 수 있는 크기로 나눌 때',
+['MECE 원칙|서로 겹치지 않고 합치면 전체가 되게 나눈다','What 트리|구성 요소로 분해','Why 트리|원인을 계층적으로 분해','How 트리|해결책을 계층적으로 분해'],
+'e|영업이익 감소 원인 분석|영업이익을 매출과 원가로, 매출은 판매량과 단가로, 원가는 원료비·에너지비·고정비로 나눠 원료비 상승이 감소의 대부분임을 찾았다.',
+'원본 시트 이름인 「MECE 생각의 끈」이 바로 이 원칙이다.');
+
+F('FMEA','고장이 나기 전에 고장 모드와 영향을 따진다','solve','QR','a','신제품·신공정의 위험을 미리 줄일 때',
+['고장 모드|어떻게 고장 날 수 있는가','영향|고장 나면 무슨 일이 생기는가 (심각도)','원인|왜 생기는가 (발생도)','검출|미리 찾아낼 수 있는가 (검출도)','위험 우선순위|심각도·발생도·검출도로 순위를 매겨 대책'],
+'r|자동차·항공 업계 표준 도구|FMEA는 미국 항공우주·국방 분야에서 시작해 자동차 업계(AIAG·VDA) 품질 표준으로 자리 잡았다. 완성차 업체는 협력사에 설계·공정 FMEA 제출을 요구한다.');
+
+F('SIPOC','공급자에서 고객까지 프로세스를 한 줄로 본다','solve','QO','a','개선 범위를 정하고 프로세스를 처음 정의할 때',
+['Supplier 공급자|입력을 주는 쪽','Input 입력|원료, 정보, 지시','Process 프로세스|주요 단계 5~7개','Output 출력|제품, 결과물','Customer 고객|출력을 받는 쪽'],
+'e|수주에서 출하까지 리드타임 개선|SIPOC를 그리니 영업(공급자)이 넘기는 주문 정보(입력)가 불완전해 생산계획(프로세스)에서 재확인에 이틀이 걸렸다. 주문 입력 양식부터 고쳤다.');
+// ⑤ 현장 혁신 (TPM·린)
+F('TPM 8기둥','TPM 활동을 받치는 여덟 기둥','factory','MQ','o','TPM 추진 체계를 세울 때',
+['개별개선|로스를 주제별로 줄이는 과제 활동','자주보전|운전자가 내 설비를 스스로 지킨다','계획보전|정비 부서의 예방·예지 정비','교육훈련|운전·정비 기능 향상','초기관리|신설비·신제품을 처음부터 잘 만든다','품질보전|불량이 나지 않는 설비 조건 관리','간접부문 효율화|사무·지원 부서의 로스 제거','안전·위생·환경|재해·오염 제로'],
+'r|일본 TPM의 출발|TPM은 1971년 일본 덴소(당시 닛폰덴소)가 일본설비관리협회(JIPM)의 PM 우수상을 받으며 알려졌다. 이후 JIPM이 여덟 기둥 체계로 정리해 세계 제조 현장에 퍼졌다.',
+'원본(8본주)에는 일곱 개만 있어 「안전·위생·환경」을 더했다.');
+
+F('자주보전 7스텝','운전자가 설비를 지키는 일곱 단계','factory','M','o','자주보전 활동을 단계별로 추진할 때',
+['1 초기 청소|청소하며 설비 결함을 찾는다 (청소는 점검)','2 발생원·곤란개소 대책|더러워지는 원인과 청소·점검이 어려운 곳 개선','3 청소·급유 기준서|지킬 기준을 스스로 만든다','4 총점검|설비 원리를 배우고 계통별로 점검','5 자주점검|점검 기준을 효율화하고 스스로 점검','6 표준화|운전·품질·물류 등 관리 항목 표준화','7 자주관리|목표를 스스로 세우고 개선하는 수준'],
+'e|압연 라인 자주보전|1스텝 초기 청소에서 운전자들이 결함 수백 건을 찾아 붙였고(꼬리표), 2스텝에서 오일 누유 발생원을 막아 청소 시간이 크게 줄었다. 기준서를 운전자가 직접 만들어 지키는 비율이 높아졌다.',
+'원본의 7본부(5S → 발생원·곤란개소 대책 → 급유기준서 → 총점검 → 공정품질 보증 → 자주보전)를 일반적인 7스텝으로 정리했다.');
+
+F('TPM 사상','TPM을 하는 마음가짐','factory','MO','o','TPM 킥오프에서 원칙을 공유할 때',
+['전원 참여|최고경영자부터 현장까지 모두','자율 참여|부서 여건에 맞는 자율 목표','제대로|현장 특성에 맞는 실질 활동','꾸준히|반짝 행사가 아닌 지속 활동'],
+'e|TPM 재추진 선언|이전 TPM이 보여 주기식으로 끝난 반성에서 「전시용 활동 금지, 부서 자율 목표, 3년 꾸준히」를 원칙으로 다시 시작했다.');
+
+F('TPM 철학','나·동료·회사를 사랑하는 활동','factory','MO','o','현장 활동의 의미를 공감시킬 때',
+['나를 사랑|내 안전과 성장을 위해','동료 사랑|동료가 다치지 않고 편하게 일하도록','회사 사랑|회사의 경쟁력을 위해'],
+'e|안전 TPM 캠페인|「청소 점검은 나를 지키는 일」로 시작해 동료 위험 개소 신고, 회사 손실 절감으로 이어지는 메시지를 만들었다.');
+
+F('현장 6대 지표 PQCDSM','현장 성과를 여섯 가지로 잰다','factory','MQ','o','현장 개선 목표와 성과 지표를 정할 때',
+['P 생산성|시간당 생산량, 설비종합효율','Q 품질|불량률, 클레임','C 원가|제조원가, 원단위','D 납기|납기 준수율, 재고','S 안전|재해, 아차사고','M 사기|제안 건수, 참여율'],
+'e|공장 KPI 보드|라인마다 PQCDSM 보드를 세워 매일 아침 회의에서 여섯 지표를 확인했다. 생산량만 보던 회의가 안전과 사기까지 다루게 됐다.',
+'원본의 「TPM 6가치」와 「현장의 6대 개선 목표」를 하나로 묶었다.');
+
+F('QCDPFSH','현장 경쟁력의 일곱 요소','factory','MQ','o','공장 경쟁력을 다면 평가할 때',
+['Quality 품질','Cost 원가','Delivery 납기','Productivity 생산성','Flexibility 유연성|다품종·물량 변화 대응','Safety 안전','Health 보건'],
+'e|공장 간 벤치마킹|국내외 공장을 일곱 요소로 비교하니 원가는 비슷했지만 해외 공장이 유연성(품종 전환 시간)에서 앞섰다. 품종 교체 시간 단축을 과제로 정했다.');
+
+F('설비종합효율 OEE','설비가 낸 진짜 성과를 한 숫자로 본다','factory','M','o','설비 성과를 측정하고 로스를 찾을 때',
+['시간가동률|가동 시간 ÷ 부하 시간 (고장·준비교체 로스)','성능가동률|실제 속도 × 정미 가동 (속도저하·순간정지 로스)','양품률|양품 수 ÷ 생산 수 (불량·재작업 로스)','OEE|세 값을 곱한 값'],
+'e|병목 설비 개선|OEE를 재니 시간가동률은 높은데 성능가동률이 낮았다. 순간정지를 기록해 보니 센서 오작동이 주원인이었고, 센서 교체로 OEE가 올랐다.',
+'세계적 수준은 흔히 85% 이상으로 말한다.');
+
+F('16대 로스','효율을 떨어뜨리는 로스를 세 갈래로 찾는다','factory','M','o','로스 트리를 만들고 개선 과제를 뽑을 때',
+['설비 효율화 저해 8대 로스|고장, 준비교체·조정, 공구 교환, 초기 유동, 순간정지·공전, 속도 저하, 불량·수정, 계획 정지','사람 효율화 저해 5대 로스|관리, 동작, 편성, 자동화 치환, 측정·조정','원단위 효율화 저해 3대 로스|에너지, 형·치공구, 수율'],
+'e|열처리 라인 로스 트리|16대 로스로 금액을 매겨 보니 에너지 로스와 준비교체 로스가 가장 컸다. 두 과제에 개선팀을 집중 배치했다.',
+'원본의 설비·사람·원단위 로스 세 행을 하나로 묶었다.');
+
+F('공정 로스 4분류','공정·설비·작업·준비교체 로스','factory','M','o','현장 로스를 간단히 분류할 때',
+['공정 로스|공정 설계와 흐름에서 생기는 로스','설비 로스|고장, 정지, 속도 저하','작업 로스|동작, 대기, 편성 불균형','준비교체 로스|품종 바꿀 때 멈추는 시간'],
+'e|조립 라인 진단|네 가지로 나눠 시간을 재 보니 준비교체 로스가 하루 90분이었다. SMED로 줄이는 과제를 시작했다.');
+
+F('3무 (무리·무다·무라)','과부하·낭비·불균일을 없앤다','factory','M','o','현장의 비효율을 쉽게 짚을 때',
+['무리 (과부하)|사람·설비에 능력 이상의 부담','무다 (낭비)|가치를 더하지 않는 모든 것','무라 (불균일)|작업량과 흐름이 들쭉날쭉'],
+'r|도요타 생산방식의 기본 개념|도요타는 무다만 쫓으면 무리와 무라가 생긴다고 보고 생산량을 평준화(헤이준카)해 셋을 함께 줄인다.',
+'원본은 「무라 불필요, 무리 불합리, 무다 불균일」로 뜻이 엇갈려 있어 바로잡았다.');
+
+F('7대 낭비','가치를 더하지 않는 일곱 가지','factory','M','o','현장 낭비를 찾아 줄일 때',
+['과잉생산|필요보다 많이, 빨리 만든다 (가장 나쁜 낭비)','대기|사람·설비가 기다린다','운반|불필요한 이동','가공 그 자체|필요 이상의 가공','재고|쌓여 있는 원료·재공·제품','동작|불필요한 움직임','불량|불량과 재작업'],
+'r|도요타 오노 다이이치의 정리|오노 다이이치는 과잉생산을 다른 낭비를 숨기는 가장 나쁜 낭비로 보고, 필요한 것을 필요한 때 필요한 만큼 만드는 JIT로 줄였다.');
+
+F('3현주의 (3현 2원 3즉 3철)','현장에서 보고, 원리로 따지고, 즉시 철저히','factory','MO','o','현장 중심 문제 해결 태도를 공유할 때',
+['3현|현장에 가서, 현물을 보고, 현실을 파악한다','2원|원리와 원칙에 따라 판단한다','3즉|즉시, 그 자리에서, 즉응한다','3철|철두, 철미, 철저하게 끝까지'],
+'e|품질 사고 대응 원칙|사무실 보고 대신 팀장이 현장에서 불량품을 직접 보고(3현), 압연 원리로 원인을 따지고(2원), 그 자리에서 임시 조치를 정해(3즉), 재발 방지까지 마무리했다(3철).',
+'원본의 3현2원, 2원3현, 3현(감성), 3즉(행동), 3철(집념) 다섯 행을 하나로 묶었다.');
+
+F('5S','정리·정돈·청소·청결·습관화','factory','MQ','a','현장 기본을 세우고 개선 활동을 시작할 때',
+['정리|필요 없는 것을 버린다','정돈|필요한 것을 정해진 곳에 둔다','청소|깨끗이 하며 이상을 찾는다','청결|정리·정돈·청소 상태를 유지','습관화|정해진 것을 지키는 습관'],
+'e|공구실 5S|안 쓰는 공구를 빨간 꼬리표로 정리하고, 공구 모양 그림자판으로 정돈하니 공구 찾는 시간이 거의 사라졌다.');
+
+F('SMED 빠른 준비교체','준비교체를 한 자릿수 분으로 줄인다','factory','M','a','품종 교체가 잦아 설비가 자주 멈출 때',
+['분리|설비를 멈춰야 하는 내준비와 가동 중 할 수 있는 외준비를 나눈다','전환|내준비를 외준비로 바꾼다','단축|남은 내준비를 표준화·공구 개선으로 줄인다'],
+'r|도요타 프레스 금형 교체|신고 시게오는 도요타와 함께 몇 시간 걸리던 프레스 금형 교체를 10분 이내로 줄였다. 준비교체가 짧아져야 작은 단위로 자주 바꿔 생산할 수 있다.');
+
+F('포카요케','실수해도 불량이 나지 않게 막는다','factory','Q','a','사람 실수로 생기는 불량을 없앨 때',
+['발생 방지|실수가 일어날 수 없게 (방향이 틀리면 안 끼워지는 지그)','검출 정지|실수하면 바로 멈추게 (부품 누락 시 라인 정지)','경고|실수를 알려 준다 (빛, 소리)'],
+'e|볼트 누락 방지|볼트 개수를 세는 센서를 공구에 달아 개수가 모자라면 다음 공정으로 못 넘어가게 했다.',
+'신고 시게오가 도요타에서 정리한 방식이다.');
+
+F('불합리 5가지','설비의 불합리를 찾는 눈','factory','M','o','자주보전 초기 청소에서 결함을 찾을 때',
+['결함|미세한 흠, 헐거움, 마모','발생원|더러움과 이물이 생기는 원인','곤란개소|청소·점검·급유가 어려운 곳','의심점|이상이 의심되는 곳','정리정돈 미비|불필요한 것, 제자리에 없는 것'],
+'e|꼬리표 활동|불합리 다섯 가지를 꼬리표 색으로 나눠 붙이니 어떤 유형이 많은지 바로 보였다.',
+'일본설비관리협회의 7가지 불합리(결함, 기본조건 미비, 접근 곤란, 발생원, 품질 불량원, 불필요품, 불안전 개소)로 확장해 쓰기도 한다.');
+
+F('발생원 5가지','설비 주변 문제의 근원','factory','ME','o','더러움과 손실의 원인을 막을 때',
+['오염|기름, 분진, 칩','공해|소음, 진동, 냄새','불량|품질 불량을 만드는 원인','고장|고장을 부르는 원인','재해|사고를 부르는 원인'],
+'e|분진 발생원 대책|청소만 반복하던 분진을 발생원(벨트컨베이어 낙광)에서 커버와 집진으로 막아 청소 시간과 호흡기 위험을 함께 줄였다.');
+
+F('곤란개소 5가지','일하기 어려운 곳을 찾는다','factory','M','o','자주보전 2스텝 대책을 세울 때',
+['청소 곤란|손이 닿지 않는 곳','점검 곤란|보기 어려운 계기, 덮인 부품','급유 곤란|급유구가 높거나 멀다','급지 곤란|자재 보충이 어렵다','조작 곤란|밸브·스위치 위치가 나쁘다'],
+'e|급유 곤란 개선|높은 곳에 있던 급유구를 배관으로 바닥까지 끌어내리고 투명 커버로 점검창을 만들어 급유 누락이 사라졌다.');
+
+F('설비 6계통','설비를 여섯 계통으로 나눠 점검한다','factory','M','o','총점검 교육과 점검 기준을 만들 때',
+['윤활|급유, 오일 관리','구동·전달|모터, 감속기, 벨트, 체인','본체·체결|볼트, 너트, 구조물','유압|펌프, 실린더, 밸브','공압|에어 배관, 실린더','전기·제어|센서, 배선, PLC'],
+'e|총점검 교육 과정|계통별로 원리 교육 → 점검 실습 → 점검 기준서 작성을 묶어 운전자가 계통 하나씩 졸업하게 했다.');
+
+F('가공의 4형태','가공이 무엇을 하는지 나눠 본다','factory','M','o','공정 분석에서 가공 공정을 분류할 때',
+['변형|모양을 바꾼다 (압연, 프레스)','변질|성질을 바꾼다 (열처리, 도금)','분해|나눈다 (절단, 분리)','조립|합친다 (용접, 체결)'],
+'e|공정 분석표 작성|공정마다 네 가지 중 무엇인지 표시하니 가치를 더하지 않는 운반·대기 공정이 따로 드러났다.');
+
+F('자재 관리 4요소','자재의 형상·치수·수량·위치','factory','M','o','자재 관리 기준을 세울 때',
+['형상|모양과 상태','치수|규격','수량|재고량','위치|보관 장소'],
+'e|코일 야드 관리|코일마다 형상(찌그러짐), 치수, 수량, 위치를 바코드로 관리하니 출하 시 코일 찾는 시간이 크게 줄었다.',
+'원본의 수향은 수량으로 바로잡았다.');
+
+F('재고 4유형','원료·재공·제품·예비품','factory','M','o','재고를 줄이는 과제를 정할 때',
+['원재료 Raw Material|투입 전 원료','재공품 WIP|공정 중간에 있는 것','제품 FGI|완성 후 출하 전','예비품 Spare Parts|설비 정비용 부품'],
+'e|운전자본 절감|재고를 넷으로 나누니 예비품 재고가 생각보다 컸다. 공용 부품 표준화와 공급사 재고(VMI)로 줄였다.');
+
+F('변화점 관리 4M 3H','변화가 생길 때 불량이 난다','factory','Q','o','변화점 관리 체계를 세울 때',
+['처음 (첫 생산)|처음 만드는 제품, 처음 투입된 사람','변경|사람, 설비, 자재, 방법(4M)이 바뀔 때','오랜만 (장기 비가동 후)|오래 멈췄다가 다시 돌릴 때'],
+'e|초품 검사 강화|교대 근무자 교체, 금형 교체, 설비 재가동 같은 변화점마다 초품 검사를 의무화해 변화점 불량을 크게 줄였다.',
+'3H는 일본어 처음(Hajimete), 변경(Henko), 오랜만(Hisashiburi)의 머리글자다.');
+
+F('안전 4E','설비·공학·교육·추진으로 사고를 막는다','factory','Q','o','안전 대책을 빠짐없이 세울 때',
+['Equipment 설비|방호장치, 안전설비','Engineering 공학|위험을 설계로 없앤다','Education 교육|안전교육훈련','Enforcement 추진|규정, 점검, 관리 감독'],
+'e|끼임 사고 대책|교육(E)만 반복하던 대책을 바꿔 인터록 설치(설비), 손이 들어갈 수 없는 구조(공학), 작업 전 점검 의무화(추진)까지 넣었다.');
+
+F('3R 자원순환','줄이고, 다시 쓰고, 재활용한다','factory','E','o','자원·폐기물 감축 과제를 세울 때',
+['Reduce 감소|덜 쓰고 덜 버린다','Reuse 재사용|그대로 다시 쓴다','Recycle 재활용|자원으로 되살린다'],
+'r|철강 부산물 재활용|제철 과정에서 나오는 슬래그는 시멘트 원료와 도로 골재로 재활용된다. 고로 슬래그를 시멘트에 섞으면 시멘트 제조 탄소도 줄어든다.');
+
+F('5N','절약·절감·무재고·불필요 제거·무고장','factory','M','o','원가 절감 현장 구호를 정할 때',
+['절약|아껴 쓴다','절감|비용을 줄인다','무재고|쌓아 두지 않는다','불필요 제거|필요 없는 것을 없앤다','무고장|고장을 없앤다'],
+'e|원가 절감 주간|다섯 구호마다 현장 실천 과제를 1개씩 정해 한 달 동안 운영했다.');
+
+F('원가 구조 4분류','직접·간접·고정·변동비로 원가를 본다','factory','MS','o','원가 절감 대상을 찾을 때',
+['직접비|원료비, 직접 인건비, 에너지비','간접비|관리비, 마케팅비, R&D비','고정비|설비 감가상각, 임대료','변동비|생산량에 따라 늘고 주는 원료비, 유틸리티비'],
+'e|감산기 원가 대응|생산량이 줄자 단위당 고정비가 커졌다. 변동비 절감과 함께 유휴 설비 정지로 고정비를 줄이는 과제를 따로 세웠다.');
+
+F('원가 혁신 3포인트','감지하고, 집중하고, 힘을 싣는다','factory','SO','o','원가 혁신 체질을 만들 때',
+['Sensing 감지|원가 문제를 빨리 알아챈다','Focusing 집중|큰 로스에 자원을 몰아준다','Energizing 동력|구성원이 움직이게 동기를 부여한다'],
+'e|원가 대시보드|일 단위 원가 대시보드로 문제를 감지하고, 상위 3개 로스에 개선팀을 집중시키고, 절감 성과를 팀 포상으로 연결했다.');
+
+F('가시화 5가지','보이게 해야 관리된다','factory','MO','o','현장 관리 체계를 설계할 때',
+['경영의 가시화|목표와 실적','문제의 가시화|이상과 불량','지혜의 가시화|노하우와 개선 사례','상황의 가시화|설비·생산 상태','고객의 가시화|고객 요구와 불만'],
+'e|현장 상황판|라인별 생산 실적(경영), 이상 램프(문제), 개선 사례 게시(지혜), 설비 가동 현황(상황), 고객 클레임(고객)을 한 상황판에 모았다.');
+
+F('낭비를 보는 마음 만들기','이해 → 확인 → 체험','factory','MH','o','현장에 개선 의식을 심을 때',
+['이해 (이론)|낭비가 무엇인지 배운다','확인 (사례·현장·실물)|우리 현장의 낭비를 직접 본다','체험 (과제 수행)|직접 개선해 본다'],
+'e|신입 사원 낭비 교육|7대 낭비 강의 뒤 공장 투어로 낭비 사진을 찍어 오게 하고, 마지막에 작은 개선 과제를 직접 해 보게 했다.',
+'원본의 다른 행 「낭비는 죄악, 지금이 최악, 현재 방식이 최악」은 이 과정에서 심을 태도다.');
+
+F('표준의 선순환','만들고, 지키고, 고친다','factory','MQ','o','표준 관리 체계를 세울 때',
+['만들기 (Build)|표준을 만든다','유지|표준대로 일한다 (표준 준수)','발전|더 나은 방법으로 표준을 고친다 (표준 개선)'],
+'e|작업표준서 개정 주기|표준을 지키다 더 좋은 방법이 나오면 바로 개정하도록 「개정 제안 → 검증 → 반영」 절차를 만들어 표준이 낡지 않게 했다.',
+'원본의 선순환 사이클 두 행을 하나로 묶었다.');
+// ⑥ 디지털·AI 전환
+F('디지털 전환 4단계','디지털화에서 AI 전환까지','dx','D','o','우리 회사 디지털 수준을 설명할 때',
+['Digitization (1990년대~)|아날로그 정보를 디지털 데이터로 (프로세스는 아날로그)','Digitalization (2010년대~)|프로세스를 디지털로, 제품·서비스 개선','Digital Transformation (2016~)|사업모델 혁신과 디지털 문화 (의사결정은 아직 사람의 감)','AI Transformation (2020~)|AI가 의사결정까지 지원·수행'],
+'r|지멘스 암베르크 공장|지멘스는 암베르크 전자제품 공장에서 설계·생산 데이터를 디지털로 연결하고 공정 데이터를 실시간으로 분석해 매우 낮은 불량률을 유지하는 것으로 알려져 있다. 디지털화에서 디지털 전환으로 넘어간 대표 공장이다.');
+
+F('DX 적용 영역','스마트 ○○로 사업 영역별 DX를 정한다','dx','D','o','사업 포트폴리오별 DX 과제를 나눌 때',
+['Smart Factory|생산 공정 자동화·지능화','Smart Trading|무역·구매·판매 디지털화','Smart Construction|건설 현장 디지털화','Smart Logistics|물류 자동화와 최적화'],
+'e|그룹 DX 전략|계열사별로 제조사는 스마트팩토리, 상사는 스마트트레이딩, 건설사는 스마트컨스트럭션을 맡아 공통 데이터 플랫폼 위에서 추진했다.');
+
+F('제조 DX 4대 과제','자동화·의사결정·AI 비서·인프라','dx','DM','o','제조사 DX 전략 과제를 정할 때',
+['자동화 제조 구현|단독 설비 자동화, 라인 자동화(1인 감독), 안전 위험 최소화','최적 의사결정 환경|데이터 기반 의사결정','1인 1 AI 비서|모든 직원이 AI 비서와 일하는 환경','디지털 인프라 강화|네트워크, 데이터 플랫폼, 보안'],
+'r|포스코 스마트팩토리|포스코는 제철소 전 공정의 데이터를 모으는 플랫폼을 구축하고 AI로 조업을 최적화해 2019년 세계경제포럼 「등대공장」에 선정됐다.');
+
+F('DX → AX → IX','디지털에서 AI, 지능형 융합으로','dx','D','o','전환의 큰 흐름을 설명할 때',
+['DX 디지털 전환|업무와 데이터를 디지털로','AX AI 전환|생성형 AI를 업무 전반에 적용','IX 지능형 전환|사람·AI·로봇이 융합해 일한다'],
+'e|제조사 중장기 로드맵|1단계 DX로 설비 데이터를 모으고, 2단계 AX로 생성형 AI 업무 비서를 보급하고, 3단계 IX로 AI가 판단하고 로봇이 실행하는 무인 공정을 목표로 잡았다.',
+'원본의 챗GTP는 챗GPT로 바로잡았다.');
+
+F('AX 지향점 5가지','AI로 무엇을 바꿀 것인가','dx','DM','o','AI 적용 과제를 고를 때',
+['로봇·설비 지능화|설비가 스스로 판단','전문가 노하우 지식화|숙련자 암묵지를 AI로','저효율 반복 작업 자동화|단순 반복 업무 제거','최적 의사결정 지원|데이터로 더 나은 결정','고위험·고강도 작업 대체|위험한 일은 로봇이'],
+'e|AI 과제 공모|사내 공모 아이디어를 다섯 지향점으로 분류하니 반복 작업 자동화에 몰려 있었다. 노하우 지식화(정비 이력 검색 AI)를 전략 과제로 따로 지정했다.');
+
+F('제조 AI 3유형','인지형·사고형·행동형 AI','dx','DM','o','제조 AI 과제를 유형별로 나눌 때',
+['인지형 AI|사람의 인지 능력 모방 (객체 인식, 분류, 비전 검사)','사고형 AI|데이터 기반 추론 (품질 예측, 최적 조건 도출)','행동형 AI|스스로 인지-판단-행동 (자율주행, 지능 제어)'],
+'r|포스코 AI 고로|포스코는 고로에 AI를 적용해 쇳물 온도와 성분을 예측하고 원료 투입 조건을 조정하는 「스마트 고로」를 운영했다. 사고형 AI의 대표 사례다.');
+
+F('산업용 로봇 유형','고정형·이동형·설비형 로봇','dx','DM','o','로봇 도입 대상을 검토할 때',
+['고정형|다관절 로봇 (용접, 조립)','이동형|AGV, AMR, 드론','단위 설비형|하역기, 크레인 무인화','이동 설비형|기관차, 지게차 무인화','센서·IoT|라이다(LiDAR)로 거리 측정, 위치 인식'],
+'r|공장 순찰 로봇|현대차그룹은 보스턴다이내믹스의 4족 보행 로봇 Spot을 공장 설비 점검과 순찰에 시범 적용했다. 사람이 다니기 어렵고 위험한 곳을 이동형 로봇이 대신한다.');
+
+F('사람·AI·로봇 협업','결정은 사람, 해법은 AI, 실행은 로봇','dx','DO','o','지능형 공장의 역할 분담을 설계할 때',
+['Human 결정자|최종 판단과 책임','AI 해결책 제공자|분석하고 대안을 제시','Robot 실행자|물리적 작업 수행'],
+'e|무인 크레인 운영|AI가 코일 적치 순서를 계산하고(해결책), 무인 크레인이 옮기고(실행), 운영자는 예외 상황만 판단(결정)하는 구조로 역할을 나눴다.');
+
+F('AI 3대 인프라','컴퓨팅·데이터·전문인력','dx','D','o','AI 도입 준비 상태를 점검할 때',
+['컴퓨팅 자원|GPU, 클라우드','데이터|양, 품질, 접근성','전문인력|AI 엔지니어와 도메인 전문가'],
+'e|AI 준비도 진단|컴퓨팅은 클라우드로 해결됐지만 설비 데이터가 부서마다 흩어져 있었다. 데이터 통합을 AI 과제보다 먼저 추진했다.');
+
+F('AI 개발 2단계','기반 모델 위에 우리 데이터로 다듬는다','dx','D','o','생성형 AI를 사내에 적용하는 방식을 정할 때',
+['Foundation Model 기반 모델|대량 데이터로 학습한 범용 모델','Fine-tuning 미세조정|우리 도메인 데이터로 추가 학습'],
+'r|지멘스 Industrial Copilot|지멘스는 마이크로소프트와 함께 범용 생성형 AI 모델에 산업 자동화 지식을 더해 PLC 코드 작성 등을 돕는 Industrial Copilot을 내놓았다.',
+'요즘은 미세조정 대신 사내 문서를 검색해 답하게 하는 RAG 방식도 많이 쓴다.');
+
+F('데이터 무결성','데이터가 처음부터 끝까지 믿을 만한가','dx','DQ','o','데이터 품질 관리 기준을 세울 때',
+['완전성|빠진 데이터가 없다','일관성|시스템 간 값이 같다','정확성|실제와 같다'],
+'r|제약 제조의 ALCOA 원칙|미국 FDA 등 규제기관은 제약 제조 데이터에 ALCOA(누가, 읽을 수 있게, 즉시, 원본, 정확하게) 원칙을 요구한다. 데이터 무결성 위반은 생산 중단 사유가 된다.');
+
+F('ICT 3대 기반','하드웨어·소프트웨어·데이터','dx','D','o','DX 기반 구성을 설명할 때',
+['Hardware|설비, 센서, 서버','Software|MES, ERP, 분석 도구','Data|수집·저장·활용 데이터'],
+'e|스마트팩토리 투자 구분|투자 계획을 하드웨어(센서), 소프트웨어(MES), 데이터(플랫폼)로 나누니 데이터 쪽 예산이 거의 없었다.');
+
+F('초연결 기술 4요소','클라우드·IoT·빅데이터·초연결','dx','D','o','디지털 기술 동향을 정리할 때',
+['Cloud|필요한 만큼 쓰는 컴퓨팅','IoT|사물에 센서와 통신','Big Data|대량 데이터 분석','Hyper-connected 초연결|모든 것이 연결된다'],
+'e|설비 원격 모니터링|설비에 IoT 센서를 달고, 데이터를 클라우드에 모아, 빅데이터 분석으로 이상을 찾고, 본사와 현장을 초연결해 원격 진단했다.');
+
+F('D·N·A','데이터·네트워크·인공지능','dx','D','o','디지털 경제 기반을 설명할 때',
+['Data 데이터|IoT, 센서, 로봇에서 생기는 데이터','Network 네트워크|5G 같은 데이터의 물길','AI 인공지능|데이터를 활용해 혁신 서비스 창출'],
+'r|한국판 디지털 뉴딜(2020)|정부는 2020년 디지털 뉴딜에서 D·N·A 생태계 강화를 핵심 과제로 내세웠다.');
+
+F('데이터 댐','모으고, 가공하고, 결합한다','dx','D','o','데이터 플랫폼 구축 단계를 설명할 때',
+['축적|데이터를 모은다','가공|학습 가능한 형태로 정제·라벨링','결합|다른 데이터와 묶어 새 가치'],
+'r|정부 데이터 댐 사업|디지털 뉴딜의 데이터 댐 사업으로 AI 학습용 데이터 구축이 추진됐다. 제조사도 설비·품질 데이터를 같은 순서로 모아 사내 데이터 댐을 만든다.');
+
+F('메타버스 4유형','증강현실·라이프로깅·거울세계·가상세계','dx','D','o','메타버스·디지털 트윈 활용을 검토할 때',
+['증강현실 AR|현실에 정보를 겹친다 (정비 가이드)','라이프로깅|일상·작업 기록 (작업자 동작 데이터)','거울세계|현실을 그대로 복제 (디지털 트윈)','가상세계|완전한 가상 공간 (가상 교육장)'],
+'r|BMW 가상 공장|BMW는 엔비디아 옴니버스로 헝가리 데브레첸 공장을 짓기 전에 가상 공간에서 먼저 설계·검증했다. 거울세계를 공장 계획에 쓴 사례다.',
+'미국 미래가속화연구재단(ASF)의 분류다.');
+
+F('하이프 사이클','신기술은 기대 → 실망 → 안정 순으로 간다','dx','DR','o','신기술 도입 시점을 판단할 때',
+['기술 촉발|기술이 처음 알려진다','기대의 정점|과장된 기대','환멸의 골짜기|실망과 침체','계몽의 경사|실제 쓰임이 드러난다','생산성 안정|주류 기술로 정착'],
+'r|3D 프린팅|3D 프린팅은 2010년대 초 기대가 과열됐다가 가라앉은 뒤, 항공 엔진 연료 노즐(GE) 같은 금속 부품 생산에서 실제 쓰임을 찾았다.',
+'가트너가 1995년부터 해마다 발표한다.');
+
+F('스마트공장 수준 5단계','ICT 미적용에서 고도화까지','dx','DM','a','우리 공장 수준을 진단하고 목표를 정할 때',
+['Level 1 ICT 미적용|수기 관리','Level 2 기초|생산 실적 집계 (바코드, POP)','Level 3 중간 1|설비 데이터 실시간 수집·모니터링','Level 4 중간 2|데이터 분석과 제어','Level 5 고도화|AI 기반 자율 운영'],
+'e|협력사 상생 지원|협력사 수준을 5단계로 진단해 Level 2 업체는 생산 실적 시스템, Level 3 업체는 설비 데이터 분석을 지원했다.',
+'정부 스마트공장 보급 사업에서 쓰는 수준 구분이다.');
+
+// ⑦ 단계·로드맵 짜기
+F('차수 표현','1단계·1차·1기·1세대·1.0·Phase·Step','roadmap','S','o','추진 단계에 이름을 붙일 때',
+['단계·Phase·Step|일의 순서 (1단계 → 2단계)','차·기|반복되는 회차 (1차 사업, 2기 과정)','세대·1.0|기술·제품의 발전 수준 (2세대, 3.0)'],
+'e|스마트팩토리 명칭|순서를 말할 때는 1·2단계, 회차는 1·2차, 기술 수준은 스마트팩토리 1.0·2.0으로 구분해 써 보고서마다 표현이 섞이지 않게 했다.',
+'원본 2단계에 1기가 들어 있어 2기로 바로잡았다.');
+
+F('건설 → 시운전 → 램프업 → 확장','공장을 짓고 정상 가동까지','roadmap','MB','o','신공장·신설비 일정을 짤 때',
+['건설|부지, 건축, 설비 설치','시운전|설비별·연동 시험 가동','램프업|생산량을 목표 수준까지 끌어올림','확장|증설, 품종 확대'],
+'r|테슬라 상하이 기가팩토리|테슬라는 2019년 초 상하이 공장을 착공해 그해 말 첫 차를 출고했다. 이후 램프업으로 생산량을 빠르게 늘리고 모델 Y 라인을 더해 확장했다.');
+
+F('도입 → 성장 → 성숙 → 정착 → 재도약','제도·사업이 자리 잡는 흐름','roadmap','SO','o','제도나 사업의 중장기 단계를 그릴 때',
+['도입기|처음 시작','성장기|빠르게 확산','성숙기|안정적으로 운영','정착기|문화로 자리 잡음','재도약기|새 목표로 다시 도약'],
+'e|제안 제도 10년 로드맵|도입기 참여 독려, 성장기 포상 확대, 성숙기 품질 중심 심사, 정착기 자율 운영, 재도약기 AI 아이디어 공모로 단계를 그렸다.');
+
+F('태아 → 발아 → 성장 → 도약','씨앗에서 도약까지','roadmap','BO','o','신사업·조직의 성장을 비유로 그릴 때',
+['태아기|구상과 준비','발아기|첫 성과','성장기|규모 확대','도약기|새 차원으로'],
+'e|수소 사업 비전 장표|태아기 기술 확보, 발아기 실증, 성장기 상업 생산, 도약기 해외 수출로 단계를 나눠 그림으로 보여 줬다.');
+
+F('기반 조성 → 확산 → 통합 → 융합','기반을 깔고 넓히고 잇는다','roadmap','DS','o','DX·플랫폼 구축 로드맵을 짤 때',
+['기반 조성|인프라와 제도 마련','확산 (활용)|여러 부서로 넓힌다','통합 (연계)|시스템과 데이터를 잇는다','융합|새로운 가치 창출'],
+'e|데이터 플랫폼 로드맵|1년 차 플랫폼 구축, 2년 차 전 공장 확산, 3년 차 공급망 데이터 연계, 4년 차 고객과 데이터 융합 서비스로 단계를 잡았다.');
+
+F('시범 → 확산 → 고도화','작게 해 보고 넓히고 깊게','roadmap','DM','o','신기술·신제도를 단계적으로 도입할 때 (가장 자주 쓰는 틀)',
+['시범|한 곳에서 해 보고 효과 확인','확산|전체로 넓힌다','고도화|더 높은 수준으로'],
+'e|AI 비전 검사 도입|1개 라인 시범으로 정확도를 확인하고, 전 라인으로 확산한 뒤, 결함 원인까지 알려 주는 수준으로 고도화했다.');
+
+F('설립 → 기반 조성 → 안정화 → 고도화','새 조직·법인의 성장 단계','roadmap','O','o','신설 조직·법인의 단계 목표를 정할 때',
+['설립|조직·법인 출범','기반 조성|인력, 제도, 시스템 갖추기','안정화|정상 운영','고도화|성과 극대화'],
+'e|해외 생산법인|설립 후 1년은 현지 인력 채용과 교육, 2년 차 품질 안정화, 3년 차 원가 경쟁력 고도화를 목표로 잡았다.');
+
+F('계획 수립 → 표준화 → 운영 → 고도화','제도를 만들어 굴리는 순서','roadmap','O','o','새 관리 체계를 도입할 때',
+['계획 수립|목표와 방법','표준화|기준과 절차 정립','운영|실제 적용','고도화|개선과 확대'],
+'e|에너지 관리 체계|계획 수립, 공정별 에너지 기준 표준화, 실적 관리 운영, AI 최적화 고도화 순으로 추진했다.');
+
+F('도입 → 정착 → 확산','하나를 제대로 자리 잡게 한 뒤 퍼뜨린다','roadmap','O','o','혁신 활동을 퍼뜨릴 때',
+['도입|시작','정착|제대로 자리 잡게','확산|다른 곳으로 퍼뜨림'],
+'e|자주보전 활동|모델 라인에 도입해 정착시킨 뒤, 그 라인 리더들을 강사로 삼아 전 공장에 확산했다.');
+
+F('발굴 → 개발 → 적용 → 상용화','기술이 돈이 되기까지','roadmap','R','o','R&D 과제 단계를 나눌 때',
+['발굴|과제와 기술 찾기','개발|기술 개발','적용|현장·제품에 적용','상용화|판매와 사업화'],
+'e|신소재 개발 과제|발굴(고객 요구 조사), 개발(시험 생산), 적용(고객사 시험 차량 적용), 상용화(양산 계약)로 관리하니 과제가 어디서 막혔는지 바로 보였다.');
+
+F('단기·중기·장기','시간 축으로 과제를 나눈다','roadmap','S','o','중장기 계획을 세울 때',
+['단기 (~1년)|바로 할 수 있는 과제, 빠른 성과','중기 (2~3년)|구조 개선 과제','장기 (5년 이상)|근본 전환 과제'],
+'r|철강사 탄소중립 로드맵|국내 철강사들은 단기에 에너지 효율 개선과 원료 대체, 중기에 전기로 확대, 장기에 수소환원제철 상용화로 탄소 감축 과제를 시간대별로 나눴다.');
+
+F('초기·중기·후기','한 과제 안의 시기 구분','roadmap','S','o','프로젝트 기간을 세 시기로 나눌 때',
+['초기|준비와 착수','중기|본격 실행','후기|마무리와 정착'],
+'e|설비 개조 공사|초기 자재 발주와 사전 작업, 중기 정지 공사, 후기 시운전과 안정화로 나눠 시기별 위험을 관리했다.');
+
+F('초급·중급·고급','수준별로 나눈다','roadmap','H','o','교육과정·역량 체계를 수준별로 짤 때',
+['초급|기본 개념과 도구','중급|실무 적용','고급|문제 해결과 전파'],
+'e|데이터 분석 교육 체계|초급 엑셀·통계 기초, 중급 파이썬 실무, 고급 AI 모델링과 사내 강사로 나눴다.',
+'원본의 증급은 중급으로 바로잡았다.');
+
+F('As-is → To-be','지금과 바뀐 뒤를 나란히 놓는다','roadmap','S','o','개선 효과를 한눈에 보여 줄 때',
+['이전 → 이후|시간 흐름으로 비교','기존 → 개선|방식의 차이로 비교','현재 → 미래|목표 모습으로 비교'],
+'e|구매 프로세스 개선 보고|왼쪽에 기존(수기 견적 5일), 오른쪽에 개선(전자 견적 1일)을 같은 항목으로 나란히 놓아 효과를 한눈에 보였다.');
+
+F('관리 주기','수시·주간·월간·분기·반기·연간','roadmap','O','o','회의·보고·점검 주기를 설계할 때',
+['수시|이상 발생 즉시','주간|실행 점검','월간|실적 관리','분기|전략 과제 점검','반기|평가와 조정','연간|계획 수립과 결산'],
+'e|회의 체계 정비|이상은 수시 보고, 생산 실적은 주간, 원가는 월간, 전략 과제는 분기로 나눠 겹치던 회의를 정리했다.');
+
+F('제품수명주기 (벨 커브)','도입 → 성장 → 성숙 → 쇠퇴 → 소멸','roadmap','KS','o','제품·사업이 어느 단계인지 보고 전략을 바꿀 때',
+['도입|인지도 확보, 초기 투자','성장|판매 급증, 생산 확대','성숙|경쟁 심화, 원가 절감','침체|수요 감소, 차별화 또는 철수 검토','소멸|단종'],
+'e|내연기관 부품 사업|엔진 부품이 성숙기 후반에 들어서자 원가 절감으로 현금을 확보하고, 그 돈을 전기차 부품 개발(새 도입기)에 투자했다.');
+
+F('트고 → 자라고 → 피고 → 열린다','식물 성장에 빗댄 단계','roadmap','OH','o','성장 단계를 부드럽게 표현할 때',
+['트고|싹이 튼다 (시작)','자라고|성장한다','피고|꽃이 핀다 (성과)','열린다|열매가 열린다 (결실)'],
+'e|사내 학습조직 3년 계획|1년 차 모임이 트고, 2년 차 자라고, 3년 차 개선 성과로 피고, 다음 해 사례집으로 열린다는 흐름으로 계획을 그렸다.');
+
+F('도입 → 확산 → 정착 → 발전','성장 단계의 또 다른 표현','roadmap','O','o','혁신 활동의 단계를 그릴 때',
+['도입|시작','확산|넓힌다','정착|자리 잡는다','발전|더 나아간다'],
+'e|안전 문화 로드맵|도입(위험성 평가 시작), 확산(전 부서), 정착(자율 점검), 발전(협력사 확대)으로 단계를 나눴다.',
+'원본의 장착은 정착으로 바로잡았다.');
+
+F('창업 → 수성 → 도약','세우고, 지키고, 뛰어오른다','roadmap','SB','o','회사·사업의 역사와 다음 단계를 말할 때',
+['창업|사업을 일으킨다','수성|이룬 것을 지킨다','도약|새 성장으로 뛰어오른다'],
+'e|창립 기념 비전|창업기(제철소 건설), 수성기(품질 경쟁력 확보), 도약기(소재 기업으로 전환)로 회사 역사를 정리하고 다음 비전을 제시했다.');
+
+F('실행 5단계','계획 → 승인 → 실행 → 성과 → 평가','roadmap','O','o','과제 추진 절차를 정할 때',
+['계획 수립|목표와 방법','승인|결재와 자원 확보','실행|과제 수행','성과|결과 측정','평가|잘된 점과 개선점'],
+'e|개선 과제 관리 시스템|과제를 다섯 단계 상태로 관리하니 승인 단계에서 오래 멈춘 과제가 드러났다.');
+
+F('5W2H','일을 빠짐없이 정의하는 일곱 질문','roadmap','SO','o','실행 계획이나 업무 지시를 쓸 때',
+['What 무엇을','Why 왜','When 언제','Where 어디서','Who 누가','How 어떻게','How much 얼마나'],
+'e|설비 정기보수 계획|무엇(고로 개수), 왜(노체 수명), 언제(5월 2주), 어디서(2고로), 누가(정비 협력사 3곳), 어떻게(구간별 동시 작업), 얼마나(공사비, 감산량)를 한 표로 정리했다.',
+'원본의 기획·질문 영역에 같은 틀이 두 번 있어 하나로 묶었다.');
+
+F('6W4H','5W2H를 더 넓힌 확장판','roadmap','S','o','이해관계자와 비용·기간까지 꼼꼼히 따질 때',
+['Who·Whom·With whom|누가, 누구에게, 누구와','When|언제','Where·Where to|어디서, 어디로','What·For what|무엇을, 무엇을 위해','Why|왜','How·How much·How long|어떻게, 얼마나, 얼마 동안','Heart|어떤 마음으로'],
+'e|해외 기술 지원 계획|누구에게(현지 법인), 누구와(본사 기술팀), 어디로(인도네시아), 얼마 동안(6개월)까지 적어 출장·예산 계획이 한 번에 나왔다.');
+
+F('5A 실행 전 점검','행동하기 전에 다섯 가지를 확인한다','roadmap','O','o','일을 시작하기 전에 놓친 것을 찾을 때',
+['Advice|조언을 구할 사람은 누구인가','Announce|미리 알려야 할 사람은 누구인가','Ask|요청해야 할 것은 무엇인가','Action|지금 바로 할 일은 무엇인가','Ascertain|행동하기 전에 확인할 정보는 무엇인가'],
+'e|라인 정지 공사 준비|조언(설비 제작사), 공지(생산·영업·고객), 요청(협력사 인력), 즉시 할 일(자재 발주), 확인(재고 수준)을 점검해 공사 당일 혼선을 줄였다.');
+
+F('WBS 작업분해구조','일을 관리 가능한 크기로 쪼갠다','roadmap','SO','a','큰 프로젝트 일정과 담당을 짤 때',
+['최종 산출물|프로젝트가 만들 결과','주요 산출물|단계·구성 요소별 결과','작업 패키지|담당·일정·비용을 정할 수 있는 최소 단위'],
+'e|MES 구축 프로젝트|MES를 생산 계획·실적·품질·설비 모듈로, 다시 설계·개발·시험 작업 패키지로 쪼개 담당과 일정을 붙였다.');
+
+F('RACI','누가 하고, 누가 책임지는지 정한다','roadmap','O','a','여러 부서가 얽힌 과제의 역할을 정할 때',
+['R 실행 (Responsible)|실제로 일하는 사람','A 책임 (Accountable)|최종 책임과 승인 (한 명)','C 협의 (Consulted)|의견을 주는 사람','I 통보 (Informed)|결과를 알아야 하는 사람'],
+'e|신제품 양산 이관|개발·생산·품질·영업의 역할을 RACI 표로 정리하니 「양산 승인」의 A가 두 명이었다. 품질팀장 한 명으로 정리해 결정 지연을 없앴다.');
+// ⑧ 보고·설득 스토리
+F('ITB 핵심 문장','If → Then → Because','story','S','o','보고서의 핵심 한 문장을 만들 때',
+['If|~한다면 (제안)','Then|~게 될 것이다 (효과)','Because|왜냐하면 (근거)'],
+'e|AI 품질 예측 도입 제안|「AI 품질 예측을 도입하면(If) 불량 비용을 연 10억 원 줄일 수 있다(Then). 시범 라인에서 불량을 미리 잡은 비율이 높았기 때문이다(Because).」');
+
+F('APT','관심 → 요점 → 행동 요청','story','SK','o','메시지 주목도를 높이고 행동을 끌어낼 때',
+['Attention|관심을 끈다','Point|핵심 내용을 전한다','Trigger|특정 행동을 요청한다'],
+'e|안전 캠페인 메일|「지난달 우리 공장 아차사고 12건, 모두 지게차였습니다(A). 통로 구분선 안쪽만 걸으면 막을 수 있습니다(P). 오늘 퇴근길부터 노란 선 안쪽으로 걸어 주세요(T).」');
+
+F('PIE','핵심 → 보완 → 세부 설명','story','S','o','요점을 정리해 전달할 때',
+['Point|핵심을 말한다','Information|보완 정보를 준다','Explanation|세부를 설명한다'],
+'e|주간 보고|「2라인 가동률 회복(P). 고장 시간이 주 6시간에서 1시간으로 줄었음(I). 감속기 베어링 교체와 진동 모니터링 효과(E).」');
+
+F('3W','무엇을 → 왜 → 어떻게','story','S','o','메시지에 논리를 입힐 때',
+['What|무엇을 하자','Why|그 이유는','hoW|실행 방법은'],
+'e|물류 개선 제안|「코일 야드를 구역제로 바꾸자(What). 코일 찾는 시간이 하루 3시간이기 때문이다(Why). 바코드와 위치 시스템으로 다음 달부터 시범 운영한다(How).」');
+
+F('OREO','주장 → 근거 → 예시 → 주장','story','S','o','조리 있게 글을 쓸 때',
+['Opinion|핵심 주장을 분명히','Reason|타당한 근거','Example|예시와 사례로 설득력 더하기','Opinion|의도한 반응 촉구'],
+'e|자주보전 확대 건의|「자주보전을 전 라인으로 넓혀야 한다. 모델 라인에서 고장이 절반으로 줄었다. 3라인 운전자는 오일 누유를 미리 찾아 정지를 막았다. 다음 분기부터 전 라인 확대를 승인해 달라.」');
+
+F('QAR','질문 → 답 → 이유','story','S','o','주제를 질문으로 바꿔 답할 때',
+['Question|주제를 질문으로 바꾼다','Answer|질문에 답한다','Reason|이유를 댄다'],
+'e|설비 교체 보고|「노후 압축기를 바꿔야 하나? 바꿔야 한다. 수리비가 3년 사이 두 배가 됐고 교체하면 2년 안에 투자비를 회수하기 때문이다.」');
+
+F('SCR','상황 → 문제 → 해결','story','S','o','문제 해결형 보고서의 뼈대를 세울 때',
+['Situation 상황|모두가 아는 현재 상황','Complication 문제|상황 분석에서 드러난 문제','Resolution 해결|해결 방안'],
+'e|원가 절감 보고|「원료 가격이 1년 새 20% 올랐다(S). 지금 배합으로는 이익률 목표를 맞출 수 없다(C). 저품위 원료 배합 비율을 높이는 조업 기술을 적용하겠다(R).」',
+'맥킨지 컨설턴트 바바라 민토가 정리한 스토리 구조다.');
+
+F('BAT','이전 → 이후 → 그래서','story','SK','o','변화를 극적으로 보여 줘 설득할 때',
+['Before|문제 상황을 생생하게','After|해결된 모습을 매력적으로','Therefore|그래서 이 해결책'],
+'e|스마트 안전모 도입|「지금은 밀폐 공간 작업자가 쓰러져도 알 길이 없다(B). 스마트 안전모는 쓰러지는 순간 관제실에 알린다(A). 그래서 밀폐 공간 작업부터 도입하자(T).」');
+
+F('FAB','특징 → 장점 → 고객 혜택','story','K','o','제품·제안을 고객 관점으로 바꿔 말할 때',
+['Feature 특징|제품의 속성','Advantage 장점|그래서 무엇이 좋은가','Benefit 혜택|고객이 얻는 이익'],
+'e|고강도 자동차 강판 영업|「인장강도가 매우 높다(F). 그래서 더 얇게 써도 같은 강도를 낸다(A). 차체가 가벼워져 전기차 주행거리가 늘어난다(B).」');
+
+F('PRSET','문제 → 결과 → 해결 → 증거 → 행동','story','K','o','제안서·판매 문안을 쓸 때',
+['Point|독자의 문제를 지적','Result|문제가 지속될 때의 악영향','Solution|해결책','Evidence|해결책이라는 증거','Trigger|선택을 요청'],
+'e|예지보전 솔루션 제안|「돌발 고장이 잦다 → 한 번 멈추면 수억 원 손실 → 진동 AI 예지보전 → 다른 공장에서 고장 예측 적중 사례 → 한 라인 무상 시범을 신청해 달라.」');
+
+F('PARADE','성과를 이야기로 증명한다','story','HO','o','개인·팀 성과를 보고하거나 면접·승진 발표 때',
+['Problem|직면한 문제','Anticipated consequence|해결하지 않으면 생길 결과','Role|내가 맡은 역할','Action|취한 조치','Decision rationale|그렇게 결정한 이유','End result|결과'],
+'e|승진 발표|「납기 지연 클레임이 늘었다 → 방치하면 주요 고객 이탈 → 생산계획 담당으로 → 일일 납기 회의를 만들고 → 병목이 열처리임을 데이터로 확인해 우선 배정했다 → 납기 준수율이 크게 올랐다.」');
+
+F('자료 수집 SMART','좋은 근거 자료의 다섯 조건','story','S','o','보고서 근거 자료를 고를 때',
+['Specific|구체적이고 확실한가','Meaningful|의미가 있는가','Achievable|효과적으로 쓸 수 있는가','Relevant|내용과 직결되는가','Timely|최신인가'],
+'e|시장 전망 보고|5년 전 해외 보고서(Timely ✕), 다른 산업 수치(Relevant ✕)를 빼고 최근 협회 통계와 고객사 발표만 남겨 근거를 다시 세웠다.');
+
+F('보고서 3요소','목적·내용·형식','story','S','o','보고서를 쓰기 전에 틀을 잡을 때',
+['목적|왜 쓰는가, 무엇을 결정받을 것인가','내용|무엇을 담을 것인가','형식|어떤 모양으로 보여 줄 것인가'],
+'e|투자 승인 보고|목적(설비 투자 승인)을 먼저 정하니 내용은 투자 효과와 위험으로 좁혀지고, 형식은 1장 요약 + 부록으로 정해졌다.');
+
+F('보고서 작성 3원칙','고객 관점·대강성·구체성','story','S','o','보고서를 다듬을 때',
+['고객 관점|읽는 사람이 궁금한 것부터','대강성|큰 그림과 결론을 먼저','구체성|숫자와 사실로 뒷받침'],
+'e|공장장 보고|공장장이 궁금한 「그래서 언제 정상화되나」를 첫 줄에 쓰고(고객 관점·대강성), 아래에 날짜별 복구 계획을 숫자로 붙였다(구체성).');
+
+F('제안서 3원칙','관심을 끌고, 강점은 드러내고, 약점은 감춘다','story','KB','o','입찰·제안서를 쓸 때',
+['관심을 끈다|첫 장에 고객의 문제와 핵심 해결책','강점을 드러낸다|우리만의 차별점과 실적','약점을 감춘다|약점은 보완책과 함께 짧게'],
+'e|설비 공급 입찰|첫 장에 고객의 「정지 시간 단축」 요구에 맞춘 해법을 두고, 강점(국내 실적)을 크게, 약점(해외 실적 부족)은 해외 파트너 협력안과 함께 짧게 담았다.');
+
+F('홍보의 3수준','돕고, 알리고, 설득한다','story','K','o','사내외 홍보 메시지 수준을 정할 때',
+['도움|독자에게 도움이 되는 정보','통보|사실을 알린다','설득|행동이나 생각을 바꾼다'],
+'e|신제도 사내 홍보|1주 차 「이렇게 쓰면 편합니다」(도움), 2주 차 시행 공지(통보), 3주 차 선도 부서 사례(설득) 순으로 메시지를 바꿨다.');
+
+F('기획자의 3기술','생각하고, 쓰고, 이야기한다','story','HS','o','기획 역량 교육 과정을 짤 때',
+['생각하는 기술|문제를 정의하고 구조화','쓰는 기술|보고서로 표현','이야기하는 기술|말로 설득'],
+'e|기획 역량 교육|1일 차 문제 구조화(생각), 2일 차 1장 보고서(쓰기), 3일 차 3분 발표(이야기)로 과정을 짰다.');
+
+F('설득의 3요소','에토스·파토스·로고스','story','SO','o','설득력 있는 발표·보고를 준비할 때',
+['Ethos 신뢰|말하는 사람에 대한 믿음 (전문성, 실적)','Pathos 감정|듣는 사람의 감정과 열정','Logos 논리|근거와 논리'],
+'e|투자 설명회|발표자의 현장 경력(에토스), 사고로 다친 동료 이야기(파토스), 사고 감소 데이터(로고스)를 함께 담아 안전 투자 승인을 받았다.',
+'아리스토텔레스의 수사학에서 나온 틀이다.');
+
+F('공감의 3종류','이해·설득·구매 공감','story','SK','o','누구의 공감을 얻어야 하는지 정할 때',
+['이해 공감|기획자 ↔ 고객 (고객 니즈를 이해)','설득 공감|기획자 ↔ 내부 고객 (경영진·유관 부서 설득)','구매 공감|마케터 ↔ 외부 고객 (구매를 끌어냄)'],
+'e|신제품 출시 기획|고객 인터뷰(이해 공감), 경영진 보고(설득 공감), 출시 마케팅(구매 공감)을 단계별로 나눠 준비했다.');
+
+F('마음을 움직이는 6단계','뿌림에서 울림까지','story','K','o','메시지가 독자 마음에 닿는 과정을 설계할 때',
+['뿌림|메시지를 퍼뜨린다','끌림|눈길이 간다','쏠림|관심이 모인다','꼴림|하고 싶어진다','홀림|빠져든다','울림|마음에 남아 행동한다'],
+'e|사내 혁신 캠페인|포스터(뿌림), 짧은 영상(끌림), 부서 대항전(쏠림), 포상(꼴림), 우수 사례 발표(홀림), 참여자 수기(울림)로 6주 캠페인을 짰다.');
+
+F('피라미드 구조','결론을 위에, 근거를 아래에','story','S','a','논리가 탄탄한 보고서 구조를 세울 때',
+['결론 (핵심 메시지)|가장 위에 하나','주요 근거 2~4개|결론을 받치는 이유 (MECE로)','세부 근거|숫자, 사실, 사례'],
+'e|공장 이전 검토 보고|맨 위에 「2공장 이전이 유리하다」, 그 아래 원가·물류·인력 세 근거, 각 근거 아래 숫자를 배치해 질문이 나올 곳을 미리 막았다.',
+'바바라 민토의 「논리의 기술(The Pyramid Principle)」이 원전이다.');
+
+// ⑨ 아이디어 넓히기
+F('SCAMPER','일곱 가지 질문으로 아이디어를 짜낸다','idea','RK','o','기존 제품·공정을 바꿔 볼 아이디어가 필요할 때',
+['Substitute 대체|다른 것으로 바꾸면','Combine 결합|합치면','Adapt 적용|다른 데서 빌려 오면','Modify·Magnify·Minify 변형|크게, 작게, 다르게 하면','Put to another use 다른 용도|다른 데 쓰면','Eliminate 제거|빼면','Reverse·Rearrange 역발상|거꾸로, 순서를 바꾸면'],
+'r|다이슨 사이클론 청소기|제임스 다이슨은 제재소의 사이클론 분진 분리 장치를 청소기에 적용(Adapt)하고 먼지봉투를 없앴다(Eliminate). 5천 개가 넘는 시제품을 만든 끝에 먼지봉투 없는 청소기를 완성했다.');
+
+F('ERRC','없애고, 줄이고, 늘리고, 새로 만든다','idea','SK','o','경쟁 요소를 재구성해 블루오션을 찾을 때',
+['Eliminate 제거|업계가 당연하게 여기지만 없애도 되는 것','Reduce 감소|업계 표준보다 줄일 것','Raise 증가|업계 표준보다 늘릴 것','Create 창조|업계에 없던 새 요소'],
+'r|닌텐도 Wii|닌텐도는 그래픽 성능 경쟁을 줄이고(Reduce), 복잡한 조작을 없애고(Eliminate), 몸으로 하는 동작 인식 컨트롤러를 만들어(Create) 게임을 하지 않던 가족 고객을 끌어들였다.',
+'김위찬·르네 마보안의 블루오션 전략 도구다.');
+
+F('CDAM','결합·삭제·수정·추가','idea','R','o','SCAMPER를 짧게 쓰고 싶을 때',
+['Combine 결합','Delete 삭제','Modify 수정','Add 추가'],
+'e|작업 지그 개선|두 개의 지그를 하나로 합치고(C), 불필요한 고정 단계를 빼고(D), 손잡이 각도를 바꾸고(M), 위치 확인 센서를 더했다(A).');
+
+F('Innovation 4I','파악 → 통찰 → 아이디어 → 실행','idea','RS','o','혁신 과제를 처음부터 끝까지 이끌 때',
+['Identify 파악|문제와 기회를 찾는다','Insight 통찰|본질을 꿰뚫는다','Idea 아이디어|해결책을 낸다','Implement 실행|현장에 적용한다'],
+'e|포장 공정 혁신|포장 대기 시간을 파악하고(Identify), 원인이 라벨 출력 대기라는 통찰을 얻어(Insight), 라벨 선출력 아이디어를 내고(Idea), 바로 적용했다(Implement).');
+
+F('융복합 4원칙','공유하고, 섞고, 잇고, 연다','idea','RO','o','부서·산업 간 융합 과제를 기획할 때',
+['공유|정보와 자원을 나눈다','융복합|서로 다른 것을 섞는다','연결 (협업)|사람과 조직을 잇는다','개방 (오픈)|밖으로 연다'],
+'e|소재·부품 공동 개발|소재사와 부품사가 시험 데이터를 공유하고, 금속과 수지 기술을 섞어, 공동 개발팀으로 잇고, 결과를 협력사에 개방했다.');
+
+F('월트 디즈니 3방','꿈꾸는 방 → 현실의 방 → 비평의 방','idea','RO','o','아이디어를 내고 다듬고 검증할 때',
+['Dreamer 몽상가|제약 없이 꿈꾼다','Realist 현실가|어떻게 실현할지 따진다','Critic 비평가|약점과 위험을 찾는다'],
+'e|신공장 콘셉트 워크숍|오전에는 「사람 없는 공장」을 마음껏 그리고(몽상가), 오후에는 단계별 실행안을 만들고(현실가), 마지막에 위험 요인을 점검했다(비평가). 세 역할을 섞지 않아 아이디어가 초반에 죽지 않았다.',
+'로버트 딜츠가 월트 디즈니의 작업 방식을 정리한 것이다.');
+
+F('IDEO 브레인스토밍 규칙','아이디어가 잘 나오게 하는 회의 규칙','idea','O','o','아이디어 회의를 진행할 때',
+['한 번에 한 사람만 말한다','주제에 집중한다','엉뚱한 아이디어를 존중한다','판단은 나중에, 남의 아이디어에 덧붙인다','양을 많이, 그림으로 보여 준다'],
+'r|IDEO와 애플 마우스|디자인 회사 IDEO(전신 포함)는 애플의 초기 마우스를 디자인한 것으로 유명하다. IDEO는 이런 브레인스토밍 규칙을 회의실 벽에 붙여 두고 쓴다.');
+
+F('질문하는 순서','왜 그럴까 → 왜 안 될까 → 이렇게 하면','idea','RO','o','문제를 다르게 보는 질문이 필요할 때',
+['왜 그럴까?|현상의 원인을 묻는다','왜 안 될까?|장애물을 묻는다','이렇게 하면 어떨까?|대안을 묻는다'],
+'e|불량 개선 회의|「왜 기포가 생길까?」「왜 지금 방법으론 못 잡을까?」「건조 온도를 나눠 올리면 어떨까?」 순으로 회의를 이끌어 대안이 나왔다.',
+'같은 흐름을 Why → What if → How로도 쓴다.');
+
+F('창의성 2요소','새롭고, 쓸모 있어야 한다','idea','R','o','아이디어를 평가할 때',
+['독창성|새롭고(Novel), 비범하고(Unusual), 특유한(Unique)','가치성|쓸모가 있다(Useful)'],
+'e|제안 심사 기준|독창성만 보던 제안 심사에 가치성(절감 효과)을 같은 비중으로 넣어 현장에서 실제 쓰이는 제안이 늘었다.');
+
+F('창의 역량 5요소','창의성을 만드는 능력','idea','HR','o','창의 인재 역량을 정의할 때',
+['전문지식|깊이 아는 것','직관력|빠르게 꿰뚫는 감','끈기|포기하지 않는 힘','디자인 사고|사용자 중심으로 생각','문제해결력|해결까지 가는 힘'],
+'e|R&D 인재 평가|연구원 역량 평가 항목을 다섯 요소로 바꾸고 끈기는 장기 과제 수행 이력으로 평가했다.');
+
+F('창의적 사고 4요소 (토런스)','유창성·융통성·독창성·정교성','idea','HR','o','창의성을 측정하거나 훈련할 때',
+['유창성|아이디어를 많이 낸다','융통성|여러 관점으로 바꿔 본다','독창성|남과 다른 아이디어','정교성|구체적으로 다듬는다'],
+'e|개선 아이디어 훈련|10분에 아이디어 20개(유창성), 다른 부서 입장에서 다시(융통성), 가장 엉뚱한 것 고르기(독창성), 실행안으로 구체화(정교성) 순으로 연습했다.',
+'원본의 유연성은 융통성, 구체성은 정교성으로 쓰는 것이 일반적이다.');
+
+F('4考','마음·생각·손·발로 생각한다','idea','H','o','머리로만 기획하지 않게 할 때',
+['心考|마음으로 공감한다','思考|머리로 생각한다','手考|손으로 써 보고 만들어 본다','足考|발로 현장에 가 본다'],
+'e|현장 개선 기획|작업자 고충을 듣고(心考), 원인을 정리하고(思考), 골판지로 지그 모형을 만들어 보고(手考), 현장에서 직접 써 봤다(足考).');
+
+F('3관','관심·관찰·관계','idea','HO','o','현장과 사람을 깊이 이해할 때',
+['관심 (가슴)|마음을 둔다','관찰 (머리)|자세히 본다','관계 (다리)|찾아가 이어진다'],
+'e|신임 팀장 첫 달|팀원 한 명 한 명에게 관심을 두고, 작업 모습을 관찰하고, 다른 부서를 찾아가 관계를 넓히는 것을 첫 달 목표로 정했다.');
+
+F('관점의 3요소','시선·시야·시각','idea','HS','o','기획의 관점을 점검할 때',
+['시선|어디를 보는가 (대상)','시야|얼마나 넓게 보는가 (범위)','시각|어떤 입장에서 보는가 (해석)'],
+'e|원가 절감 기획 재검토|시선(제조원가만)을 물류비까지 넓히고(시야), 고객 입장에서(시각) 다시 보니 포장 사양 변경이라는 새 과제가 나왔다.');
+
+F('7C','창의 시대의 일곱 키워드','idea','O','o','혁신 조직 문화를 말할 때',
+['Communication 소통','Collaboration 협업','Convergence 융합','Connect 연결','Consumer 고객','Creativity 창의성'],
+'e|혁신 조직 슬로건|7C를 부서별 실천 행동으로 바꿔 「주 1회 타 부서와 점심(Connect)」 같은 행동 규칙을 만들었다.',
+'이름은 7C지만 원본에는 여섯 개가 적혀 있다.');
+
+F('Design Thinking','공감 → 정의 → 아이디어 → 시제품 → 테스트','idea','RK','a','사용자 중심으로 문제를 새로 정의하고 풀 때',
+['Empathize 공감|사용자를 관찰하고 인터뷰','Define 정의|진짜 문제를 한 문장으로','Ideate 아이디어|많이, 넓게','Prototype 시제품|빠르고 싸게 만든다','Test 테스트|사용자에게 확인'],
+'e|작업자 보호구 개선|작업자를 따라다니며 보니 보호구를 벗는 이유가 더위였다(공감·정의). 통풍 구조 시제품을 여러 개 만들어 현장 테스트 후 채택했다.',
+'스탠퍼드 디스쿨과 IDEO가 널리 알렸다.');
+
+F('Double Diamond','넓히고 좁히기를 두 번','idea','R','a','문제 정의와 해결을 체계적으로 할 때',
+['Discover 발견|문제를 넓게 탐색 (발산)','Define 정의|핵심 문제로 좁힘 (수렴)','Develop 개발|해결책을 넓게 (발산)','Deliver 전달|최적안으로 좁혀 실행 (수렴)'],
+'e|물류 동선 개선|현장 문제 40개를 모아(발견) 핵심 3개로 좁히고(정의), 해법 20개를 내서(개발) 2개를 실행했다(전달).',
+'영국 디자인 카운슬이 만든 틀이다.');
+
+F('여섯 색깔 모자','관점을 한 번에 하나씩 바꿔 쓴다','idea','O','a','회의가 찬반 논쟁으로 흐를 때',
+['흰 모자|사실과 정보','빨간 모자|감정과 직관','검은 모자|위험과 약점','노란 모자|장점과 가치','초록 모자|새 아이디어','파란 모자|생각 과정 관리'],
+'e|교대 근무 개편 회의|모두 함께 흰 모자(데이터) → 빨간 모자(느낌) → 검은 모자(위험) → 노란 모자(장점) → 초록 모자(대안) 순으로 쓰게 하니 싸움 대신 대안이 나왔다.',
+'에드워드 드 보노의 방법이다.');
+
+F('TRIZ','모순을 풀어 발명한다','idea','R','a','기술적 모순(하나를 좋게 하면 다른 하나가 나빠짐)을 풀 때',
+['문제 정의|무엇을 개선하려 하는가','모순 찾기|무엇이 나빠지는가','발명 원리 적용|40가지 발명 원리에서 해법 찾기 (분할, 반대로, 사전 조치 등)','해결안 구체화|기술 해결안으로'],
+'r|삼성의 TRIZ 도입|삼성은 1990년대 후반부터 러시아 TRIZ 전문가를 초빙해 연구소와 사업부에 TRIZ를 보급했고, 기술 문제 해결과 특허 창출에 활용한 것으로 알려져 있다.',
+'겐리히 알츠슐러가 특허 분석으로 만든 방법론이다.');
+// ⑩ 질문·코칭
+F('GROW','코치를 위한 네 단계 질문','ask','HO','o','팀원 면담·코칭을 할 때',
+['Goal 목표|원하는 목표는 무엇인가','Reality 현실|지금 상황은 어떤가','Options 대안|목표에 가는 방법은 무엇인가','Will 의지|무엇을 실천할 것인가'],
+'e|신입 운전자 면담|「3개월 뒤 어떤 수준이 되고 싶나?」「지금 가장 어려운 작업은?」「그걸 익히는 방법은 뭐가 있을까?」「이번 주에 무엇부터 해 볼까?」 순으로 물어 스스로 계획을 세우게 했다.',
+'존 휘트모어가 정리한 코칭 모델이다.');
+
+F('STAR','경험을 끌어내 암묵지를 형식지로','ask','HM','o','숙련자 노하우를 인터뷰로 정리하거나 면접할 때',
+['Situation 상황|당시 상황은 어땠나','Task 과제|무엇을 해결해야 했나','Action 행동|구체적으로 어떻게 했나','Result 결과|결과는 어땠나'],
+'e|명장 노하우 인터뷰|은퇴를 앞둔 명장에게 「가장 어려웠던 고장 상황」을 STAR로 물어 조치 순서와 판단 근거를 사례집으로 정리했다. 이 사례집은 신입 교육과 AI 정비 비서 학습 자료가 됐다.',
+'원본의 암무지는 암묵지로 바로잡았다.');
+
+F('KWLM','교육 담당자를 위한 학습 질문','ask','H','o','교육 전후 학습자 니즈를 파악할 때',
+['Know|이미 알고 있는 것','Want to know|알고 싶은 것','Learned|과정에서 배운 것','More|앞으로 더 배우고 싶은 것'],
+'e|데이터 분석 과정 운영|첫날 K·W를 포스트잇으로 받아 진도를 조정하고, 마지막 날 L·M을 받아 심화 과정 기획에 썼다.');
+
+F('DVDM','업무 실행 계획을 세우기 위한 질문','ask','O','o','새 업무를 맡았을 때 계획을 세우기 전',
+['Define 정의|이 업무는 무엇인가','Value 가치|왜 중요한가','Difficulty 어려움|왜 어렵고, 풀어야 할 이슈는 무엇인가','Method 방법|어떻게 할 것인가'],
+'e|탄소 배출 산정 업무 인수|정의(제품별 탄소 배출량 산정), 가치(CBAM 대응), 어려움(공정별 데이터 부재), 방법(계측 보완과 산정 도구 도입) 순으로 정리하니 첫 달 계획이 바로 나왔다.');
+
+F('5 Why 질문법','왜를 거듭 물어 본질에 닿는다','ask','QO','o','질문으로 근본 원인을 찾을 때',
+['현상 확인|무슨 일이 일어났나','왜를 반복|그 원인의 원인을 묻는다','멈출 곳|대책을 세울 수 있는 원인에서 멈춘다'],
+'e|면담 활용|「왜 보고가 늦었나?」에서 시작해 「데이터 취합에 이틀」 → 「시스템마다 양식이 달라서」까지 물어 사람이 아닌 양식 통일을 대책으로 정했다.',
+'자세한 내용은 「문제 해결·개선」의 5 Why 참고.');
+
+F('질문 설계 4단계','좋은 질문을 준비하는 순서','ask','O','o','중요한 면담·인터뷰·회의 전에 질문을 준비할 때',
+['의도 명확히 하기|누구를 위해 묻는가, 정말 묻고 싶은 것은, 얻고 싶은 결실은','상대 이해하기|상대의 상황, 애로사항, 갈망하는 것은','상대 입장에서 보기|내 질문을 어떻게 해석하고 반응할까, 답하는 데 무엇이 필요할까','흐름 짜기|언제 어디서, 꼭 필요한 질문, 어떤 순서로'],
+'e|협력사 품질 면담|「우리 클레임을 줄이기 위해」라는 의도를 정하고, 협력사가 인력 부족에 시달린다는 상황을 고려해, 추궁이 아닌 지원 질문으로 바꾸고, 사실 → 원인 → 지원 요청 순으로 물었다.',
+'원본의 질문 관련 네 행(묻는 의도, 상대방 입장, 질문 흐름, 누구를 위해 묻는가)을 하나로 묶었다.');
+
+F('소통 3준비','말할 준비·들을 준비·통할 준비','ask','O','o','소통을 잘하고 싶을 때',
+['말할 준비|무엇을 말할 것인가','들을 준비|듣기 위한 질문을 준비','통할 준비|만남 자체를 준비 (시간, 장소, 분위기)'],
+'e|노사 간담회|말할 내용(경영 현황)만 준비하던 간담회에 들을 질문(현장 애로 3가지)과 통할 준비(현장 휴게실 개최)를 더하니 대화가 살아났다.',
+'원본: 통하고 싶다면 들을 준비를 하고, 더 잘 듣고 싶다면 좋은 질문을 해야 한다.');
+
+F('FMOCM 질문 순서','초점 → 의미 → 선택지 → 선택 → 방법','ask','O','o','회의·워크숍을 질문으로 이끌 때',
+['Focus|무엇에 집중할까','Meaning|그것이 우리에게 어떤 의미인가','Option|어떤 선택지가 있나','Choice|무엇을 고를까','Method|어떻게 할까'],
+'e|공장 안전 워크숍|「이번 분기 가장 큰 위험은?」(F) → 「그게 우리에게 뜻하는 바는?」(M) → 「막을 방법들은?」(O) → 「무엇부터?」(C) → 「누가 언제?」(M) 순으로 진행했다.');
+
+// ⑪ 인재 키우기 (HRD)
+F('ADDIE','교육 과정을 개발하는 표준 다섯 단계','people','H','a','교육 과정을 새로 만들 때',
+['Analysis 분석|교육 니즈, 대상, 직무 분석','Design 설계|학습 목표, 내용 구성, 평가 방법','Development 개발|교재, 콘텐츠 제작','Implementation 실행|교육 운영','Evaluation 평가|효과 측정과 개선'],
+'e|설비 진단 기술 과정|정비 직무 분석으로 진동 진단 역량 부족을 찾고(A), 3일 실습 중심으로 설계해(D), 실제 고장 데이터로 교재를 만들고(D), 운영 후(I), 현업 적용도를 평가했다(E).');
+
+F('교육과정 개발 LADDER','듣고, 분석하고, 설계하고, 전달하고, 고친다','people','H','o','현업 니즈를 반영한 교육 과정을 만들 때',
+['Listen 니즈 수집|현업 인터뷰, 설문','Analyze 분석|수집 내용 분석','Design 설계|체계와 제도 설계','Deliver 운영|현업에 맞는 운영 방식 선택','Revise 개선|운영 피드백으로 개선'],
+'e|품질 교육 개편|현장 리더 인터뷰(Listen)에서 「이론보다 불량 사례」 요구를 확인해 사례 중심으로 재설계하고, 과정 후 설문으로 매 분기 개정했다.');
+
+F('기업이 원하는 3역량','정의하고, 창의적으로 풀고, 가치를 만든다','people','HS','o','미래 인재 역량을 정의할 때',
+['문제 정의 역량|무엇이 문제인지 정확히','창의적 해결 역량|새로운 방법으로 풀기','가치 창출 역량|성과로 연결'],
+'e|신입 사원 교육|3역량에 맞춰 문제 정의 워크숍, 아이디어 해커톤, 현업 과제 발표로 과정을 짰다.');
+
+F('교육 방향 3요소','실전 프로젝트·경험·문제 해결','people','H','o','교육의 큰 방향을 정할 때',
+['실전 프로젝트|실제 업무 과제로 배운다','경험|직접 해 본다','문제 해결|문제를 풀며 배운다'],
+'e|DX 리더 과정|강의 대신 각자 부서 과제를 가져와 4주 동안 직접 데이터 분석 프로젝트를 수행하게 했다.');
+
+F('이직 방지 START','좋은 인재를 지키는 다섯 가지','people','HO','o','신입·경력 인재 이탈을 막을 때',
+['Selection 선발|기업 고유의 선발 방식','Truth 사실|입사 전 회사와 직무를 사실대로','Achievement 성취|입사 초기에 성공 경험','Route 경로|성장 경로를 보여 준다','Talk 소통|끊임없이 소통'],
+'e|교대 근무 신입 이탈|입사 전 현장 체험(Truth), 3개월 차 소규모 개선 성공 경험(Achievement), 기술 명장 경로 안내(Route), 월 1회 선배 면담(Talk)으로 1년 내 퇴사율을 낮췄다.',
+'삼성경제연구소(SERI)가 제시한 틀이다. 원본의 두 행을 하나로 묶었다.');
+
+F('역량 수준 6단계','아는가에서 창조할 수 있는가까지','people','H','o','직무 역량 수준을 정의할 때',
+['아는가|지식이 있다','측정할 수 있는가|수준을 잴 수 있다','표현할 수 있는가|설명할 수 있다','실행할 수 있는가|직접 할 수 있다','가르칠 수 있는가|남을 가르친다','창조·개발할 수 있는가|새 방법을 만든다'],
+'e|정비 기능 등급|정비원 등급을 6단계로 정의해 5단계(가르칠 수 있음) 이상을 사내 강사로 지정했다.');
+
+F('역량 KSA','지식·기술·태도','people','H','o','역량을 구성 요소로 나눌 때',
+['Knowledge 지식|아는 것','Skill 기술|할 수 있는 것','Attitude 태도|하려는 마음가짐'],
+'e|안전 관리자 역량 모델|법규(K), 위험성 평가 실무(S), 현장 작업중지 결단(A)으로 나눠 교육과 평가를 설계했다.');
+
+F('교육 3유형','Teaching·Training·Educating','people','H','o','교육 방식을 목적에 맞게 고를 때',
+['Teaching|아는 사실을 가르쳐 준다','Training|반복 훈련으로 몸에 배게 한다','Educating|스스로 배우게 해 하나를 가르쳐 열을 알게 한다'],
+'e|크레인 운전 교육|안전 규정은 Teaching, 운전 조작은 시뮬레이터로 Training, 비상 상황 판단은 사례 토론으로 Educating 방식을 썼다.');
+
+F('훈련 방향 3차원','다양하게·넓게·깊게','people','H','o','직원 육성 경로를 설계할 때',
+['Variety 다양하게|여러 경험','Width 넓게|직무 범위 확대','Depth 깊게|전문성 심화'],
+'e|엔지니어 경력 개발|입사 초 여러 공정 순환(다양), 3년 차 인접 공정 겸무(넓게), 5년 차 전문 분야 심화(깊게)로 경로를 짰다.');
+
+F('교육 체계 진단 4기준','적정성·균형성·적합성·연결성','people','H','o','교육 체계를 점검할 때',
+['적정성|직무별로 꼭 필요한 과목인가','균형성|직무별 과목 수가 고른가','적합성|난이도 수준이 구분되는가','연결성|과목 간 선후가 이어지는가'],
+'e|생산 직군 교육 체계 진단|정비 직무에는 과목이 넘치고 품질 직무는 부족했으며(균형성), 초·중급 과목 내용이 겹쳤다(적합성). 이를 근거로 과목을 재편했다.');
+
+F('교육 운영 방향','고객 역량을, 체감 콘텐츠로, 이론과 실무로','people','H','o','교육 운영 원칙을 세울 때',
+['고객이 원하는 역량|현업이 필요로 하는 역량 확보·향상','고객이 체감하는 콘텐츠|바로 쓸 수 있는 내용','이론과 실무 겸비|원리와 현장 실습을 함께'],
+'e|교육센터 운영 원칙|세 원칙을 과정 개설 심사 기준으로 삼아 현업 요구가 없는 과정은 개설하지 않았다.');
+
+F('필수 과목 선정 3기준','중요도·필요도·난이도','people','H','o','필수 과목을 고를 때',
+['중요도|업무 성과에 얼마나 중요한가','필요도|지금 얼마나 부족한가','난이도|혼자 배우기 얼마나 어려운가'],
+'e|입사 3년 차 필수 과정|과목 후보 20개를 세 기준으로 점수화해 상위 5개를 필수로 정했다.');
+
+F('콘텐츠 보정 5방법','사용·생성·제거·축소·확장','people','H','o','기존 교육 콘텐츠를 개편할 때',
+['사용|그대로 쓴다','생성|새로 만든다','제거|뺀다','축소|줄인다','확장|늘린다'],
+'e|TPM 교육 개편|기존 이론은 축소, 설비 원리는 사용, AI 예지보전은 생성, 오래된 사례는 제거, 실습은 확장했다.');
+
+F('교육 체계 6요소','체계에서 운영까지','people','H','o','교육 체계 전체를 설계할 때',
+['교육 체계|직무·수준별 큰 그림','교육 과정|과정 구성','교과목|과목 단위','교재 개발|교재와 콘텐츠','교육 계획|연간 일정','과정 운영|실제 운영'],
+'e|신설 공장 교육 체계|가동 1년 전부터 체계 → 과정 → 과목 → 교재 → 연간 계획 → 운영 순으로 준비해 가동 시점에 숙련 인력을 갖췄다.');
+
+F('과정 운영 6요소','대상에서 평가까지','people','H','o','교육 과정 운영 계획서를 쓸 때',
+['교육 대상','교육 기간','교육 방법','과정 운영','운영 지원','평가'],
+'e|협력사 안전 교육|대상(협력사 신규 작업자), 기간(입문 1일), 방법(VR 체험 포함), 운영(월 2회), 지원(통역), 평가(현장 관찰)로 계획서를 썼다.');
+
+F('교육 형태','집합·위탁·정규·이러닝·OJT','people','H','o','교육 형태를 고를 때',
+['사내 집합교육|사내 강의장','사외 위탁교육|외부 기관','정규교육|학위·자격 과정','이러닝|온라인','OJT|현업에서 일하며 배움'],
+'e|신입 정비원 육성|기초는 사내 집합, 자격은 외부 위탁, 설비별 기능은 선배와 함께 OJT로 나눴다.');
+
+F('교육 방식','블렌디드에서 마이크로러닝까지','people','HD','o','새로운 교육 방식을 검토할 때',
+['플립러닝|미리 영상으로 배우고 수업은 토론·실습','블렌디드·하이브리드|온라인 + 오프라인','버추얼·메타버스|가상 공간 교육','실감형 (Immersive)|VR·AR 체험','마이크로러닝·틈새학습|5분 단위 짧은 학습','MOOC|대규모 공개 온라인 강좌','찾아가는 강의|현장으로 가는 교육'],
+'r|VR 안전 체험 교육|국내 제조·건설사들은 추락, 끼임 같은 위험을 VR로 체험하는 실감형 안전 교육을 도입했다. 실제로는 겪게 할 수 없는 사고를 안전하게 체험시킬 수 있다.',
+'원본의 교육방식 두 행을 하나로 묶었다.');
+
+F('702010 학습 법칙','배움의 70%는 경험, 20%는 관계, 10%는 교육','people','H','o','교육 이외의 육성 방법을 설계할 때',
+['70% 경험|일하면서 배운다 (도전 과제, 직무 순환)','20% 관계|다른 사람에게 배운다 (멘토링, 피드백)','10% 교육|집합교육으로 배운다'],
+'e|차세대 공장장 육성|교육(10%)에 더해 적자 라인 개선 과제(70%)와 현직 공장장 멘토링(20%)을 함께 설계했다.',
+'미국 창의적리더십센터(CCL)의 맥콜·롬바르도·아이칭거 연구에서 나온 것으로 알려져 있다. 원본의 존 듀이 출처는 확인되지 않는다.');
+
+F('인지 영역 6수준 (블룸)','기억에서 창조까지','people','H','o','학습 목표를 수준별로 쓸 때',
+['기억 Remember|사실을 기억한다','이해 Understand|의미를 설명한다','적용 Apply|규칙을 적용한다','분석 Analyze|요소로 나누고 관계를 본다','평가 Evaluate|판단한다','창조 Create|새로운 것을 만든다'],
+'e|품질 교육 목표 쓰기|「관리도를 안다」 대신 「관리도로 공정 이상을 판정할 수 있다(적용)」, 「불량 원인을 데이터로 분석할 수 있다(분석)」처럼 수준이 드러나게 목표를 바꿨다.',
+'원본은 원래 블룸(지식·이해·적용·분석·종합·평가)과 개정판 영문(evaluating·creating)이 섞여 있어 개정 블룸으로 정리했다.');
+
+F('심동 영역 수준 (데이브)','모방 → 조작 → 정밀 → 복합','people','HM','o','기능 교육 목표를 정할 때',
+['모방|본 대로 따라 한다','조작|지시에 따라 수행한다','정밀성|정확하게 수행한다','복합성|여러 기술을 엮어 효율적으로 수행','자연화|자동으로, 자기 방식으로 (원본에 없는 5단계)'],
+'e|용접 기능 교육|시범 따라 하기(모방) → 작업 표준대로(조작) → 비드 품질 기준 통과(정밀) → 여러 자세 용접 연결(복합) 순으로 단계별 평가 기준을 만들었다.');
+
+F('정의 영역 수준 (크래스월)','태도가 몸에 배는 다섯 단계','people','HO','o','안전·윤리 같은 태도 교육 목표를 정할 때',
+['수용|관심을 기울인다','반응|참여한다','가치화|좋고 나쁨을 판단해 받아들인다','조직화|가치들 사이 우선순위를 세운다','인격화|가치대로 일관되게 행동한다'],
+'e|안전 문화 교육|강의 집중(수용) → 위험 예지 활동 참여(반응) → 안전 규칙의 의미 공감(가치화) → 생산보다 안전 우선(조직화) → 아무도 보지 않아도 지킨다(인격화)로 단계별 목표를 세웠다.');
+
+F('다중지능 9가지 (가드너)','사람마다 강한 지능이 다르다','people','H','o','학습자 특성에 맞춰 교수 방법을 다양화할 때',
+['언어|말과 글','논리-수학|수와 논리','공간|그림과 공간','신체-운동|몸','음악|소리와 리듬','대인관계|타인 이해','자기 이해|자기 성찰','자연 탐구|분류와 관찰','실존|삶의 의미'],
+'e|현장 교육 방식 다양화|글로만 된 교재에 설비 구조 3D 영상(공간), 실물 분해 실습(신체), 조별 토론(대인)을 더하니 이해도가 고르게 올랐다.');
+
+F('학습 스타일 (펠더-실버만)','정보를 받아들이고 처리하는 방식','people','H','o','학습자 유형별로 과정을 설계할 때',
+['정보 인지|감각형 (사실·구체) ↔ 직관형 (개념·가능성)','정보 처리|활동형 (해 보고 토론) ↔ 성찰형 (깊이 생각 후)','처리 순서|순차형 (단계별) ↔ 총체형 (큰 그림 먼저)'],
+'e|AI 활용 교육|큰 그림 먼저(총체형)와 실습 위주(활동형) 수강생이 많아 첫 시간에 완성 결과물을 보여 주고 바로 실습하는 순서로 바꿨다.',
+'원본의 정보인지·정보처리·처리순서 세 행을 하나로 묶었다.');
+
+F('HRD 기획 3단계','목표 → 현 수준 → 차이 극복','people','H','o','인재 육성 계획서의 뼈대를 세울 때',
+['미래 인재상 정립 (목표)|어떤 인재가 필요한가','성찰과 진단 (현 수준)|지금 우리는 어디인가','자질과 역량 (차이 극복)|목표와 현 수준의 차이를 메울 방안'],
+'e|스마트팩토리 인재 계획|미래 인재상(데이터로 일하는 운전자), 현 수준(데이터 활용 가능 인력 일부), 차이 극복(3년간 단계별 교육과 자격 인증)으로 계획서를 썼다.');
+
+F('4H','손·머리·건강·마음','people','H','o','전인적 육성 목표를 정할 때',
+['Hand|스킬','Head|지식','Health|건강','Heart|마인드'],
+'e|신입 사원 입문 과정|기능 실습(Hand), 공정 이론(Head), 교대 근무 건강 관리(Health), 안전 의식(Heart)을 고르게 넣었다.');
+
+F('내부 역량 SPATV','핵심역량을 다섯 자원으로 본다','people','SH','o','회사의 핵심역량을 정의할 때',
+['Skill|사람의 기술','Process|프로세스','Assets|자산 (설비, 브랜드)','Technology|기술','Value|가치관과 문화'],
+'e|핵심역량 정의 워크숍|고로 조업 노하우(Skill), 일관 공정 운영(Process), 대형 설비(Assets), 고급강 기술(Technology), 안전 문화(Value)로 정리했다.');
+
+F('외부 역량 기준','고객가치·지속성·핵심성·차별성','people','S','o','역량이 진짜 경쟁력인지 검증할 때',
+['Customer Value|고객이 가치를 느끼는가','Sustainability|오래 지속되는가','Criticality·Leverage|사업에 결정적이고 여러 곳에 쓸 수 있는가','Differentiation|경쟁사와 다른가'],
+'e|역량 검증|내부 역량 후보를 네 기준으로 따져 「대형 설비」는 차별성이 약해 핵심역량에서 빼고 「이용기술 지원」을 넣었다.');
+
+F('인지 능력·비인지 능력','머리의 힘과 마음의 힘','people','HO','o','역량 평가·채용 기준을 정할 때',
+['인지 능력|지식, 기억력, 이해력, 사고력, 상상력·창의력, 문제해결력','비인지 능력|동기, 열정, 끈기, 집념, 회복탄력성, 소통'],
+'e|현장 리더 선발|시험(인지 능력)만 보던 선발에 동료 평가와 면담으로 끈기·소통(비인지 능력)을 더했다.',
+'원본의 두 행을 하나로 묶었다.');
+
+F('현장 기능 3역량','학습력·개선력·유지력','people','HM','o','현장 기능직 역량을 정의할 때',
+['학습력|원리 학습, 운전 방법 습득, 트러블 조치, 경정비','개선력|설비 장애, 낭비, 품질 부적합, 불합리 개선','유지력|관리 기준(표준), 주변 청결, 급유·급지, 안전시설 관리'],
+'e|운전원 역량 평가표|세 역량별로 행동 기준을 만들어 매년 평가하고, 개선력이 높은 운전원을 개선 리더로 키웠다.');
+
+F('역량 3유형','운영·기술·창의 역량','people','H','o','직무별 역량 비중을 정할 때',
+['운영 역량|정해진 일을 잘 돌린다','기술 역량|전문 기술로 문제를 푼다','창의 역량|새로운 것을 만든다'],
+'e|직군별 역량 비중|운전 직군은 운영 역량, 정비 직군은 기술 역량, 연구 직군은 창의 역량 비중을 높게 둬 평가표를 차등화했다.');
+
+F('3Go','배우고, 가르치고, 올리고','people','H','o','학습 조직 구호를 만들 때',
+['배우Go|스스로 배운다','가르치Go|동료에게 가르친다','올리Go|성과와 수준을 올린다'],
+'e|사내 강사 제도|배운 사람이 동료에게 가르치는(가르치Go) 것을 의무화하니 교육 효과가 부서 전체로 퍼졌다.');
+
+F('AI 역량 인증 4단계','체계 → 동기 → 평가 → 인증','people','HD','o','전사 AI 역량 강화 제도를 만들 때',
+['AI 역량 체계 구축|직무별 필요 수준 정의','학습 동기 부여|교육과 활용 사례 공유','역량 평가|시험과 과제로 측정','역량 인증|등급 인증과 보상 연계'],
+'e|전사 AI 인증제|역량을 3등급으로 정의하고, 업무 활용 사례 공모로 동기를 높이고, 실무 과제로 평가해, 인증 등급을 승진 가점과 연결했다.');
+
+// ⑫ 조직·변화·리더십
+F('변화관리 3단계 (레빈)','녹이고, 움직이고, 다시 굳힌다','org','O','o','큰 변화를 추진할 때',
+['해빙 Unfreezing|동기 부여, 공감대 형성','이동 Moving|문제 해결, 실행 독려','재동결 Refreezing|변화 후 회귀 방지 (제도화)'],
+'r|삼성 신경영 선언(1993)|이건희 회장은 1993년 프랑크푸르트에서 「마누라와 자식 빼고 다 바꾸라」며 품질 위기를 알려(해빙), 이후 품질 경영을 실행하고(이동), 제도와 문화로 굳혔다(재동결). 레빈의 단계로 읽어 볼 수 있는 사례다.',
+'쿠르트 레빈의 모델이다.');
+
+F('변화 수용 5단계','인지 → 이해 → 공감 → 적응 → 확산','org','O','o','사람이 변화를 받아들이는 과정을 설계할 때',
+['인지|감성, 직관, 본능으로 변화를 감지','이해|영향 관계를 파악','공감 (수용)|정서적·심리적으로 받아들임','적응 (체득)|행동을 바꿈','확산|주변에 퍼뜨림'],
+'e|MES 도입 변화관리|설명회(인지), 현장별 영향 설명(이해), 고참 운전원 의견 반영(공감), 실습과 지원팀 상주(적응), 우수 사용자 사례 공유(확산) 순으로 진행했다.');
+
+F('Kotter 8단계','변화를 이끄는 여덟 단계','org','O','a','전사 혁신을 체계적으로 이끌 때',
+['위기감 조성','변화 추진 연합 구성','비전과 전략 수립','비전 전파','장애물 제거와 권한 위임','단기 성과 만들기','성과를 발판으로 더 큰 변화','변화를 문화로 정착'],
+'r|포드 「One Ford」(2006~)|앨런 멀럴리는 위기감을 공유하고 주간 경영 회의(BPR)로 경영진을 한 팀으로 묶고, 「One Ford」 비전을 전파해 금융위기 때 정부 구제금융 없이 회생했다. 코터 단계로 읽히는 대표 사례다.',
+'존 코터(하버드)의 모델이다.');
+
+F('ADKAR','개인이 변화하는 다섯 조건','org','OH','a','개인 단위 변화 저항을 진단할 때',
+['Awareness 인식|왜 바꿔야 하는지 안다','Desire 의지|바꾸고 싶다','Knowledge 지식|어떻게 하는지 안다','Ability 능력|실제로 할 수 있다','Reinforcement 강화|계속 유지한다'],
+'e|전자 결재 전환 부진|설문해 보니 인식과 의지는 있는데 능력(실제 사용)이 막혔다. 교육 대신 부서별 도우미를 두자 정착됐다.',
+'프로사이(Prosci)의 모델이다.');
+
+F('변화관리 4영역','후원·교육·소통·문화','org','O','o','변화관리 계획을 영역별로 세울 때',
+['Sponsorship 후원|경영진의 지지와 참여','Education 교육|필요한 지식과 기술','Communication 소통|왜, 무엇이, 언제 바뀌는지','Culture 문화|일하는 방식과 가치'],
+'e|ERP 교체 프로젝트|사장이 매월 진척을 직접 점검하고(후원), 역할별 교육을 하고(교육), 주간 소식지를 내고(소통), 데이터 입력을 평가에 반영했다(문화).');
+
+F('변화 추진 4축','전략·프로세스·시스템·변화관리','org','OD','o','혁신 프로젝트 범위를 정할 때',
+['전략|무엇을 왜 바꾸는가','프로세스·절차|일하는 방식','시스템|IT와 도구','변화관리·교육|사람'],
+'e|구매 혁신|시스템(전자 구매)만 도입했던 첫 시도가 실패하자, 전략·프로세스·변화관리까지 네 축으로 다시 기획했다.');
+
+F('기업가 여정 6단계','영감에서 챔피언까지','org','BO','o','사내 혁신가·창업가 성장 경로를 설계할 때',
+['Inspire|깨달음을 얻는다','Learn|지식과 동료를 찾는다','Founder|아이디어를 실행에 옮긴다','Startup|확장 가능한 사업모델을 찾는다','Scaleup|핵심 미션의 성공을 극대화한다','Champion|업계를 이끄는 조직으로 인정받는다'],
+'e|사내벤처 프로그램 설계|영감(아이디어 공모), 학습(창업 교육), 창업(팀 구성), 스타트업(시범 사업), 스케일업(분사), 챔피언(업계 선도)으로 지원 프로그램을 단계별로 나눴다.');
+
+F('Work Diet','일을 줄여 일하는 방식을 바꾼다','org','O','o','불필요한 업무를 줄일 때',
+['프로세스 효율화|일의 흐름 개선','간소화|시간, 횟수, 건수 줄이기','통합|부서 간·부서 내 중복 통합','권한 위임|결재 단계를 낮춘다'],
+'e|관리자 업무 다이어트|결재 건의 절반을 팀장 전결로 위임하고, 비슷한 보고 3종을 통합해 관리자가 현장에 머무는 시간을 늘렸다.');
+
+F('30% 법칙','권한은 내리고, 보고와 회의는 줄인다','org','O','o','조직 효율화 목표를 정할 때',
+['책임·권한 30% 하향|아래로 위임','보고 30% 축소|보고 횟수와 분량','회의 30% 이상 폐지|불필요한 회의'],
+'e|본사 효율화 선언|부서마다 회의 목록을 만들어 30%를 없애고 나머지는 30분 이내로 제한했다.');
+
+F('몰입 3요소 (핑크)','자율성·숙련·목적','org','OH','o','구성원의 내적 동기를 높일 때',
+['Autonomy 자율성|스스로 정한다','Mastery 숙련|더 잘하고 싶다','Purpose 목적|의미 있는 일을 한다'],
+'r|3M의 15% 규칙|3M은 연구원이 근무 시간의 15%를 자기 아이디어에 쓰게 하는 자율 문화로 알려져 있다. 포스트잇이 이런 문화에서 나온 대표 제품이다.',
+'다니엘 핑크의 「드라이브」. 원본의 Master 주도성은 Mastery(숙련)로 바로잡았다.');
+
+F('몰입의 조건 (칙센트미하이)','도전과 실력이 맞을 때 몰입한다','org','OH','o','업무 몰입을 설계할 때',
+['도전|적절히 어려운 과제','기술 (역량)|과제를 감당할 실력','목표|분명한 목표','규칙|명확한 규칙','피드백|즉각적인 피드백'],
+'e|개선 과제 부여|신입에게는 작은 과제, 고참에게는 어려운 과제를 주고 주간 피드백을 해 몰입도가 올라갔다.');
+
+F('신뢰의 두 축','인지적 신뢰와 정서적 신뢰','org','O','o','리더가 신뢰를 쌓는 방법을 정리할 때',
+['인지적 신뢰|꼼꼼하다, 성실하다, 논리적이다, 투명하다, 일관성 있다','정서적 신뢰|친밀감, 공감, 우정, 함께 웃고 개인적으로 대한다'],
+'e|신임 팀장 코칭|업무 약속을 반드시 지키는 습관(인지적)과 주 1회 팀원과 차 마시기(정서적)를 함께 실천하도록 코칭했다.',
+'원본의 두 행을 하나로 묶었다.');
+
+F('리더의 마음','뜨겁게·강직하게·넓게, 우직·착실·철저','org','O','o','리더십 덕목을 말할 때',
+['뜨거운 마음|열정','강직한 마음|원칙을 지킨다','넓은 마음|포용','우직하게·착실하게·철저하게|일하는 자세'],
+'e|공장장 취임사|「뜨겁게 도전하고, 안전 원칙은 강직하게 지키고, 실수에는 넓게」라는 세 문장으로 리더십을 밝혔다.',
+'원본의 두 행을 하나로 묶었다.');
+
+F('마음근력 3가지','꿰뚫어 봄·되돌아봄·둘러봄','org','OH','o','리더 자기 계발 과정을 짤 때',
+['꿰뚫어 봄|사물과 일의 본질을 본다','되돌아봄|자신을 돌아보고 조절한다','둘러봄|대인 관계를 살핀다'],
+'e|리더 성찰 과정|업무 본질 토론(꿰뚫어 봄), 성찰 일지(되돌아봄), 팀원 360도 피드백(둘러봄)으로 과정을 구성했다.');
+
+F('다섯 가지 근원적 두려움','변화 저항의 뿌리','org','OH','o','변화에 대한 저항을 이해할 때',
+['소멸|없어질 것 같은 두려움','훼손|몸이 다칠 것 같은 두려움','자율성 상실|통제받을 것 같은 두려움','분리|관계에서 떨어질 것 같은 두려움','자아의 죽음|자존감이 무너질 것 같은 두려움'],
+'e|자동화 도입 저항|운전원들의 반대를 들어 보니 일자리 소멸과 숙련 가치 상실(자아)이 두려움의 뿌리였다. 재배치 계획과 「자동화 설비 관리자」 역할을 먼저 제시했다.',
+'칼 앨브레히트가 정리한 다섯 가지 두려움이다.');
+
+F('3심','의심·변심·욕심','org','O','o','조직 내 갈등의 마음을 살필 때',
+['의심|믿지 못함','변심|마음이 바뀜','욕심|지나친 바람'],
+'e|협업 갈등 진단|부서 간 갈등을 3심으로 나눠 보니 의심(정보 비공개)이 컸다. 공동 대시보드로 정보를 공개했다.');
+
+F('나를 보는 세 시선','내가 보는 나·실제의 나·남이 보는 나','org','OH','o','자기 인식과 피드백 과정을 설계할 때',
+['내가 생각하는 나|자기 인식','실제의 나|행동과 성과','남들이 바라보는 나|다른 사람의 인식'],
+'e|리더 360도 피드백|자기 평가와 동료 평가의 차이가 큰 항목을 찾아 개인별 개발 계획을 세웠다.',
+'조하리의 창과 함께 쓰면 좋다.');
+
+F('처세의 3기술','치열한 논리·화려한 수사·교활한 처세','org','O','o','설득과 정치력을 생각할 때',
+['치열한 논리|근거로 이긴다','화려한 수사|말로 마음을 얻는다','교활한 처세|관계와 때를 읽는다'],
+'e|부서 간 협상|논리(데이터)만으로 막히던 예산 협상을 상대 부서장 일정에 맞춘 사전 협의(처세)로 풀었다.');
+
+F('권력의 4원천','무력·재력·지력·신력','org','O','o','영향력의 원천을 생각할 때',
+['무력|강제하는 힘','재력|돈의 힘','지력|지식의 힘','신력|믿음의 힘 (신뢰)'],
+'e|프로젝트 리더 영향력|권한(무력)도 예산(재력)도 없는 TF 리더가 데이터(지력)와 약속을 지킨 신뢰(신력)로 부서들을 움직였다.');
+
+F('인재상 4가지','열정인·전문인·글로벌 통섭인·신뢰인','org','OH','o','회사의 인재상을 정할 때',
+['열정인|뜨겁게 도전하는 사람','전문인|깊은 전문성을 가진 사람','글로벌 통섭인|넓게 보고 융합하는 사람','신력 (신뢰인)|믿을 수 있는 사람'],
+'e|채용·평가 기준|인재상 네 가지를 면접 질문과 평가 항목으로 연결했다.');
+
+F('자기 성찰 3질문','어려웠던 점·아쉬웠던 점·보람된 점','org','O','o','프로젝트 회고나 연말 성찰 때',
+['어려웠던 점|무엇이 힘들었나','아쉬웠던 점|무엇을 더 잘할 수 있었나','보람된 점|무엇이 좋았나'],
+'e|프로젝트 회고|세 질문을 돌아가며 말하게 하고 아쉬웠던 점을 다음 프로젝트 체크리스트로 바꿨다.');
+
+F('조직 문화 3요소','개방성·다양성·자율성','org','O','o','혁신 조직 문화를 정의할 때',
+['개방성|열려 있다','다양성|다름을 인정한다','자율성|스스로 정한다'],
+'e|R&D 조직 문화 진단|세 요소로 설문해 자율성이 낮게 나오자 과제 선정 권한을 연구원에게 일부 넘겼다.');
+
+F('핵심가치 3동사','안주하지 않고, 도전하여, 성장한다','org','O','o','핵심가치를 행동 언어로 표현할 때',
+['안주하지 않고|현재에 만족하지 않는다','도전하여|새로운 것에 도전한다','성장하는|개인과 회사가 함께 성장한다'],
+'e|팀 비전 문장|세 동사를 이어 「안주하지 않고 도전하여 성장하는 정비팀」이라는 팀 비전을 만들었다.');
+
+F('DEI','다양성·형평성·포용성','org','OH','o','ESG의 사회(S) 영역 인사 정책을 세울 때',
+['Diversity 다양성|성별, 세대, 국적, 경력의 다양함','Equity 형평성|출발점이 다른 사람에게 맞춤 지원 (상대적 평등)','Inclusion 포용성|모두가 존중받고 참여한다'],
+'e|생산직 여성 인력 확대|여성 채용 확대(다양성)에 더해 보조 장비로 작업 부담을 줄이고(형평성), 현장 휴게 시설을 고쳐(포용성) 정착률을 높였다.');
+
+F('적적적','적극적·주도적·도전적','org','O','o','일하는 태도를 짧게 말할 때',
+['적극적|먼저 나선다','주도적|스스로 이끈다','도전적|어려운 일에 뛰어든다'],
+'e|신입 사원 행동 규범|세 태도를 구체적 행동(먼저 묻기, 과제 스스로 계획하기, 어려운 과제 자원하기)으로 바꿔 알렸다.');
+
+F('협업 3원칙','융합·소통·개방','org','O','o','부서 간 협업 원칙을 정할 때',
+['융합|서로 다른 역량을 섞는다','소통|자주 말하고 듣는다','개방|정보를 연다'],
+'e|생산·품질 합동팀|두 부서 인원을 한 사무실에 두고(융합), 매일 10분 회의를 하고(소통), 불량 데이터를 공유했다(개방).');
+// ⑬ 마케팅·고객
+F('7P (4P + 3P)','회사 관점의 마케팅 믹스','market','K','o','마케팅 계획을 세울 때',
+['Product 제품','Price 가격','Place 유통','Promotion 촉진','People 사람|고객을 만나는 직원','Physical Evidence 물리적 증거|매장, 포장, 시설','Process 프로세스|서비스가 전달되는 과정'],
+'e|산업용 공구 신제품 출시|제품(무선 고출력), 가격(경쟁사 대비 10% 높게), 유통(산업용품 전문점), 촉진(현장 시연), 사람(기술 영업), 물리적 증거(시연 차량), 프로세스(24시간 수리)를 정했다.');
+
+F('4C (고객 관점)','4P를 고객의 눈으로 바꿔 본다','market','K','o','마케팅 계획을 고객 입장에서 점검할 때',
+['Customer Value 고객 가치|제품 → 고객이 얻는 가치','Cost 고객 비용|가격 → 고객이 치르는 모든 비용','Convenience 편리성|유통 → 사기 쉬운가','Communication 소통|촉진 → 대화하는가'],
+'e|강재 온라인 판매|가격만 보던 판매를 고객 비용(가공비, 물류비 포함)으로 다시 보고, 소량 주문 편리성을 높인 온라인 채널을 열었다.',
+'로버트 로터본의 틀이다. 원본의 「4C 아웃사이드」와 「전략 4c」를 하나로 묶었다.');
+
+F('무역 4C','비용·운송·환율·컨테이너','market','KB','o','수출입 거래 조건을 검토할 때',
+['Cost 비용|원가, 관세','Carriage 운송|운송 수단과 조건','Currency 환율|결제 통화와 환위험','Container 컨테이너|선적 단위, 확보 여부'],
+'r|2021년 컨테이너 운임 급등|코로나19 이후 컨테이너 부족으로 해상 운임이 크게 오르자 수출 제조사들은 운송(Carriage)과 컨테이너 확보를 가격보다 먼저 챙겨야 했다.');
+
+F('포털 4C','콘텐츠·소통·커뮤니티·커머스','market','KD','o','온라인 플랫폼·고객 포털을 기획할 때',
+['Contents 콘텐츠','Communication·Connect 소통','Community 커뮤니티','Commerce 커머스'],
+'e|고객 기술 포털|강재 이용기술 자료(콘텐츠), 기술 문의(소통), 고객 엔지니어 포럼(커뮤니티), 샘플 주문(커머스)을 한 포털에 담았다.');
+
+F('AIDMA','주목 → 흥미 → 욕구 → 기억 → 행동','market','K','o','오프라인 판매 메시지를 설계할 때',
+['Attention 주목','Interest 흥미','Desire 욕구','Memory 기억','Action 행동'],
+'e|전시회 부스 설계|큰 시연 설비로 주목, 절감 효과 계산기로 흥미, 고객 사례로 욕구, 기념품으로 기억, 현장 상담 예약으로 행동을 끌어냈다.',
+'원본의 motivate는 일반적으로 Memory(기억)로 쓴다.');
+
+F('AISAS','검색하고 공유하는 온라인 구매 과정','market','KD','o','온라인 마케팅을 설계할 때',
+['Attention 주목','Interest 흥미','Search 검색','Action 구매','Share 공유'],
+'e|소형 가전 출시|SNS 영상(주목·흥미) 후 고객이 검색할 키워드로 상세 비교 자료를 올리고(검색), 구매 후기 이벤트(공유)를 열었다.',
+'일본 광고회사 덴츠가 제안했다.');
+
+F('AISCEAS','비교하고 검토하는 온라인 구매 과정','market','KD','o','고관여 제품의 온라인 구매 과정을 설계할 때',
+['Attention 주목','Interest 흥미','Search 검색','Comparison 비교','Examination 검토','Action 구매','Share 공유'],
+'e|산업용 로봇 온라인 마케팅|비교(경쟁 기종 사양 비교표)와 검토(무료 시뮬레이션) 단계를 따로 설계하니 상담 전환이 늘었다.');
+
+F('구매자 경험 사이클','구매에서 처분까지 고객 경험 6단계','market','KR','o','고객 불편을 찾아 새 가치를 만들 때',
+['구매|사고 고르는 과정','전달|받는 과정','사용|쓰는 과정 (B2B는 저장·가공)','보충|추가로 필요한 것','유지관리|정비·수리','처분|폐기·재활용'],
+'e|코일 고객 경험 개선|구매(주문)보다 고객 공장의 저장·가공 단계에서 녹 발생 불편이 컸다. 방청 포장과 가공 조건 가이드를 제공했다.',
+'블루오션 전략의 구매자 효용 지도 가로축이다. 원본의 B2B 변형(구매·전달·저장·가공·판매·운송)도 같은 쓰임이다.');
+
+F('6가지 효용 레버','고객이 느끼는 효용의 종류','market','KR','o','구매자 경험 사이클과 교차해 새 가치를 찾을 때',
+['생산성|더 효율적으로','단순성|더 쉽게','편의성|더 편하게','위험 감소|더 안전하게','재미와 이미지|더 즐겁고 멋지게','환경 친화성|더 친환경적으로'],
+'e|고객 효용 지도|6단계 × 6레버 표를 채우니 「유지관리 × 위험 감소」 칸이 비어 있었다. 강재 부식 예측 서비스를 기획했다.',
+'블루오션 전략의 구매자 효용 지도 세로축이다.');
+
+F('고객 중시 가치 사슬','고객 가치가 시장 점유율로 이어진다','market','KS','o','고객 중심 경영의 효과를 설명할 때',
+['고객 가치 증가','고객 만족도 증가','고객 충성도 개선','사업 반복성 향상|재구매','기업 평판 향상','고객 기반 확대','시장 점유율 증가'],
+'e|품질 투자 효과 설명|품질 투자가 고객 만족 → 재구매 → 평판 → 신규 고객 → 점유율로 이어지는 사슬을 그려 경영진 승인을 받았다.',
+'원본의 증기는 증가로 바로잡았다.');
+
+F('心氣體','정신·기술·상품의 세 겹','market','KR','o','제품·브랜드를 겹으로 설계할 때',
+['心 정신|메시지, 스토리, 디자인','氣 기술|앱, 소프트웨어, 기능','體 상품|물리적 제품'],
+'r|애플 아이폰|아이폰은 단순함이라는 메시지와 디자인(心), iOS와 앱 생태계(氣), 하드웨어(體)를 겹쳐 하나의 경험으로 판다. 원본이 예로 든 사례다.');
+
+F('STP','시장을 나누고, 고르고, 자리 잡는다','market','K','a','목표 고객과 포지셔닝을 정할 때',
+['Segmentation 세분화|시장을 기준별로 나눈다','Targeting 표적|가장 매력적인 세그먼트 선택','Positioning 위치 잡기|고객 마음속 차별적 위치'],
+'e|전기강판 마케팅|시장을 변압기·모터·전기차 구동모터로 나누고, 성장률이 높은 전기차 구동모터를 표적으로, 「고효율 전기차 모터의 기준」으로 포지셔닝했다.');
+
+F('Kano 모델','품질 요소마다 만족을 주는 방식이 다르다','market','KR','a','신제품 기능 우선순위를 정할 때',
+['당연 품질|없으면 불만, 있어도 당연 (안전, 기본 기능)','일원 품질|좋을수록 만족 (연비, 성능)','매력 품질|없어도 괜찮지만 있으면 감동','무관심 품질|있든 없든 상관없음','역 품질|있으면 오히려 불만'],
+'e|자동차 기능 기획|후방 카메라는 처음엔 매력 품질이었지만 지금은 당연 품질이 됐다. 시간이 지나며 매력이 당연으로 바뀌는 점을 감안해 다음 매력 품질을 계속 찾는다.',
+'카노 노리아키가 제안했다.');
+
+// ⑭ 평가·성과 관리
+F('성과 유형 4가지','매출·원가·생산성·품질','eval','S','o','과제 성과를 분류하고 계량할 때',
+['신사업·판매 확대|매출 증가','비용 절감|원가 감소','생산성 향상|같은 자원으로 더 많이','품질 향상|불량·클레임 감소'],
+'e|개선 과제 효과 산정|과제마다 네 유형 중 하나로 효과를 계산하는 기준을 만들어 부서마다 다르던 효과 금액을 통일했다.');
+
+F('4대 가치 기준','사회·종업원·주주·고객 가치','eval','SO','o','기업 성과를 이해관계자별로 평가할 때',
+['사회 가치 SV|사회공헌, 환경','종업원 가치 PV|직원 만족, 성장','주주 가치 EV|이익, 주가','고객 가치 CV|고객 만족'],
+'e|경영 성과 보고|재무 성과(EV)만 보고하던 연말 보고에 안전·환경(SV), 직원 몰입(PV), 고객 만족(CV) 지표를 더했다.');
+
+F('사업계획 서류심사 항목','아이디어·사업계획 평가 기준','eval','BR','o','공모전·사내벤처·R&D 과제를 심사할 때',
+['독창성·혁신성|새로운가','기술성|기술적으로 실현 가능한가','시장성|시장이 있는가','성장성·경쟁우위|커질 수 있고 이길 수 있는가','파급효과|회사·산업에 미치는 효과','사업계획·팀 역량|계획이 탄탄하고 팀이 해낼 수 있는가'],
+'e|사내 아이디어 공모|여섯 항목에 가중치를 두고 심사위원별 점수를 표준화해 심사 공정성 시비를 줄였다.',
+'원본의 서류심사 평가 두 행을 하나로 묶었다.');
+
+F('공정성 2종 (+1)','절차의 공정성과 분배의 공정성','eval','OH','o','평가·보상 제도를 설계할 때',
+['절차 공정성|정하는 과정이 공정한가','분배 공정성|나눈 결과가 공정한가','상호작용 공정성|존중받으며 설명 들었는가 (보완)'],
+'e|성과급 제도 개편|분배 기준만 바꿨던 이전 개편이 반발을 샀다. 이번엔 기준을 직원과 함께 정하고(절차), 결과를 개인별로 설명했다(상호작용).');
+
+F('평가 설계 5기준','대상·지표·방법·절차·결과','eval','H','o','평가 제도나 교육 평가를 설계할 때',
+['대상의 적합성|누구를 평가하는가','지표의 타당성|무엇으로 평가하는가','방법의 합리성|어떻게 평가하는가','절차의 적정성|어떤 순서로 하는가','결과의 활용성|결과를 어디에 쓰는가'],
+'e|기능 등급 평가 개편|결과 활용성 점검에서 등급이 보상과 연결되지 않아 동기가 없다는 점이 드러나 등급 수당을 신설했다.');
+
+F('커크패트릭 4단계','교육 효과를 반응에서 결과까지 잰다','eval','H','o','교육 효과를 측정할 때',
+['반응|만족했는가 (설문)','학습|배웠는가 (시험)','행동|현업에서 쓰는가 (관찰)','결과|성과가 났는가 (지표)'],
+'e|TPM 교육 효과|설문(반응)과 시험(학습)에 더해 3개월 뒤 자주점검 이행률(행동)과 고장 시간(결과)을 측정해 교육 투자 효과를 보고했다.',
+'도널드 커크패트릭의 모델이다. 원본의 커프패트릭은 커크패트릭으로 바로잡았다.');
+
+F('BSC 균형성과표','재무·고객·프로세스·학습성장을 함께 본다','eval','S','a','전략을 성과 지표로 바꿀 때',
+['재무|매출, 이익, ROI','고객|만족도, 점유율, 재구매','내부 프로세스|품질, 리드타임, 원가','학습과 성장|역량, 시스템, 조직 문화'],
+'e|공장 BSC|학습성장(데이터 인재 육성) → 프로세스(불량률 감소) → 고객(클레임 감소) → 재무(품질 비용 절감)로 지표를 인과로 이었다.',
+'캐플런과 노턴이 만들었다.');
+
+F('OKR','도전적 목표와 측정 가능한 핵심 결과','eval','SO','a','도전적 목표를 팀과 함께 세울 때',
+['Objective 목표|가슴 뛰는 정성 목표','Key Results 핵심 결과|목표 달성을 보여 주는 측정 가능한 결과 3~5개','점검|분기마다 점검하고 다시 세운다'],
+'r|인텔에서 시작|OKR은 인텔의 앤디 그로브가 만들었고, 인텔 출신 존 도어가 구글에 전해 널리 알려졌다.',
+'제조 현장 예: 목표 「무고장 라인」, 핵심 결과 「돌발 고장 월 2건 이하, 예지보전 적용 설비 30대」.');
+
+F('SMART 목표','목표를 좋게 쓰는 다섯 조건','eval','SO','a','목표와 KPI를 쓸 때',
+['Specific 구체적','Measurable 측정 가능','Achievable 달성 가능','Relevant 관련성','Time-bound 기한'],
+'e|목표 고쳐 쓰기|「품질을 높인다」를 「3라인 표면 결함률을 12월까지 0.5%에서 0.3%로 낮춘다」로 바꿨다.',
+'보고·설득의 자료 수집 SMART와는 다른 틀이다.');
+
+// ⑮ 사고의 렌즈
+F('아리스토텔레스 10범주','대상을 열 가지 질문으로 본다','lens','RS','o','대상을 빠짐없이 묘사·분석할 때',
+['실체|무엇이고 무엇이 그것을 고유하게 하는가','양|얼마나 많고, 얼마나 큰가','관계|순위, 비교, 파생','질|가치, 속성, 모양, 습관','능동|무엇을 하는가','수동 (영향)|평판, 대하는 태도','장소|어디에 있는가','시간|언제 (지금, 과거, 미래)','자세 (위치)|앉아, 서, 드러나, 숨어','상태|계획됨, 고장, 미시험, 변화 중'],
+'e|신제품 콘셉트 정의|신형 크레인을 열 범주로 묘사하니(무엇, 크기, 기존 모델 대비, 품질, 하는 일, 고객 평판, 설치 장소, 출시 시기, 설치 자세, 개발 상태) 기획서의 제품 정의 장이 빈틈없이 채워졌다.',
+'원본 「철학」의 열 행을 하나로 묶었다.');
+
+F('시공간 3축','시간-속도, 공간-폭, 공간-깊이','lens','S','o','기획의 범위를 정할 때',
+['시간 - 속도|얼마나 빨리','공간 - 폭|얼마나 넓게','공간 - 깊이|얼마나 깊게'],
+'e|DX 추진 범위|속도(1년 내 성과), 폭(전 공장), 깊이(설비 제어까지)를 한꺼번에 노리다 무리라는 걸 알고 폭을 2개 공장으로 줄였다.');
+
+F('오감','촉각·미각·후각·청각·시각','lens','KR','o','제품의 감성 품질을 설계할 때',
+['촉각|질감, 압력, 온도, 진동','미각|맛','후각|향, 냄새','청각|소리, 말, 소음, 음악','시각|밝기, 색, 움직임, 상징'],
+'r|자동차 문 닫히는 소리|완성차 업체들은 문 닫히는 소리를 묵직하게 들리도록 일부러 조율한다. 청각이 고급스러움을 판단하는 중요한 감각이기 때문이다.',
+'원본 「오감」의 다섯 행을 하나로 묶었다.');
+
+F('인간 욕구 5단계','몸·정서·사회·심리·영적 편안함','lens','KH','o','고객·직원의 욕구를 이해할 때',
+['신체적 편안함|음식, 옷, 주거, 건강','정서적 편안함|안전, 안정, 사랑','사회적 편안함|우정, 소속','심리적 편안함|자존감, 인정, 자기결정','영적 편안함|신념, 삶의 의미'],
+'e|현장 직원 만족도 개선|휴게실 냉난방(신체), 안전 보장(정서), 동호회(사회), 개선 제안 포상(심리), 회사 사회공헌 참여(영적)로 과제를 나눴다.',
+'매슬로의 욕구 단계와 비슷한 구성이다. 원본의 다섯 행을 하나로 묶었다.');
+
+F('지·정·의','생각은 사고·감정·의지로 움직인다','lens','O','o','설득이나 교육에서 머리·가슴·행동을 함께 다룰 때',
+['사고 (知)|이해한다','감정 (情)|느낀다','의지 (意)|행동하려 한다'],
+'e|안전 교육|사고 데이터(사고), 피해자 영상(감정), 개인 실천 서약(의지)을 함께 넣었다.');
+
+F('프로이트 성격 구조','원초아·자아·초자아','lens','OH','o','사람 행동의 동기를 이해할 때',
+['원초아 id|원초적 본능 (삶의 본능 리비도, 죽음의 본능 타나토스)','자아 ego|현실을 따지는 중재자','초자아 superego|도덕과 규범의 재판관'],
+'e|안전 수칙 위반 이해|빨리 끝내고 싶은 마음(원초아)과 수칙(초자아) 사이에서 자아가 위반을 택하지 않도록, 수칙을 지키는 것이 오히려 빠른 작업 구조를 만들었다.');
+
+F('DIKW','데이터 → 정보 → 지식 → 지혜','lens','DS','o','데이터 활용 수준을 설명할 때',
+['Data 데이터|가공 전 사실 (온도 1,520℃)','Information 정보|맥락이 붙은 데이터 (평소보다 20℃ 높다)','Knowledge 지식|원리와 패턴 (온도가 높으면 노벽 손상)','Wisdom 지혜|판단과 행동 (지금 송풍량을 줄인다)'],
+'e|조업 데이터 활용 교육|센서 숫자(데이터)를 판단(지혜)까지 끌어올리는 과정을 고로 온도 사례로 설명했다.',
+'원본에서는 「U턴의 시대」로 적혀 있다.');
+
+F('혁신 스타일 비유','국가별 혁신 방식을 동물에 빗댄다','lens','S','o','혁신 방식을 비유로 설명할 때',
+['파충류 (서양)|원천 기술을 만들어 낸다','모방 (일본)|들여와 개선·정교화한다','토끼 (한국)|빠르게 쫓아가 뛰어넘는다','캥거루 (중국)|단계를 건너뛴다 (유선 없이 무선)'],
+'r|중국의 단계 건너뛰기|중국은 유선 전화망과 카드 결제가 충분히 깔리기 전에 휴대전화와 모바일 결제로 건너뛰었다. 「캥거루형」 도약의 예로 자주 든다.',
+'원본 「곤충과 동서양」의 비유다. 일반화된 표현이니 보고서에는 조심해서 쓴다.');
+</script>
+<script>
+const PURPOSES = [
+  { id: 'analyze', st: 0, n: '상황 분석', q: '지금 어디에 서 있나', why: '시장, 경쟁, 내부 역량, 거시 환경을 빠짐없이 훑어 기획의 출발점을 잡습니다.' },
+  { id: 'strategy', st: 1, n: '전략·방향 수립', q: '어디로 갈 것인가', why: '성장 방향, 경쟁 방식, 사업 포트폴리오, 지속가능경영의 큰 줄기를 정합니다.' },
+  { id: 'biz', st: 2, n: '신사업·제품 개발', q: '무엇을 새로 만들까', why: '사업모델 설계, 신제품·신기술 검증, 시스템 설계에 쓰는 틀입니다.' },
+  { id: 'solve', st: 2, n: '문제 해결·개선', q: '무엇이 문제이고 어떻게 고칠까', why: '문제를 판단하고, 근본 원인을 찾고, 개선을 표준으로 굳히는 틀입니다.' },
+  { id: 'factory', st: 2, n: '현장 혁신 (TPM·린)', q: '현장 로스를 어떻게 없앨까', why: '설비, 낭비, 로스, 안전, 표준을 다루는 제조 현장의 틀입니다.' },
+  { id: 'dx', st: 2, n: '디지털·AI 전환', q: '데이터와 AI로 무엇을 바꿀까', why: 'DX·AX의 단계, 제조 AI 유형, 디지털 인프라를 정리하는 틀입니다.' },
+  { id: 'market', st: 2, n: '마케팅·고객', q: '고객에게 어떻게 팔까', why: '마케팅 믹스, 구매 여정, 고객 효용과 품질 요소를 다루는 틀입니다.' },
+  { id: 'people', st: 2, n: '인재 육성 (HRD)', q: '사람을 어떻게 키울까', why: '역량 정의, 교육 체계, 과정 개발, 학습 목표 수준을 다루는 틀입니다.' },
+  { id: 'org', st: 2, n: '조직·변화·리더십', q: '사람과 조직을 어떻게 움직일까', why: '변화관리, 동기와 몰입, 신뢰, 일하는 방식을 다루는 틀입니다.' },
+  { id: 'roadmap', st: 3, n: '단계·로드맵·실행계획', q: '어떤 순서로, 누가 할까', why: '추진 단계의 이름, 시간 구분, 실행 계획과 역할 분담에 쓰는 틀입니다.' },
+  { id: 'story', st: 3, n: '보고·설득 스토리', q: '어떻게 전달할까', why: '핵심 문장, 보고서 전개, 제안서·발표의 설득 구조를 짜는 틀입니다.' },
+  { id: 'eval', st: 3, n: '평가·성과관리', q: '잘됐는지 무엇으로 볼까', why: '목표 설정, 성과 지표, 교육·과제 평가 기준을 다루는 틀입니다.' },
+  { id: 'idea', st: 4, n: '아이디어 발상', q: '생각을 어떻게 넓힐까', why: '발상 기법, 창의성의 조건, 관점을 바꾸는 틀입니다.' },
+  { id: 'ask', st: 4, n: '질문·코칭', q: '무엇을 어떻게 물을까', why: '코칭, 인터뷰, 회의를 질문으로 이끄는 틀입니다.' },
+  { id: 'lens', st: 4, n: '사고의 렌즈', q: '대상과 사람을 어떻게 볼까', why: '대상을 빠짐없이 묘사하고 사람의 감각·욕구·마음을 이해하는 틀입니다.' }
+];
+const STAGES = [['진단', '현황 보기'], ['방향', '목표 정하기'], ['실행 내용', '무엇을 할지'], ['계획·전달', '어떻게 굴릴지'], ['생각 도구', '언제나']];
+const FIELDS = { S: '전략·기획', B: '사업개발', M: '생산·설비', Q: '품질·안전', R: '연구개발', K: '마케팅·영업', H: '인사·교육', O: '조직·리더십', D: '디지털·AI', E: '에너지·환경' };
+const QUICK = ['SWOT', '원인', '로드맵', '낭비', '교육', 'AI', '보고서', '고객', '변화'];
+const PMAP = Object.fromEntries(PURPOSES.map(p => [p.id, p]));
+
+const state = { p: 'analyze', field: '', src: '', q: '', open: '', cases: new Set() };
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function hl(text) {
+  const t = esc(text);
+  if (!state.q) return t;
+  const q = esc(state.q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return t.replace(new RegExp(q, 'gi'), m => '<mark>' + m + '</mark>');
+}
+const hay = f => [f.n, f.s, f.w, f.ct, f.cb, f.note, ...f.st.flat(), ...f.f.map(k => FIELDS[k]), PMAP[f.p].n].join(' ').toLowerCase();
+FW.forEach(f => { f.h = hay(f); });
+
+function renderStages() {
+  const counts = {};
+  FW.forEach(f => { counts[f.p] = (counts[f.p] || 0) + 1; });
+  $('#stages').innerHTML = STAGES.map((s, i) => {
+    const ps = PURPOSES.filter(p => p.st === i);
+    return '<div class="stage"><div class="stage-label">' + (i + 1) + '. ' + s[0] + '<span>' + s[1] + '</span></div><div class="kinds">' +
+      ps.map(p => '<button type="button" class="kind" data-p="' + p.id + '" aria-pressed="' + (state.p === p.id && !state.q) + '"><b>' + p.n + '<em>' + counts[p.id] + '</em></b><span>' + p.q + '</span></button>').join('') +
+      '</div></div>';
+  }).join('');
+}
+
+function renderFilters() {
+  const chips = [['', '전체 분야']].concat(Object.entries(FIELDS));
+  $('#filters').innerHTML = '<span class="lbl">업무 분야</span>' +
+    chips.map(([k, v]) => '<button type="button" class="chipf" data-field="' + k + '" aria-pressed="' + (state.field === k) + '">' + v + '</button>').join('') +
+    '<span class="gap"></span><span class="lbl">구분</span>' +
+    [['', '모두'], ['o', '원본'], ['a', '보완']].map(([k, v]) => '<button type="button" class="chipf" data-src="' + k + '" aria-pressed="' + (state.src === k) + '">' + v + '</button>').join('');
+}
+
+function current() {
+  const q = state.q.toLowerCase();
+  return FW.filter(f => (q ? f.h.includes(q) : f.p === state.p) &&
+    (!state.field || f.f.includes(state.field)) && (!state.src || f.o === state.src));
+}
+
+function card(f) {
+  const open = state.open === f.id;
+  const showCase = state.cases.has(f.id);
+  let h = '<article class="fw' + (open ? ' open' : '') + '" id="' + f.id + '">' +
+    '<button type="button" class="fw-head" data-open="' + f.id + '" aria-expanded="' + open + '">' +
+    '<span class="more">' + (open ? '접기 ▲' : '펼치기 ▼') + '</span>' +
+    '<span class="fw-title"><b>' + hl(f.n) + '</b>' +
+    (f.o === 'a' ? '<span class="badge add">보완</span>' : '<span class="badge">원본</span>') +
+    (state.q ? '<span class="badge pur">' + PMAP[f.p].n + '</span>' : '') + '</span>' +
+    '<span class="fw-sub">' + hl(f.s) + '</span>' +
+    (open ? '' : '<span class="flow">' + f.st.map(x => '<span>' + hl(x[0]) + '</span>').join('') + '</span>') +
+    '</button>';
+  if (open) {
+    h += '<div class="fw-body"><p class="when"><b>언제 쓰나</b>' + hl(f.w) + '</p><ol class="steps">' +
+      f.st.map((x, i) => '<li><i>' + (i + 1) + '</i><b>' + hl(x[0]) + '</b><span>' + hl(x[1]) + '</span></li>').join('') + '</ol>' +
+      (f.note ? '<p class="note">' + hl(f.note) + '</p>' : '') +
+      '<div class="actions"><button type="button" class="btn' + (showCase ? ' ghost' : '') + '" data-case="' + f.id + '" aria-expanded="' + showCase + '">🏭 ' + (showCase ? '사례 닫기' : '제조업 사례 보기') + '</button>' +
+      '<span class="badge pur">' + f.f.map(k => FIELDS[k]).join(' · ') + '</span></div>' +
+      (showCase ? '<div class="case"><span class="kind-tag' + (f.ck === 'e' ? ' ex' : '') + '">' + (f.ck === 'r' ? '공개 사례' : '적용 예시') + '</span><h4>' + hl(f.ct) + '</h4><p>' + hl(f.cb) + '</p>' +
+        (f.ck === 'e' ? '<small>틀의 쓰임을 보여 주려고 만든 예시입니다. 실제 회사 사례가 아닙니다.</small>' : '<small>공개된 자료로 정리했습니다. 인용할 때는 원 출처를 확인하세요.</small>') + '</div>' : '') +
+      '</div>';
+  }
+  return h + '</article>';
+}
+
+function render() {
+  renderStages();
+  renderFilters();
+  const items = current();
+  const nA = items.filter(f => f.o === 'a').length;
+  const cnt = items.length + '개 · 원본 ' + (items.length - nA) + ' · 보완 ' + nA;
+  if (state.q) {
+    $('#catHead').innerHTML = '<b>「' + esc(state.q) + '」 찾은 결과</b><span class="cnt">' + cnt + '</span>';
+  } else {
+    const p = PMAP[state.p];
+    $('#catHead').innerHTML = '<b>' + p.n + '</b> · ' + p.q + '<span class="why">' + p.why + '</span><span class="cnt">' + cnt + (state.field ? ' · ' + FIELDS[state.field] : '') + '</span>';
+  }
+  $('#list').innerHTML = items.length ? items.map(card).join('') : '<div class="empty">맞는 틀이 없습니다. 분야나 구분을 「전체」로 바꿔 보세요.</div>';
+}
+
+function setHash() {
+  const h = state.open ? state.open : (state.q ? '' : state.p);
+  history.replaceState(null, '', h ? '#' + h : location.pathname);
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  if (t.dataset.p) { state.p = t.dataset.p; state.q = ''; $('#q').value = ''; state.open = ''; render(); setHash(); return; }
+  if (t.dataset.field !== undefined) { state.field = t.dataset.field; render(); return; }
+  if (t.dataset.src !== undefined) { state.src = t.dataset.src; render(); return; }
+  if (t.dataset.open) {
+    state.open = state.open === t.dataset.open ? '' : t.dataset.open;
+    render(); setHash();
+    if (state.open) document.getElementById(state.open).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return;
+  }
+  if (t.dataset.case) {
+    const id = t.dataset.case;
+    state.cases.has(id) ? state.cases.delete(id) : state.cases.add(id);
+    render();
+    document.querySelector('[data-case="' + id + '"]').focus();
+    return;
+  }
+  if (t.dataset.quick) { $('#q').value = t.dataset.quick; onSearch(); }
+});
+
+function onSearch() {
+  state.q = $('#q').value.trim();
+  state.open = '';
+  render(); setHash();
+}
+$('#q').addEventListener('input', onSearch);
+$('#quick').insertAdjacentHTML('beforeend', QUICK.map(w => '<button type="button" data-quick="' + w + '">' + w + '</button>').join(''));
+
+const guide = $('#guide');
+$('#openGuide').addEventListener('click', () => guide.showModal());
+$('#closeGuide').addEventListener('click', () => guide.close());
+guide.addEventListener('click', e => { if (e.target === guide) guide.close(); });
+
+(function init() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (PMAP[h]) state.p = h;
+  else { const f = FW.find(x => x.id === h); if (f) { state.p = f.p; state.open = f.id; } }
+  render();
+  if (state.open) document.getElementById(state.open).scrollIntoView({ block: 'start' });
+})();
+</script>
+</body>
+</html>
