@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI리터러시 자료 모음</title>
+<link rel="icon" href="data:," />
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7; --card: #ffffff; --line: #e2e6ec;
+  --ink: #16191e; --ink-2: #555d6b; --ink-3: #9098a6;
+  --accent: #1f4f8a; --accent-soft: #eaf1fa;
+  --ax: #1d6b4f; --ax-soft: #e7f4ee;
+  --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; display: flex; flex-direction: column; }
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+/* 제목줄 */
+.titlebar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--accent); color: #fff; }
+.titlebar h1 { margin: 0; font-size: 16px; letter-spacing: -.01em; }
+.titlebar span { font-size: 13px; opacity: .8; }
+
+/* 리본: 탭 */
+.ribbon { background: var(--card); border-bottom: 1px solid var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.tabs { display: flex; gap: 2px; padding: 0 12px; background: #f8f9fb; border-bottom: 1px solid var(--line); }
+.tab { border: 0; background: transparent; padding: 9px 16px 8px; cursor: pointer; font-weight: 600; font-size: 14.5px; color: var(--ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--grp); border-bottom-color: var(--grp); background: var(--card); }
+.tab small { font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 리본: 버튼 */
+.panel { display: flex; align-items: stretch; gap: 6px; padding: 8px 12px 4px; overflow-x: auto; }
+.panel[hidden] { display: none; }
+.rbtn { flex: none; width: 128px; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1.5px solid transparent; background: transparent; border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center; }
+.rbtn:hover { background: #f4f6f9; border-color: var(--line); }
+.rbtn[aria-pressed="true"] { background: var(--grp-soft); border-color: var(--grp); }
+.rbtn .ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: var(--grp-soft); color: var(--grp); font-size: 17px; font-weight: 700; }
+.rbtn[aria-pressed="true"] .ic { background: var(--grp); color: #fff; }
+.rbtn b { font-size: 13.5px; line-height: 1.3; word-break: keep-all; }
+.rbtn i { font-style: normal; font-size: 11.5px; color: var(--ink-3); line-height: 1.3; word-break: keep-all; }
+.group-label { text-align: center; font-size: 11.5px; color: var(--ink-3); padding: 2px 0 6px; border-top: 1px solid var(--line); margin: 0 12px; }
+.g-lit { --grp: var(--accent); --grp-soft: var(--accent-soft); }
+.g-ax { --grp: var(--ax); --grp-soft: var(--ax-soft); }
+
+/* 내용 영역 */
+.infobar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 16px; font-size: 13.5px; color: var(--ink-2); background: var(--bg); }
+.infobar strong { color: var(--ink); font-size: 14.5px; }
+.infobar .desc { flex: 1; min-width: 200px; word-break: keep-all; }
+.open { flex: none; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); border-radius: 999px; padding: 4px 12px; font-weight: 600; font-size: 13.5px; text-decoration: none; white-space: nowrap; }
+.open:hover { background: var(--accent-soft); }
+.stage { flex: 1; min-height: 420px; position: relative; margin: 0 12px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); background: rgba(22,25,30,.86); color: #fff; font-size: 13px; padding: 7px 14px; border-radius: 999px; pointer-events: none; transition: opacity .4s; white-space: nowrap; }
+.hint.off { opacity: 0; }
+
+@media (max-width: 600px) {
+  .titlebar span, .infobar .desc { display: none; }
+  .rbtn { width: 104px; }
+  .rbtn i { display: none; }
+  .stage { margin: 0 6px 6px; }
+  .hint { white-space: normal; width: 88%; text-align: center; border-radius: 12px; }
+}
+</style>
+</head>
+<body>
+
+<header class="titlebar">
+  <h1>AI리터러시 자료 모음</h1>
+  <span>유익상 교수 · AI리터러시연구원</span>
+</header>
+
+<nav class="ribbon" aria-label="자료 메뉴">
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="panels"></div>
+</nav>
+
+<div class="infobar">
+  <strong id="curTitle"></strong>
+  <span class="desc" id="curDesc"></span>
+  <a class="open" id="curOpen" href="#" target="_blank" rel="noopener">새 창으로 열기 ↗</a>
+</div>
+
+<main class="stage">
+  <iframe id="frame" title="선택한 자료" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <div class="hint off" id="hint">화면이 비어 있으면 위의 「새 창으로 열기」를 눌러 주세요.</div>
+</main>
+
+<script>
+const GH = "https://iksangyoo-sys.github.io";
+const GROUPS = [
+  {
+    id: "lit", cls: "g-lit", name: "AI 리터러시", note: "보고서 작성 리터러시 키우기",
+    items: [
+      { id: "profile",   ic: "人", title: "교수 소개",            sub: "AI리터러시연구원 유익상", url: "../", desc: "AI리터러시연구원 유익상 교수 소개입니다." },
+      { id: "skill",     ic: "報", title: "보고서 작성 스킬",      sub: "한국 기업식",            url: GH + "/koreport-skill/", desc: "한국 기업식 보고서 작성 스킬입니다." },
+      { id: "agent",     ic: "AI", title: "프롬프트 개발 LLM",     sub: "보고서용 프롬프트 생성",   url: "https://report-prompt-agent.onrender.com/", external: true, desc: "보고서 작성에 쓸 프롬프트를 만들어 주는 LLM입니다. 처음 열 때 서버가 깨어나느라 시간이 조금 걸릴 수 있습니다." },
+      { id: "prompts",   ic: "82", title: "프롬프트 템플릿",       sub: "보고서 작성 82개",        url: GH + "/yes_prom/", desc: "보고서 작성 프롬프트 템플릿 82개입니다." },
+      { id: "framework", ic: "企", title: "기획 프레임워크",       sub: "목적·분야별 지도",        url: "../framework/", desc: "보고서 기획 프레임워크를 목적과 업무 분야로 찾아봅니다." },
+      { id: "hanja",     ic: "漢", title: "한자 사용 가이드",      sub: "보고서 한자 사용법",      url: "../hanja/", desc: "보고서에서 한자를 쓰는 경우와 사례를 찾아보고 복사합니다." },
+      { id: "sentence",  ic: "文", title: "보고서 문장 공식",      sub: "문장 패턴",              url: "../report/", desc: "보고서 문장 공식입니다." }
+    ]
+  },
+  {
+    id: "ax", cls: "g-ax", name: "AX 업무자동화", note: "업무자동화",
+    items: [
+      { id: "ribbon",  ic: "≡",  title: "엑셀 리본메뉴 만들기",  sub: "나만의 리본메뉴",        url: GH + "/RibBuilder/", desc: "나만의 엑셀 리본메뉴를 만듭니다." },
+      { id: "gen",     ic: "▦", title: "자동 대시보드",         sub: "데이터에 따라 변함",      url: "https://gen.yesana.workers.dev/", external: true, desc: "데이터에 따라 자동으로 바뀌는 대시보드입니다." },
+      { id: "ajin",    ic: "▤", title: "업무 대시보드",         sub: "특정 업무용",            url: "https://ajin.yesana.workers.dev/", external: true, desc: "특정 업무용 대시보드입니다." }
+    ]
+  }
+];
+
+const $ = (id) => document.getElementById(id);
+const tabs = $("tabs"), panels = $("panels"), frame = $("frame"), hint = $("hint");
+const byId = {};
+let hintTimer;
+
+GROUPS.forEach((g) => {
+  const tab = document.createElement("button");
+  tab.type = "button"; tab.className = "tab " + g.cls; tab.setAttribute("role", "tab");
+  tab.id = "tab-" + g.id; tab.setAttribute("aria-controls", "panel-" + g.id);
+  tab.innerHTML = g.name + "<small>" + g.items.length + "</small>";
+  tab.addEventListener("click", () => showGroup(g.id));
+  tabs.appendChild(tab);
+
+  const wrap = document.createElement("div");
+  wrap.id = "panel-" + g.id; wrap.className = g.cls; wrap.setAttribute("role", "tabpanel");
+  wrap.setAttribute("aria-labelledby", tab.id);
+  const row = document.createElement("div");
+  row.className = "panel";
+  g.items.forEach((it) => {
+    it.group = g.id;
+    byId[it.id] = it;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "rbtn"; b.dataset.id = it.id;
+    b.innerHTML = '<span class="ic">' + it.ic + "</span><b>" + it.title + "</b><i>" + it.sub + "</i>";
+    b.addEventListener("click", () => { location.hash = it.id; });
+    row.appendChild(b);
+  });
+  const label = document.createElement("div");
+  label.className = "group-label"; label.textContent = g.note;
+  wrap.append(row, label);
+  panels.appendChild(wrap);
+});
+
+function showGroup(gid) {
+  GROUPS.forEach((g) => {
+    $("tab-" + g.id).setAttribute("aria-selected", g.id === gid);
+    $("panel-" + g.id).hidden = g.id !== gid;
+  });
+}
+
+function show(id) {
+  const it = byId[id] || GROUPS[0].items[0];
+  showGroup(it.group);
+  document.querySelectorAll(".rbtn").forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === it.id));
+  $("curTitle").textContent = it.title;
+  $("curDesc").textContent = it.desc;
+  $("curOpen").href = it.url;
+  if (frame.dataset.id !== it.id) {
+    frame.dataset.id = it.id;
+    frame.src = it.url;
+  }
+  document.title = it.title + " · AI리터러시 자료 모음";
+  clearTimeout(hintTimer);
+  hint.classList.toggle("off", !it.external);
+  if (it.external) hintTimer = setTimeout(() => hint.classList.add("off"), 6000);
+}
+
+window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+show(location.hash.slice(1));
+</script>
+</body>
+</html>
