@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>보고서 한자 사용법</title>
+<link rel="icon" href="data:," />
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7; --card: #ffffff; --line: #e2e6ec;
+  --ink: #16191e; --ink-2: #555d6b; --ink-3: #9098a6;
+  --accent: #1f4f8a; --accent-soft: #eaf1fa; --blank: #fff6dc; --blank-line: #e5bf55;
+  --warn: #a8431a; --warn-soft: #fdf1ea;
+  --font: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+  --hanja: "Batang", "바탕", "AppleMyungjo", "Noto Serif KR", "Noto Serif CJK KR", serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.6; }
+button, input { font: inherit; color: inherit; }
+.page { max-width: 760px; margin: 0 auto; padding: 32px 20px 56px; }
+h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+.lead { margin: 4px 0 0; color: var(--ink-2); word-break: keep-all; }
+.hj { font-family: var(--hanja); }
+
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+.guide-btn { flex: none; border: 1.5px solid var(--accent); background: #fff; color: var(--accent); border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+.guide-btn:hover { background: var(--accent-soft); }
+
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
+.step h2 { margin: 0 0 14px; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+.num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; flex: none; }
+.sub { margin: -8px 0 14px; color: var(--ink-3); font-size: 14px; word-break: keep-all; }
+
+/* 원칙 */
+.rule { font-size: 18px; font-weight: 700; margin: 0; word-break: keep-all; }
+.rule em { font-style: normal; color: var(--accent); }
+.checks { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.checks li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: #f8f9fb; font-size: 15px; word-break: keep-all; }
+.checks li b { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 13px; margin-top: 1px; }
+.checks li.no b { background: var(--warn); }
+.checks li.no { background: var(--warn-soft); }
+
+/* 찾기 */
+.find-row input[type=search] { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 17px; }
+.find-row input[type=search]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; font-size: 13px; color: var(--ink-3); }
+.quick button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+.quick button:hover { border-color: var(--accent); color: var(--accent); }
+.find-note { font-size: 13.5px; color: var(--ink-3); margin: 12px 0 0; }
+#findResults:empty { display: none; }
+#findResults { margin-top: 12px; display: grid; gap: 8px; }
+mark { background: var(--blank); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+/* 쓰임 고르기 */
+.kinds { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.kind { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+.kind:hover { border-color: var(--accent); }
+.kind b { display: block; font-size: 15.5px; }
+.kind span { display: block; font-size: 12.5px; color: var(--ink-3); }
+.kind i { font-style: normal; font-family: var(--hanja); color: var(--accent); margin-right: 4px; }
+.kind[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.kind[aria-pressed="true"] span { color: var(--accent); }
+
+.cat-head { margin: 16px 0 12px; padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; word-break: keep-all; }
+.cat-head b { color: var(--accent); }
+.cat-head .why { display: block; margin-top: 2px; color: var(--ink-2); font-size: 14px; }
+.cat-head .caution { display: block; margin-top: 6px; color: var(--warn); font-size: 13.5px; font-weight: 600; }
+
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.item { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff; display: flex; flex-direction: column; gap: 4px; }
+.item .row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.item .ko { color: var(--ink-2); font-size: 14.5px; }
+.item .arrow { color: var(--ink-3); font-size: 13px; }
+.hjbtn { border: 1.5px solid transparent; background: transparent; padding: 0 6px; margin: 0 -6px; border-radius: 6px; cursor: pointer; font-family: var(--hanja); font-size: 21px; font-weight: 700; color: var(--accent); line-height: 1.4; }
+.hjbtn:hover, .hjbtn:focus-visible { border-color: var(--accent); background: var(--accent-soft); outline: none; }
+.item .rd { font-size: 12.5px; color: var(--ink-3); }
+.item .ex { font-size: 13.5px; color: var(--ink-2); margin-top: 2px; padding-top: 6px; border-top: 1px dashed var(--line); word-break: keep-all; }
+.item .ex s { color: var(--ink-3); text-decoration-color: #c5cad3; }
+.item .ex strong { color: var(--ink); }
+.item .note { font-size: 12.5px; color: var(--warn); }
+.item .tag { align-self: flex-start; font-size: 11.5px; color: var(--accent); border: 1px solid #c9d8ec; border-radius: 999px; padding: 0 8px; }
+.idioms { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.idioms .hjbtn { font-family: var(--font); font-size: 17px; }
+
+/* 한자 빠른 복사 */
+.palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 6px 0 4px; cursor: pointer; text-align: center; line-height: 1.2; }
+.chip:hover, .chip:focus-visible { border-color: var(--accent); background: var(--accent-soft); outline: none; }
+.chip .c { display: block; font-family: var(--hanja); font-size: 22px; font-weight: 700; color: var(--accent); }
+.chip .r { display: block; font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+
+/* AI */
+.btn { border: 1.5px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; padding: 6px 16px; cursor: pointer; font-weight: 600; font-size: 15px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.ai p { margin: 0 0 12px; color: var(--ink-2); font-size: 15px; word-break: keep-all; }
+details { margin-top: 12px; }
+summary { cursor: pointer; color: var(--accent); font-size: 14.5px; font-weight: 600; }
+pre.prompt { margin: 10px 0 0; background: #f5f7fa; border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-size: 13px; white-space: pre-wrap; word-break: keep-all; max-height: 320px; overflow: auto; }
+
+footer { margin-top: 22px; font-size: 13px; color: var(--ink-3); text-align: center; word-break: keep-all; }
+footer a { color: var(--accent); }
+
+/* 사용안내 창 */
+dialog.guide { width: min(820px, calc(100% - 24px)); max-height: calc(100% - 24px); padding: 0; border: 0; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.25); color: var(--ink); }
+dialog.guide::backdrop { background: rgba(15, 20, 30, .45); }
+.guide-head { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: var(--accent); color: #fff; z-index: 1; }
+.guide-head h2 { margin: 0; font-size: 18px; }
+.guide-close { border: 1.5px solid rgba(255,255,255,.6); background: transparent; color: #fff; border-radius: 8px; padding: 4px 12px; cursor: pointer; font-weight: 600; }
+.guide-close:hover { background: rgba(255,255,255,.12); }
+.guide-body { padding: 8px 24px 28px; font-size: 15px; line-height: 1.7; word-break: keep-all; }
+.guide-body h3 { margin: 26px 0 8px; font-size: 17px; color: var(--accent); padding-left: 10px; border-left: 4px solid var(--accent); }
+.guide-body p { margin: 8px 0; }
+.guide-body ul, .guide-body ol { margin: 8px 0; padding-left: 22px; }
+.guide-body li { margin: 4px 0; }
+.guide-body code { background: #f1f3f6; border-radius: 4px; padding: 1px 5px; font-size: 13.5px; }
+.guide-body .table-wrap { overflow-x: auto; margin: 10px 0; border: 1px solid var(--line); border-radius: 8px; }
+.guide-body table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.guide-body th, .guide-body td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.guide-body th { background: #f5f7fa; color: var(--ink-2); white-space: nowrap; }
+.guide-body tr:last-child td { border-bottom: 0; }
+
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: #16191e; color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 14.5px; opacity: 0; pointer-events: none; transition: .2s; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 560px) {
+  .page { padding: 20px 16px 48px; }
+  .top { flex-direction: column; }
+  .rule { font-size: 16.5px; }
+  .items { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <div>
+      <h1>보고서 한자 사용법</h1>
+      <p class="lead">언제, 어떤 한자를, 어떻게 쓰는지 사례로 찾고 눌러서 복사합니다.</p>
+    </div>
+    <button type="button" class="guide-btn" id="openGuide" aria-haspopup="dialog">📘 사용안내</button>
+  </div>
+
+  <section class="step">
+    <h2><span class="num">!</span>먼저 기억할 원칙</h2>
+    <p class="rule"><em>한글이 원칙</em>입니다. 한자는 문장을 줄여야 하거나 임팩트를 주고 싶을 때처럼 <em>꼭 필요할 때만</em> 씁니다.</p>
+    <ul class="checks">
+      <li><b>1</b><span>한자를 쓰기 전에 <strong>꼭 필요한가</strong> 묻습니다. 아래 다섯 가지 쓰임 가운데 하나에 해당할 때만 씁니다.</span></li>
+      <li class="no"><b>2</b><span>한자를 <strong>남발하면</strong> 복잡해 보이고 가독성이 떨어집니다. 키워드 강조는 보고서 하나에 1~2회만 씁니다.</span></li>
+      <li class="no"><b>3</b><span>특히 <strong>독자가 한자를 싫어하면 쓰지 않습니다.</strong></span></li>
+    </ul>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">1</span>바꾸고 싶은 말 찾기</h2>
+    <div class="find-row">
+      <input type="search" id="findQ" placeholder="예: 높다, 제철소, 반드시, 상반기, 高" autocomplete="off" aria-label="찾을 말" />
+    </div>
+    <div class="quick" id="quick"><span>자주 찾는 말</span></div>
+    <div id="findResults" aria-live="polite"></div>
+    <p class="find-note" id="findNote">한글이나 한자 어느 쪽으로 찾아도 됩니다. 파란 한자를 누르면 복사됩니다.</p>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">2</span>쓰임별로 보기</h2>
+    <p class="sub">한자는 이 다섯 가지 경우에만 씁니다. 쓰임을 고르면 사례가 나옵니다.</p>
+    <div id="kinds" class="kinds"></div>
+    <div id="catHead" class="cat-head"></div>
+    <div id="items" class="items"></div>
+  </section>
+
+  <section class="step">
+    <h2><span class="num">3</span>한자 빠른 복사</h2>
+    <p class="sub">한자 변환이 번거로울 때 여기서 눌러 복사하세요. 이 자료에 나오는 한자만 모았습니다.</p>
+    <div id="palette" class="palette"></div>
+  </section>
+
+  <section class="step ai">
+    <h2><span class="num">4</span>AI에게 이 규칙 알려 주기</h2>
+    <p>생성형 AI는 보고서에서 한자를 언제 써야 하는지 잘 모릅니다. 아래 버튼으로 이 자료의 규칙과 사례 전체를 복사해 AI 대화창에 먼저 붙여 넣고, 고칠 보고서 문장을 이어 붙이세요.</p>
+    <button type="button" class="btn" id="copyPrompt">규칙 전체 복사</button>
+    <details>
+      <summary>복사되는 내용 미리 보기</summary>
+      <pre class="prompt" id="prompt"></pre>
+    </details>
+  </section>
+
+  <footer>함께 보기: <a href="../report/">보고서 문장 공식</a></footer>
+</div>
+
+<dialog class="guide" id="guide" aria-labelledby="guideTitle">
+  <div class="guide-head">
+    <h2 id="guideTitle">보고서 한자 사용법 사용안내</h2>
+    <button type="button" class="guide-close" id="closeGuide">닫기</button>
+  </div>
+  <div class="guide-body">
+<h3>이 자료는 무엇인가</h3>
+<p>업무 보고서를 쓰다 보면 한자를 어느 경우에 어떻게 써야 할지 헷갈립니다. 이 자료는 보고서에서 한자를 쓰는 다섯 가지 경우와 실제 사례 136개를 모아, 찾아보고 바로 복사할 수 있게 만든 것입니다.</p>
+<h3>사용법</h3>
+<ol>
+<li><strong>바꾸고 싶은 말 찾기:</strong> 보고서에 쓰려는 말을 입력합니다. 예: <code>높다</code>를 넣으면 <span class="hj">高</span>를 어디에, 어떤 모양으로 쓰는지 사례가 나옵니다. <code>높은</code>, <code>많이</code>처럼 활용한 말을 넣어도 찾습니다.</li>
+<li><strong>쓰임별로 보기:</strong> 다섯 가지 쓰임 가운데 하나를 누르면 그 쓰임의 규칙과 사례가 한꺼번에 나옵니다.</li>
+<li><strong>복사:</strong> 파란 글자를 누르면 복사됩니다. 보고서에 붙여 넣으세요.</li>
+</ol>
+<h3>다섯 가지 쓰임 한눈에 보기</h3>
+<div class="table-wrap"><table><thead><tr><th>쓰임</th><th>이럴 때 씁니다</th><th>예</th></tr></thead><tbody><tr><td>문장 줄이기</td><td>자주 나오는 긴 말을 줄여 문장 길이를 줄일 때</td><td>포항제철소 현황 → 포항所 현황</td></tr><tr><td>문장 끝맺기</td><td>명사나 동사로 마치는 다른 문장과 끝맺음 모양을 통일할 때</td><td>만족도가 높은 편이다 → 만족도 高</td></tr><tr><td>뜻 분명히 하기</td><td>한글로만 쓰면 뜻이 헷갈릴 때</td><td>미충족시 → 未 충족 時</td></tr><tr><td>키워드 강조</td><td>핵심 키워드에 힘을 줄 때 (보고서당 1~2회)</td><td>先조치 後보고</td></tr><tr><td>사자성어</td><td>풀어 쓴 표현을 넉 자로 압축할 때</td><td>나쁜 본보기 → 반면교사</td></tr></tbody></table></div>
+<h3>쓸 때 주의</h3>
+<ul>
+<li>한글 사용이 원칙입니다. 한자는 문장을 줄여야 하거나 임팩트를 주고 싶을 때처럼 꼭 필요할 때만 씁니다.</li>
+<li>한자를 너무 남발하면 복잡해 보이고 가독성이 떨어집니다.</li>
+<li>독자가 한자를 싫어하면 쓰지 않습니다.</li>
+<li>키워드 강조용 한자는 보고서 하나에 1~2회만 씁니다.</li>
+<li>문장 끝을 한자로 맺는 것은 명사나 동사로 마치는 다른 문장과 끝맺음 모양을 맞추려는 것입니다.</li>
+</ul>
+<h3>한자를 직접 입력하려면</h3>
+<ul>
+<li><strong>Windows:</strong> 한글로 <code>고</code>를 입력한 뒤 키보드의 <strong>한자</strong> 키(노트북은 오른쪽 Ctrl인 경우가 많음)를 누르고 <span class="hj">高</span>를 고릅니다.</li>
+<li><strong>Mac:</strong> 한글로 입력한 뒤 <strong>Option + Enter</strong>를 누르고 고릅니다.</li>
+<li>번거로우면 이 화면의 <strong>한자 빠른 복사</strong>에서 눌러 복사하는 편이 빠릅니다.</li>
+</ul>
+<h3>AI와 함께 쓰기</h3>
+<p>맨 아래 <strong>규칙 전체 복사</strong>를 누르면 이 자료의 원칙과 사례가 AI용 지시문으로 복사됩니다. ChatGPT, Claude 등 대화창에 붙여 넣고, 그 아래에 고칠 보고서 문장을 붙이면 됩니다. AI가 고친 결과도 마지막에는 사람이 원칙에 맞는지 확인합니다.</p>
+  </div>
+</dialog>
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+const DATA = {"head":{"rule":"■ 한글 사용을 원칙으로 하되, 문장을 줄여야 하거나, 임팩트를 주고 싶을 때 등 꼭 필요한 경우에만 한자 사용","warn":"주의) 한자를 너무 남발하면 복잡해 보이고, 가독성이 떨어진다. 특히, 독자가 한자를 싫어하면 사용금지!","h":["한자를 사용하여 문장 길이를 줄이기","한자로 문장 종결하기(명사나 동사로 마치는 다른 문장과 종결 패턴을 통일하는 목적)","한자로 의미를 명확하게 만들기","한자로 키워드 강조하기(하나의 보고서에 1~2회만 사용)","사자성어"]},"items":[{"cat":"short","ko":"포항제철소","hj":"포항所","ex":["포항제철소 현황","포항所 현황"],"rd":"포항소"},{"cat":"end","ko":"높다","hj":"高","ex":["만족도가 높은 편이다","만족도 高"],"rd":"고"},{"cat":"clear","ko":"원직원","hj":"院 직원","note":"경영연구원 직원이라는 뜻","rd":"원 직원"},{"cat":"key","ko":"신시스템 구시스템","hj":"新시스템 舊시스템","rd":"신시스템 구시스템"},{"cat":"short","ko":"광양제철소","hj":"광양所","ex":["광양제철소 여건","광양所 여건"],"rd":"광양소"},{"cat":"end","ko":"낮다","hj":"低","ex":["낮은 불량률","불량률低"],"rd":"저"},{"cat":"clear","ko":"미충족시","hj":"未 충족 時","rd":"미 충족 시"},{"cat":"key","ko":"고품질 저비용","hj":"高품질 低비용","rd":"고품질 저비용"},{"cat":"short","ko":"포항제철소","hj":"浦)","ex":["포항제철소 100명","浦)100명"],"rd":"포)"},{"cat":"end","ko":"많다","hj":"多","ex":["아이디어가 많이 도출되었다","아이디어 도출 多"],"rd":"다"},{"cat":"clear","ko":"전후 공정","hj":"前·後 공정","rd":"전·후 공정"},{"cat":"key","ko":"선조치 후보고","hj":"先조치 後보고","rd":"선조치 후보고"},{"cat":"short","ko":"광양제철소","hj":"光)","ex":["광양제철소 100명","光)100명"],"rd":"광)"},{"cat":"end","ko":"적다","hj":"少","ex":["품질불량이 적게 발생했다","품질불량 少"],"rd":"소"},{"cat":"clear","ko":"회사별","hj":"회사 別","rd":"회사 별"},{"cat":"key","ko":"양보다 질","hj":"量보다 質","rd":"양보다 질"},{"cat":"short","ko":"포항/광양제철소","hj":"兩所","ex":["포항/광양제철소","兩所"],"rd":"양소"},{"cat":"end","ko":"크다","hj":"大","ex":["잠재시장이 크다","잠재시장 大"],"rd":"대"},{"cat":"clear","ko":"형식지화","hj":"형식지 化","rd":"형식지 화"},{"cat":"key","ko":"신규인력은 많고 고숙련자는 적다","hj":"신규인력 多 고숙련자 少","rd":"신규인력 다 고숙련자 소"},{"cat":"short","ko":"산업체·학교·연구소","hj":"産·學·硏","ex":["산업체·학교·연구소","産·學·硏"],"rd":"산·학·연"},{"cat":"end","ko":"없다","hj":"無","ex":["제안 4등급 이상이 없다","제안 4등급 이상 無"],"rd":"무"},{"cat":"clear","ko":"제로화","hj":"Zero 化","rd":"Zero 화"},{"cat":"key","ko":"창의는 무한 자원은 유한","hj":"創意는 무한 資源은 유한","rd":"창의는 무한 자원은 유한"},{"cat":"short","ko":"전체","hj":"全","ex":["전체 사업회사","全 사업회사"],"rd":"전"},{"cat":"end","ko":"어렵다","hj":"難","ex":["공급초과 전환 불가피, 역외 수출도 어렵다","역외 수출 難"],"rd":"난"},{"cat":"clear","ko":"고객사용","hj":"고객사 用","rd":"고객사 용"},{"cat":"key","ko":"집중","hj":"集中","rd":"집중"},{"cat":"short","ko":"예시","hj":"例","ex":["사례)","例)"],"rd":"예"},{"cat":"end","ko":"강하다","hj":"强","ex":["시장 지배력이 강하다","시장지배력 强"],"rd":"강"},{"cat":"clear","ko":"소재업","hj":"소재 業","note":"‘Up’인지 ‘業’인지 헷갈리는 말","rd":"소재 업"},{"cat":"key","ko":"중심","hj":"中心","rd":"중심"},{"cat":"short","ko":"가운데","hj":"中","ex":["고객사 가운데","고객사 中"],"rd":"중"},{"cat":"end","ko":"약하다","hj":"弱","ex":["환율변동에 제대로 대응하지 못한다","환율변동 대응력 弱"],"rd":"약"},{"cat":"clear","ko":"파트내","hj":"파트 內","rd":"파트 내"},{"cat":"key","ko":"동일","hj":"同一","rd":"동일"},{"cat":"short","ko":"필수, 반드시","hj":"必","ex":["요건을 반드시 충족해야 한다","요건충족 必"],"rd":"필"},{"cat":"end","ko":"완료","hj":"完","ex":["과제수행을 마쳤다","과제수행 完"],"rd":"완"},{"cat":"clear","ko":"과제외","hj":"과제 外","rd":"과제 외"},{"cat":"key","ko":"혁신","hj":"革新","rd":"혁신"},{"cat":"short","ko":"현재","hj":"現","ex":["현재 직무를 수행하는 부서는","現 직무수행 부서"],"rd":"현"},{"cat":"end","ko":"가능","hj":"可","ex":["역량을 확보할 수 있다","역량 확보 可"],"rd":"가"},{"cat":"clear","ko":"부서간","hj":"부서 間","rd":"부서 간"},{"cat":"key","ko":"창의","hj":"創意","rd":"창의"},{"cat":"short","ko":"신규","hj":"新","ex":["신규 프로세스","新 공정"],"rd":"신"},{"cat":"end","ko":"있다","hj":"有","ex":["교육과정 개발을 요구하고 있다","교육과정 개발 니즈 有"],"rd":"유"},{"cat":"clear","ko":"타부서","hj":"他 부서","rd":"타 부서"},{"cat":"key","ko":"공감","hj":"共感","rd":"공감"},{"cat":"short","ko":"기존","hj":"舊","ex":["기존 프로세스","舊 공정"],"rd":"구"},{"cat":"end","ko":"존재, 상존","hj":"存","ex":["잠재 리스크가 상존한다","잠재 리스크 存"],"rd":"존"},{"cat":"clear","ko":"포스코형","hj":"포스코 型","rd":"포스코 형"},{"cat":"key","ko":"상시","hj":"常時","rd":"상시"},{"cat":"short","ko":"이미","hj":"旣","ex":["이미 완료한 부서","旣 완료부서"],"rd":"기"},{"cat":"end","ko":"필요","hj":"要","ex":["새로운 사업개발이 필요하다","新 사업개발 要"],"rd":"요"},{"cat":"clear","ko":"수료하지 못했다","hj":"未 수료","rd":"미 수료"},{"cat":"key","ko":"상이","hj":"相異","rd":"상이"},{"cat":"short","ko":"다시","hj":"再","ex":["다시 가공","再 가공"],"rd":"재"},{"cat":"clear","ko":"고부가가치","hj":"高 부가가치","rd":"고 부가가치"},{"cat":"short","ko":"회사","hj":"社","ex":["소재 사업회사","소재 社"],"rd":"사"},{"cat":"clear","ko":"대 사업회사","hj":"對 사업회사","rd":"대 사업회사"},{"cat":"short","ko":"대비","hj":"比","ex":["포스코 대비 협력사","포스코 比 협력사"],"rd":"비"},{"cat":"clear","ko":"중국 성별","hj":"중국 城별","rd":"중국 성별"},{"cat":"short","ko":"방안","hj":"案","ex":["개선방안 마련","개선案 마련"],"rd":"안"},{"cat":"clear","ko":"전문가군","hj":"전문가群","rd":"전문가군"},{"cat":"short","ko":"상반기","hj":"上","ex":["2024년 상반기","'24.上"],"rd":"상"},{"cat":"clear","ko":"토론장","hj":"토론 場","rd":"토론 장"},{"cat":"short","ko":"하반기","hj":"下","ex":["2024년 하반기","'24.下"],"rd":"하"},{"cat":"clear","ko":"기도출","hj":"旣 도출","rd":"기 도출"},{"cat":"short","ko":"안에","hj":"內","ex":["부서안에","부서 內"],"rd":"내"},{"cat":"clear","ko":"시스템화","hj":"시스템 化","rd":"시스템 화"},{"cat":"short","ko":"속에서, 아래에서","hj":"下","ex":["글로벌 사업환경 속에서","글로벌 사업환경 下"],"rd":"하"},{"cat":"clear","ko":"조선사향","hj":"조선사 向","rd":"조선사 향"},{"cat":"short","ko":"진행하면서","hj":"中","ex":["프로젝트를 진행하면서","프로젝트 진행 中"],"rd":"중"},{"cat":"clear","ko":"개선후","hj":"개선 後","rd":"개선 후"},{"cat":"short","ko":"아직 하지 않았다","hj":"未","ex":["아직 수행하지 않았다","未 수행"],"rd":"미"},{"cat":"clear","ko":"발생건","hj":"발생 件","rd":"발생 건"},{"cat":"short","ko":"까지","hj":"限","ex":["5.11까지","5.11. 限"],"rd":"한"},{"cat":"short","ko":"먼저","hj":"先","ex":["먼저 학습","先 학습"],"rd":"선"},{"cat":"short","ko":"나중, 다음","hj":"後","ex":["추진한 다음","추진 後"],"rd":"후"},{"cat":"short","ko":"이름","hj":"名","ex":["과정 이름","과정名"],"rd":"명"},{"cat":"short","ko":"높다","hj":"高","ex":["높은 성과","高성과"],"rd":"고"},{"cat":"short","ko":"낮다","hj":"低","ex":["가치가 낮은 업무","低 가치업무"],"rd":"저"},{"cat":"short","ko":"길다, 오래","hj":"長","ex":["시간이 오래 걸린다","長 시간 소요"],"rd":"장"},{"cat":"short","ko":"짧다","hj":"短","ex":["짧은 기간","短기간"],"rd":"단"},{"cat":"idiom","ko":"여러 분야","idioms":["각계각층"]},{"cat":"idiom","ko":"한목소리로","idioms":["만장일치"]},{"cat":"idiom","ko":"나쁜 본보기","idioms":["반면교사"]},{"cat":"idiom","ko":"벼랑 끝","idioms":["풍전등화","백척간두"]},{"cat":"idiom","ko":"빼도 박도 못하다","idioms":["사면초가","진퇴양난"]},{"cat":"idiom","ko":"군데군데, 여기저기","idioms":["사방팔방","방방곡곡"]},{"cat":"idiom","ko":"눈 깜짝할 사이","idioms":["전광석화"]},{"cat":"idiom","ko":"딱 맞음, 최적","idioms":["안성맞춤","적재적소"]},{"cat":"idiom","ko":"죽기 살기로","idioms":["진검승부"]},{"cat":"idiom","ko":"여러 가지, 이런저런","idioms":["형형색색","각양각색"]},{"cat":"idiom","ko":"한마음, 한뜻","idioms":["혼연일체"]},{"cat":"idiom","ko":"급격히 발전하다","idioms":["괄목상대"]},{"cat":"idiom","ko":"엇비슷하다","idioms":["대동소이"]},{"cat":"idiom","ko":"뻔하다, 분명하다","idioms":["명약관화"]},{"cat":"idiom","ko":"이름과 어울리다","idioms":["명실상부"]},{"cat":"idiom","ko":"재미가 없다, 지루하다","idioms":["무미건조"]},{"cat":"idiom","ko":"뿌리를 뽑다","idioms":["발본색원"]},{"cat":"idiom","ko":"매우 많다, 수많다","idioms":["비일비재"]},{"cat":"idiom","ko":"불필요하다","idioms":["불요불급"]},{"cat":"idiom","ko":"서로 돕다","idioms":["상부상조"]},{"cat":"idiom","ko":"서로 기대다","idioms":["상호의존"]},{"cat":"idiom","ko":"모범을 보이다","idioms":["솔선수범"]},{"cat":"idiom","ko":"때에 맞다, 적절하다","idioms":["시의적절"]},{"cat":"idiom","ko":"곰곰이, 깊게, 신중하게 생각하다","idioms":["심사숙고"]},{"cat":"idiom","ko":"알 듯 말 듯하다","idioms":["애매모호","오리무중"]},{"cat":"idiom","ko":"입장을 바꾸다","idioms":["역지사지"]},{"cat":"idiom","ko":"완벽하다","idioms":["완전무결"]},{"cat":"idiom","ko":"허울뿐이다, 이름뿐이다","idioms":["유명무실"]},{"cat":"idiom","ko":"엇비슷하다","idioms":["유유상종"]},{"cat":"idiom","ko":"하나뿐이다","idioms":["유일무이"]},{"cat":"idiom","ko":"서로 통하다","idioms":["일맥상통"]},{"cat":"idiom","ko":"분명하다","idioms":["일목요연"]},{"cat":"idiom","ko":"흐트러짐이 없다","idioms":["일사불란"]},{"cat":"idiom","ko":"가려내다, 고르다","idioms":["취사선택"]},{"cat":"idiom","ko":"겉과 속이 다르다","idioms":["표리부동"]},{"cat":"idiom","ko":"마음을 터놓다","idioms":["허심탄회"]},{"cat":"idiom","ko":"돈독하다","idioms":["화기애애"]},{"cat":"idiom","ko":"늘, 언제나, 항상","idioms":["불철주야"]},{"cat":"idiom","ko":"빨리빨리","idioms":["속전속결","즉시즉시"]},{"cat":"idiom","ko":"처음부터 끝까지, 내내, 한결같이","idioms":["수미일관","시종일관","초지일관"]},{"cat":"idiom","ko":"본체만체","idioms":["수수방관"]},{"cat":"idiom","ko":"흐지부지","idioms":["용두사미"]},{"cat":"idiom","ko":"한목소리로, 한결같이","idioms":["이구동성"]},{"cat":"idiom","ko":"그때그때, 땜질, 얼렁뚱땅","idioms":["임기응변","임시변통"]},{"cat":"idiom","ko":"자유로이","idioms":["자유자재"]},{"cat":"idiom","ko":"대충대충, 설렁설렁, 어설피","idioms":["주마간산"]},{"cat":"idiom","ko":"뒤범벅, 뒤죽박죽, 엉망진창","idioms":["중구난방"]},{"cat":"idiom","ko":"하는 둥 마는 둥","idioms":["지지부진"]},{"cat":"idiom","ko":"비슷비슷, 어슷비슷","idioms":["천편일률"]},{"cat":"idiom","ko":"철저히","idioms":["철두철미"]},{"cat":"idiom","ko":"술술, 줄줄","idioms":["청산유수"]},{"cat":"idiom","ko":"말없이","idioms":["묵묵부답"]}]};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const HANJA = /[㐀-鿿豈-﫿]/;
+const CATS = [
+  { id: 'short', name: '문장 줄이기', icon: '所', hint: '긴 말을 한 글자로', why: '자주 나오는 긴 말을 한자 한 글자로 줄여 문장 길이를 줄입니다.' },
+  { id: 'end', name: '문장 끝맺기', icon: '高', hint: '~하다를 한자로 맺기', why: '명사나 동사로 마치는 다른 문장과 끝맺음 모양을 통일하려고 씁니다.' },
+  { id: 'clear', name: '뜻 분명히 하기', icon: '未', hint: '헷갈리는 말 구분', why: '한글로만 쓰면 뜻이 헷갈리는 말을 한자로 구분해 줍니다.' },
+  { id: 'key', name: '키워드 강조', icon: '新', hint: '보고서당 1~2회', why: '보고서의 핵심 키워드에 힘을 줄 때 씁니다.', caution: '보고서 하나에 1~2회만 씁니다. 많이 쓰면 강조가 되지 않습니다.' },
+  { id: 'idiom', name: '사자성어', icon: '四', hint: '풀어 쓴 말을 넉 자로', why: '여러 말로 풀어 쓴 표현을 사자성어 하나로 압축합니다.' },
+];
+const READ = {"一":"일","上":"상","下":"하","中":"중","他":"타","件":"건","低":"저","先":"선","光":"광","內":"내","全":"전","共":"공","再":"재","別":"별","前":"전","創":"창","化":"화","可":"가","同":"동","名":"명","向":"향","型":"형","城":"성","場":"장","外":"외","多":"다","大":"대","存":"존","學":"학","完":"완","對":"대","少":"소","常":"상","弱":"약","强":"강","後":"후","心":"심","必":"필","意":"의","感":"감","所":"소","新":"신","旣":"기","時":"시","有":"유","未":"미","案":"안","業":"업","比":"비","浦":"포","源":"원","無":"무","現":"현","産":"산","用":"용","異":"이","相":"상","短":"단","硏":"연","社":"사","群":"군","舊":"구","要":"요","資":"자","質":"질","長":"장","間":"간","限":"한","院":"원","集":"집","難":"난","革":"혁","高":"고","兩":"양","量":"양","例":"예"};
+const state = { cat: 'short' };
+
+/* 복사 */
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1400); }
+async function copy(text, label) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (_) {} ta.remove();
+  }
+  toast(`복사했습니다: ${label ?? text}`);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-copy]');
+  if (b) copy(b.dataset.copy);
+});
+
+/* 사례 카드 */
+function hl(s, q) {
+  s = esc(s);
+  if (!q) return s;
+  const qe = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return s.replace(new RegExp(qe, 'g'), m => `<mark>${m}</mark>`);
+}
+function card(it, q, withTag) {
+  const cat = CATS.find(c => c.id === it.cat);
+  const tag = withTag ? `<span class="tag">${esc(cat.name)}</span>` : '';
+  if (it.cat === 'idiom') {
+    return `<div class="item">${tag}<div class="ko">${hl(it.ko, q)}</div><div class="idioms">` +
+      it.idioms.map(w => `<button type="button" class="hjbtn" data-copy="${esc(w)}" title="눌러서 복사">${hl(w, q)}</button>`).join('') + `</div></div>`;
+  }
+  const showRd = it.rd.replace(/\s/g, '') !== it.ko.replace(/\s/g, '') && it.rd !== it.hj;
+  return `<div class="item">${tag}
+    <div class="row"><span class="ko">${hl(it.ko, q)}</span><span class="arrow">→</span>
+      <button type="button" class="hjbtn" data-copy="${esc(it.hj)}" title="눌러서 복사">${hl(it.hj, q)}</button></div>
+    ${showRd ? `<div class="rd">읽기: ${esc(it.rd)}</div>` : ''}
+    ${it.note ? `<div class="note">${esc(it.note)}</div>` : ''}
+    ${it.ex ? `<div class="ex"><s>${hl(it.ex[0], q)}</s> → <strong>${hl(it.ex[1], q)}</strong></div>` : ''}
+  </div>`;
+}
+
+/* ① 찾기 */
+function textOf(it) {
+  return [it.ko, it.hj, it.rd, it.note, ...(it.ex || []), ...(it.idioms || [])].filter(Boolean).join(' ');
+}
+function search(q) {
+  const qq = q.replace(/\s+/g, '');
+  return DATA.items.filter(it => {
+    const t = textOf(it);
+    return t.includes(q) || t.replace(/\s+/g, '').includes(qq);
+  });
+}
+function renderFind() {
+  const raw = $('findQ').value.normalize('NFC').trim();
+  const note = $('findNote');
+  if (!raw) { $('findResults').innerHTML = ''; note.textContent = '한글이나 한자 어느 쪽으로 찾아도 됩니다. 파란 한자를 누르면 복사됩니다.'; return; }
+  let q = raw, list = search(q);
+  /* 높은 → 높, 많이 → 많처럼 어미를 떼고 한 번 더 찾는다 */
+  const END = /(합니다|입니다|하였다|했다|하다|하게|하고|하는|하지|이다|으로|한|할|다|은|는|이|히|게|고|을|를|로)$/;
+  if (!list.length && END.test(q) && q.replace(END, '')) { q = q.replace(END, ''); list = search(q); }
+  if (!list.length && raw.length >= 3) { q = raw.slice(0, -1); list = search(q); }
+  if (!list.length) {
+    $('findResults').innerHTML = '';
+    note.innerHTML = `‘${esc(raw)}’에 맞는 사례가 없습니다. 이 말은 한글로 쓰는 것이 원칙입니다.`;
+    return;
+  }
+  const order = CATS.map(c => c.id);
+  list.sort((a, b) => order.indexOf(a.cat) - order.indexOf(b.cat));
+  $('findResults').innerHTML = list.map(it => card(it, q, true)).join('');
+  note.innerHTML = (q !== raw ? `‘${esc(raw)}’ 대신 ‘${esc(q)}’로 찾았습니다. ` : '') + `사례 ${list.length}개. 파란 글자를 누르면 복사됩니다.`;
+}
+function renderQuick() {
+  ['높다', '많다', '없다', '제철소', '반드시', '상반기', '아직', '필요', '엇비슷하다'].forEach(w => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = w;
+    b.addEventListener('click', () => { $('findQ').value = w; renderFind(); });
+    $('quick').appendChild(b);
+  });
+  $('findQ').addEventListener('input', renderFind);
+}
+
+/* ② 쓰임별 */
+function renderKinds() {
+  $('kinds').innerHTML = CATS.map(c => {
+    const n = DATA.items.filter(it => it.cat === c.id).length;
+    return `<button type="button" class="kind" data-cat="${c.id}" aria-pressed="${c.id === state.cat}"><b><i>${c.icon}</i>${esc(c.name)}</b><span>${esc(c.hint)} · ${n}개</span></button>`;
+  }).join('');
+  $('kinds').querySelectorAll('.kind').forEach(b => b.addEventListener('click', () => { state.cat = b.dataset.cat; renderKinds(); renderCat(); }));
+}
+function renderCat() {
+  const c = CATS.find(x => x.id === state.cat);
+  $('catHead').innerHTML = `<b>${esc(c.name)}</b><span class="why">${esc(c.why)}</span>` + (c.caution ? `<span class="caution">⚠ ${esc(c.caution)}</span>` : '');
+  $('items').innerHTML = DATA.items.filter(it => it.cat === c.id).map(it => card(it)).join('');
+}
+
+/* ③ 한자 빠른 복사 */
+function renderPalette() {
+  const seen = new Set(), chars = [];
+  DATA.items.forEach(it => [...(it.hj || '')].forEach(ch => { if (HANJA.test(ch) && !seen.has(ch)) { seen.add(ch); chars.push(ch); } }));
+  $('palette').innerHTML = chars.map(ch =>
+    `<button type="button" class="chip" data-copy="${ch}" title="${ch} (${READ[ch] || ''}) 복사"><span class="c">${ch}</span><span class="r">${esc(READ[ch] || '')}</span></button>`).join('');
+}
+
+/* ④ AI 지시문 */
+function buildPrompt() {
+  const L = [];
+  L.push('너는 한국 기업 업무 보고서의 한자 사용을 교정하는 편집자다. 아래 규칙과 사례에 맞춰 내가 붙여 넣는 문장을 고쳐 줘.');
+  L.push('');
+  L.push('[원칙]');
+  L.push('- 한글 사용을 원칙으로 하되, 문장을 줄여야 하거나 임팩트를 주고 싶을 때 등 꼭 필요한 경우에만 한자를 쓴다.');
+  L.push('- 한자를 너무 남발하면 복잡해 보이고 가독성이 떨어진다. 독자가 한자를 싫어하면 쓰지 않는다.');
+  L.push('- 한자는 아래 다섯 가지 경우에만 쓰고, 사례에 없는 한자를 새로 만들어 쓰지 않는다.');
+  CATS.forEach((c, i) => {
+    L.push('');
+    L.push(`[${i + 1}. ${c.name}] ${DATA.head.h[i]}`);
+    if (c.caution) L.push(`- 주의: ${c.caution}`);
+    DATA.items.filter(it => it.cat === c.id).forEach(it => {
+      if (it.cat === 'idiom') L.push(`- ${it.ko} → ${it.idioms.join(', ')}`);
+      else L.push(`- ${it.ko} → ${it.hj}` + (it.note ? ` (${it.note})` : '') + (it.ex ? ` / 예: ${it.ex[0]} → ${it.ex[1]}` : ''));
+    });
+  });
+  L.push('');
+  L.push('[답하는 방식]');
+  L.push('- 고친 문장을 먼저 보여 주고, 한자를 쓴 곳마다 위 다섯 가지 가운데 어느 경우인지 짧게 밝혀 줘.');
+  L.push('- 한자를 쓰지 않는 편이 나은 곳은 한글로 되돌려 줘.');
+  L.push('- 원문의 뜻과 숫자는 바꾸지 마.');
+  L.push('');
+  L.push('고칠 문장: (여기에 붙여 넣기)');
+  return L.join('\n');
+}
+
+/* 사용안내 */
+const guide = $('guide');
+$('openGuide').addEventListener('click', () => guide.showModal());
+$('closeGuide').addEventListener('click', () => guide.close());
+guide.addEventListener('click', e => { if (e.target === guide) guide.close(); });
+
+renderQuick(); renderKinds(); renderCat(); renderPalette();
+$('prompt').textContent = buildPrompt();
+$('copyPrompt').addEventListener('click', () => copy($('prompt').textContent, 'AI용 규칙 전체'));
+</script>
+</body>
+</html>
