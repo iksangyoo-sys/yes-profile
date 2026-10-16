@@ -186,7 +186,7 @@ footer .wrap { padding-top: 20px; padding-bottom: 28px; display: flex; justify-c
     <nav aria-label="페이지 안 이동">
       <a href="#cases" class="keep">서비스 사례</a>
       <a href="#curriculum" class="keep">커리큘럼</a>
-      <a href="../">자료 모음</a>
+      <a href="https://iksangyoo-sys.github.io/yes-profile/">AI리터러시연구소</a>
     </nav>
   </div>
 </header>
@@ -239,7 +239,7 @@ footer .wrap { padding-top: 20px; padding-bottom: 28px; display: flex; justify-c
     <p>교육과 개발 모두 상담해 드립니다. 문의: yes100@kakao.com</p>
     <div class="cta">
       <a class="btn primary" href="../profile/" target="_blank" rel="noopener">연구원 소개 ↗</a>
-      <a class="btn" href="../">자료 모음으로</a>
+      <a class="btn" href="https://iksangyoo-sys.github.io/yes-profile/">AI리터러시연구소로</a>
     </div>
   </div>
 </section>
@@ -396,5 +396,16 @@ document.getElementById("days").innerHTML = DAYS.map((d) =>
     '</div><div class="h">' + esc(t[3]) + "</div></li>").join("") + "</ul></div>"
 ).join("");
 </script>
+<!-- AI리터러시연구소 첫 화면으로 돌아가는 링크 -->
+<a class="ailit-home" href="https://iksangyoo-sys.github.io/yes-profile/" title="AI리터러시연구소 자료 모음으로 돌아가기">
+  <span class="ailit-dot" aria-hidden="true"></span>AI리터러시연구소
+</a>
+<style>
+.ailit-home{position:fixed;left:16px;bottom:16px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;padding:9px 15px 9px 12px;border-radius:999px;background:#1f1e1d;color:#faf9f5 !important;font:600 13px/1.2 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;letter-spacing:-.01em;text-decoration:none !important;box-shadow:0 6px 20px rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.12);transition:transform .15s ease,background .15s ease}
+.ailit-home:hover{background:#c96442;transform:translateY(-2px)}
+.ailit-home .ailit-dot{width:8px;height:8px;border-radius:50%;background:#d97757;box-shadow:0 0 0 3px rgba(217,119,87,.25)}
+.ailit-home:hover .ailit-dot{background:#faf9f5}
+@media print{.ailit-home{display:none}}
+</style>
 </body>
 </html>
