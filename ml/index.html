@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>머신러닝·딥러닝 · AI리터러시연구원</title>
+<meta name="description" content="현업 데이터로 직접 배우는 머신러닝·딥러닝 교육 커리큘럼" />
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f5fb; --card: #ffffff; --line: #e7e4f2;
+  --ink: #17142b; --ink-2: #57536e; --ink-3: #908ca6;
+  --violet: #6d4cff; --violet-soft: #efebff;
+  --pink: #ff5ca8; --lime: #c6f432; --orange: #ff8a3d; --cyan: #22c3e6;
+  --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --disp: "Space Grotesk", "Pretendard", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; word-break: keep-all; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 8px; }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.disp { font-family: var(--disp); }
+
+/* 상단 바 */
+.top { position: sticky; top: 12px; z-index: 20; margin: 12px auto 0; max-width: 1140px; padding: 0 24px; }
+.top-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 54px; padding: 0 10px 0 18px; border-radius: 999px; background: rgba(255,255,255,.72); border: 1px solid rgba(231,228,242,.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 30px -18px rgba(40,20,120,.35); }
+.brand { font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.brand i { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 200deg, var(--violet), var(--pink), var(--orange), var(--lime), var(--cyan), var(--violet)); }
+.top nav { display: flex; gap: 2px; }
+.top nav a { padding: 7px 13px; border-radius: 999px; font-size: 14.5px; color: var(--ink-2); }
+.top nav a:hover { background: var(--violet-soft); color: var(--violet); }
+
+/* 히어로 */
+.hero { position: relative; padding: 76px 0 40px; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; z-index: 0; }
+.b1 { width: 420px; height: 420px; background: #b9a8ff; right: -60px; top: -80px; }
+.b2 { width: 320px; height: 320px; background: #ffc2dd; right: 260px; top: 120px; }
+.b3 { width: 260px; height: 260px; background: #dcff7a; right: 40px; top: 260px; opacity: .45; }
+.hero .wrap { position: relative; z-index: 1; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 13.5px; font-weight: 600; color: var(--violet); }
+.pill b { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 3px rgba(198,244,50,.35); }
+.hero h1 { margin: 22px 0 0; font-size: clamp(36px, 6.4vw, 70px); line-height: 1.08; letter-spacing: -.045em; font-weight: 800; max-width: 820px; }
+.hero h1 .grad { background: linear-gradient(95deg, var(--violet) 10%, var(--pink) 55%, var(--orange)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { margin: 22px 0 0; max-width: 600px; font-size: clamp(16px, 2vw, 18.5px); color: var(--ink-2); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 15px; border: 1px solid var(--line); background: var(--card); transition: transform .15s, box-shadow .15s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px rgba(60,30,160,.5); }
+.btn.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* 숫자 벤토 */
+.bento-stats { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 12px; margin-top: 52px; }
+.bs { border-radius: 22px; padding: 20px 22px; background: var(--card); border: 1px solid var(--line); }
+.bs b { display: block; font-family: var(--disp); font-size: 40px; line-height: 1.05; letter-spacing: -.03em; }
+.bs span { font-size: 14px; color: var(--ink-2); }
+.bs.goal { background: var(--ink); color: #fff; border-color: var(--ink); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+.bs.goal small { font-size: 12.5px; color: var(--lime); font-weight: 700; letter-spacing: .04em; }
+.hero .bs.goal p { color: #fff; max-width: none; margin: 0; font-size: 16px; line-height: 1.5; font-weight: 600; }
+.bs.v b { color: var(--violet); }
+.bs.p b { color: var(--pink); }
+.bs.o b { color: var(--orange); }
+
+/* 섹션 */
+section.block { padding: 84px 0 0; }
+.sh { margin-bottom: 26px; }
+.sh .k { display: inline-block; font-family: var(--disp); font-size: 13px; font-weight: 700; color: var(--violet); background: var(--violet-soft); padding: 3px 10px; border-radius: 999px; }
+.sh h2 { margin: 12px 0 0; font-size: clamp(26px, 3.8vw, 40px); letter-spacing: -.035em; line-height: 1.2; }
+.sh p { margin: 8px 0 0; max-width: 620px; color: var(--ink-2); }
+
+/* 모듈 여정 */
+.journey { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.mod { position: relative; border-radius: 24px; padding: 22px; background: var(--card); border: 1px solid var(--line); overflow: hidden; min-height: 220px; display: flex; flex-direction: column; }
+.mod::after { content: ""; position: absolute; right: -40px; bottom: -40px; width: 140px; height: 140px; border-radius: 50%; background: var(--c); opacity: .16; }
+.mod .no { font-family: var(--disp); font-size: 54px; font-weight: 700; line-height: 1; color: var(--c); letter-spacing: -.04em; }
+.mod b { display: block; margin-top: 12px; font-size: 18px; letter-spacing: -.02em; line-height: 1.35; }
+.mod p { margin: 8px 0 0; font-size: 14px; color: var(--ink-2); flex: 1; }
+.mod .hr { display: inline-block; margin-top: 14px; align-self: flex-start; font-family: var(--disp); font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--bg); }
+
+/* 날짜별 */
+.days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.day { border-radius: 24px; background: var(--card); border: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.day-h { display: flex; align-items: baseline; justify-content: space-between; }
+.day-h b { font-family: var(--disp); font-size: 28px; letter-spacing: -.03em; }
+.day-h span { font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.slot { border-radius: 16px; padding: 14px; background: var(--bg); border-left: 4px solid var(--c); }
+.slot .top-row { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.slot b { font-size: 15px; line-height: 1.35; }
+.slot em { font-style: normal; font-family: var(--disp); font-weight: 700; font-size: 12.5px; color: var(--c); white-space: nowrap; }
+.slot ul { margin: 8px 0 0; padding-left: 16px; font-size: 13.5px; color: var(--ink-2); display: grid; gap: 3px; }
+.slot .lab { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--ink); background: var(--lime); border-radius: 6px; padding: 1px 8px; }
+
+/* 모델 지도 */
+.models { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.mg { border-radius: 24px; padding: 22px; background: var(--card); border: 1px solid var(--line); }
+.mg h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.mg h3 i { width: 12px; height: 12px; border-radius: 4px; background: var(--c); }
+.mg p { margin: 6px 0 14px; font-size: 13.5px; color: var(--ink-3); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { font-size: 13.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); }
+
+/* 실습 벤토 */
+.labs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.labc { position: relative; border-radius: 24px; padding: 22px; background: var(--card); border: 1px solid var(--line); overflow: hidden; grid-column: span 2; }
+.labc.wide { grid-column: span 3; }
+.labc .type { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .04em; padding: 3px 10px; border-radius: 999px; color: #fff; background: var(--c); }
+.labc b { display: block; margin-top: 14px; font-family: var(--disp); font-size: 22px; letter-spacing: -.02em; }
+.labc p { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); }
+.labc .day-t { position: absolute; right: 18px; top: 18px; font-family: var(--disp); font-weight: 700; font-size: 13px; color: var(--ink-3); }
+.labc.feature { background: linear-gradient(135deg, #1d1638, #3a2390 60%, #6d4cff); color: #fff; border: 0; }
+.labc.feature p { color: rgba(255,255,255,.78); }
+.labc.feature .day-t { color: rgba(255,255,255,.6); }
+.labc.feature .type { background: var(--lime); color: var(--ink); }
+
+/* 마무리 */
+.closing { margin: 96px 0 0; }
+.closing-in { border-radius: 32px; padding: 52px 32px; text-align: center; background: var(--ink); color: #fff; position: relative; overflow: hidden; }
+.closing-in::before { content: ""; position: absolute; inset: -40%; background: radial-gradient(circle at 20% 30%, rgba(109,76,255,.55), transparent 35%), radial-gradient(circle at 80% 70%, rgba(255,92,168,.4), transparent 35%); }
+.closing-in > * { position: relative; }
+.closing h2 { margin: 0; font-size: clamp(24px, 3.6vw, 36px); letter-spacing: -.035em; }
+.closing p { margin: 10px 0 0; color: rgba(255,255,255,.75); }
+.closing .cta { justify-content: center; }
+.closing .btn { color: var(--ink); }
+.closing .btn.lime { background: var(--lime); border-color: var(--lime); }
+footer { padding: 26px 0 36px; color: var(--ink-3); font-size: 13px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 960px) {
+  .bento-stats { grid-template-columns: repeat(3, 1fr); }
+  .bs b { font-size: 32px; }
+  .bs.goal { grid-column: 1 / -1; }
+  .journey, .days, .models { grid-template-columns: 1fr 1fr; }
+  .labs { grid-template-columns: 1fr 1fr; }
+  .labc, .labc.wide { grid-column: span 1; }
+  .labc.feature { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .wrap, .top { padding: 0 14px; }
+  .top nav a:not(.keep) { display: none; }
+  .hero { padding-top: 52px; }
+  .journey, .days, .models, .labs { grid-template-columns: 1fr; }
+  .mod { min-height: 0; }
+  section.block { padding-top: 64px; }
+  .closing-in { padding: 40px 20px; border-radius: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="../hub/"><i></i>ML·DL</a>
+    <nav aria-label="페이지 안 이동">
+      <a href="#journey" class="keep">과정</a>
+      <a href="#days" class="keep">일정</a>
+      <a href="#labs">실습</a>
+      <a href="../hub/">자료 모음</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+  <div class="wrap">
+    <span class="pill"><b></b>MACHINE LEARNING · DEEP LEARNING</span>
+    <h1>현업 데이터로<br><span class="grad">직접 배우는</span> <span style="white-space:nowrap">머신러닝·딥러닝</span></h1>
+    <p>파이썬을 몰라도 AI와 함께 코드를 만들며 시작합니다. 데이터 정제와 통계에서 예측·분류·군집 모델, 그리고 결과를 보여 주는 웹 앱까지 4일 동안 손으로 익힙니다.</p>
+    <div class="cta">
+      <a class="btn dark" href="#journey">과정 살펴보기 →</a>
+      <a class="btn" href="#labs">실습 프로젝트</a>
+    </div>
+    <div class="bento-stats">
+      <div class="bs goal"><small>GOAL</small><p>DX 기술과 데이터 분석 역량으로 현업 과제를 스스로 해결하는 힘을 기릅니다.</p></div>
+      <div class="bs v"><b>4일</b><span>4개 모듈 · 30시간</span></div>
+      <div class="bs p"><b>12</b><span>회귀·분류·신경망·군집 모델</span></div>
+      <div class="bs o"><b>5</b><span>실제 공정·인사 데이터 실습</span></div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="block" id="journey">
+    <div class="wrap">
+      <div class="sh"><span class="k">01 · JOURNEY</span><h2>코드 한 줄에서 예측 웹 앱까지</h2><p>네 개의 모듈이 계단처럼 이어집니다. 모든 실습은 AI를 활용해 진행합니다.</p></div>
+      <div class="journey" id="journeyList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="days">
+    <div class="wrap">
+      <div class="sh"><span class="k">02 · SCHEDULE</span><h2>4일 일정 한눈에 보기</h2><p>하루 8시간 안팎, 개념 설명 뒤에는 늘 실습이 따라옵니다.</p></div>
+      <div class="days" id="dayList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="models">
+    <div class="wrap">
+      <div class="sh"><span class="k">03 · MODEL MAP</span><h2>이 과정에서 다루는 모델</h2><p>모델을 외우기보다 결과를 해석하고 현업 문제에 맞게 고르는 법을 배웁니다.</p></div>
+      <div class="models" id="modelList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="labs">
+    <div class="wrap">
+      <div class="sh"><span class="k">04 · HANDS-ON LABS</span><h2>현업 데이터로 하는 실습</h2><p>이차전지 양극재 공정 데이터와 인사 데이터로 실제 과제 수행 절차를 그대로 따라갑니다.</p></div>
+      <div class="labs" id="labList"></div>
+    </div>
+  </section>
+</main>
+
+<section class="closing">
+  <div class="wrap">
+    <div class="closing-in">
+      <h2>우리 회사 데이터로 과정을 맞춤 설계해 드립니다</h2>
+      <p>교육 문의: yes100@kakao.com</p>
+      <div class="cta">
+        <a class="btn lime" href="../" target="_blank" rel="noopener">연구원 소개 ↗</a>
+        <a class="btn" href="../hub/">자료 모음으로</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>AI리터러시연구원 · 머신러닝·딥러닝</span><span class="disp">ml-dl / v1</span></div></footer>
+
+<script>
+const C = { v: "#6d4cff", p: "#ff5ca8", o: "#ff8a3d", c: "#22c3e6", l: "#86b300" };
+const JOURNEY = [
+  ["01", "GPT 활용 파이썬 코딩 기초", "프롬프트로 파이썬 코드를 만들고 고치는 법. 분석 패키지와 VS Code를 설치하고 파일 자동 분류 코드를 직접 만듭니다.", "3시간", C.v],
+  ["02", "데이터 분석", "분석 기획부터 수집·정제, 기초 통계와 시각화까지. 영향 인자를 찾는 상관분석·분산분석을 익힙니다.", "11시간", C.p],
+  ["03", "모델링", "회귀와 분류, 트리·앙상블·인공신경망, 주성분분석과 군집까지. 예측 결과를 웹 앱으로 띄웁니다.", "11시간", C.o],
+  ["04", "종합 실습", "실제 현업 과제 절차를 따라 예측·분류 모델을 개발하고 웹으로 배포하는 모의 과제를 수행합니다.", "5시간", C.c]
+];
+const DAYS = [
+  { d: "Day 1", h: "6h", slots: [
+    ["파이썬 코딩 기초", "3h", C.v, ["생성 AI 프롬프트 구조 이해", "분석 패키지·VS Code 설치", "파일 종류별 자동 분류 코드 생성"]],
+    ["데이터 분석 기획", "1h", C.p, ["분석 절차와 단계별 핵심", "과제정의서 작성법"], "양극재_방전량"],
+    ["데이터 수집·정제", "2h", C.p, ["이상치·결측치 확인과 처리", "표준화·구간화·변환", "더미변수·파생변수 생성"]]
+  ]},
+  { d: "Day 2", h: "8h", slots: [
+    ["기초 통계", "4h", C.p, ["분포 유형", "평균·분산 등 통계 용어", "머신러닝 이해에 필요한 통계"]],
+    ["시각화와 영향 인자 탐색", "4h", C.p, ["데이터 유형별 시각화", "상관분석·분산분석"]]
+  ]},
+  { d: "Day 3", h: "8h", slots: [
+    ["회귀 모델", "4h", C.o, ["선형·다중선형·Ridge/Lasso 회귀", "회귀 결과 해석 용어", "선형회귀 예측 웹 개발(Streamlit)"], "양극재_품질검사"],
+    ["분류와 앙상블", "4h", C.o, ["로지스틱 회귀, 우도", "의사결정나무·랜덤포레스트", "부스팅·인공신경망"]]
+  ]},
+  { d: "Day 4", h: "8h", slots: [
+    ["비지도 학습", "3h", C.o, ["주성분분석: 기여도·주성분 점수", "K-Means 군집과 성능지표"], "직무역량평가"],
+    ["종합 실습", "4h", C.c, ["탭밀도 예측 모델 개발", "양극재 불량 분류 모델 개발", "예측·분류 웹 개발(Streamlit)"]],
+    ["학습평가·설문", "1h", C.c, ["과정 정리"]]
+  ]}
+];
+const MODELS = [
+  ["회귀", "연속값을 예측합니다", C.v, ["선형회귀", "다중선형회귀", "Ridge", "Lasso"]],
+  ["분류", "범주를 맞힙니다", C.p, ["로지스틱 회귀", "의사결정나무", "랜덤포레스트", "부스팅", "XGBoost"]],
+  ["딥러닝", "복잡한 패턴을 학습합니다", C.o, ["인공신경망"]],
+  ["비지도 학습", "데이터 구조를 찾습니다", C.c, ["주성분분석(PCA)", "K-Means 군집"]]
+];
+const LABS = [
+  ["feature wide", "종합 · 예측", "탭밀도 예측", "현업 과제 절차를 따라 최종 탭밀도를 예측하는 모델을 개발하고 웹 앱으로 배포합니다.", "Day 4", C.v],
+  ["wide", "종합 · 분류", "불량제품 분류", "양극재 제품 불량을 예측하는 분류 모델을 개발하고 범주형 결과를 보여 주는 웹을 만듭니다.", "Day 4", C.p],
+  ["", "분석", "양극재 방전량", "분석 기획과 데이터 정제, 통계·시각화로 방전량에 영향을 주는 인자를 찾습니다.", "Day 1–2", C.l],
+  ["", "회귀", "양극재 품질검사", "품질검사 데이터로 회귀분석을 하고 예측 웹을 Streamlit으로 띄웁니다.", "Day 3", C.o],
+  ["", "비지도", "직무역량평가", "주성분분석과 K-Means로 역량 유형을 묶고 결과를 해석합니다.", "Day 4", C.c]
+];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ul = (a) => "<ul>" + a.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>";
+
+document.getElementById("journeyList").innerHTML = JOURNEY.map((m) =>
+  '<div class="mod" style="--c:' + m[4] + '"><span class="no">' + m[0] + "</span><b>" + esc(m[1]) + "</b><p>" + esc(m[2]) + '</p><span class="hr">' + m[3] + "</span></div>").join("");
+document.getElementById("dayList").innerHTML = DAYS.map((d) =>
+  '<div class="day"><div class="day-h"><b>' + d.d + "</b><span>" + d.h + "</span></div>" +
+  d.slots.map((s) => '<div class="slot" style="--c:' + s[2] + '"><div class="top-row"><b>' + esc(s[0]) + "</b><em>" + s[1] + "</em></div>" + ul(s[3]) + (s[4] ? '<span class="lab">실습 · ' + esc(s[4]) + "</span>" : "") + "</div>").join("") + "</div>").join("");
+document.getElementById("modelList").innerHTML = MODELS.map((m) =>
+  '<div class="mg" style="--c:' + m[2] + '"><h3><i></i>' + esc(m[0]) + "</h3><p>" + esc(m[1]) + '</p><div class="tags">' + m[3].map((t) => "<span>" + esc(t) + "</span>").join("") + "</div></div>").join("");
+document.getElementById("labList").innerHTML = LABS.map((l) =>
+  '<div class="labc ' + l[0] + '" style="--c:' + l[5] + '"><span class="type">' + esc(l[1]) + '</span><span class="day-t">' + l[4] + "</span><b>" + esc(l[2]) + "</b><p>" + esc(l[3]) + "</p></div>").join("");
+</script>
+</body>
+</html>

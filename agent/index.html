@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Agent · AI리터러시연구원</title>
+<meta name="description" content="현장 업무를 맡기는 AI Agent, 서비스 사례와 교육 커리큘럼" />
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0e13; --bg-2: #10151c; --panel: #131a23; --panel-2: #18212c;
+  --line: #222d3a; --line-2: #2e3c4d;
+  --ink: #eef2f6; --ink-2: #a9b4c2; --ink-3: #6f7c8c;
+  --mint: #5ef0b4; --mint-soft: rgba(94,240,180,.12);
+  --sky: #6cb8ff; --sky-soft: rgba(108,184,255,.12);
+  --amber: #ffc46b;
+  --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; word-break: keep-all; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.mono { font-family: var(--mono); }
+
+/* 상단 바 */
+.top { position: sticky; top: 0; z-index: 20; background: rgba(11,14,19,.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 58px; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.01em; }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px var(--mint-soft), 0 0 18px var(--mint); }
+.top nav { display: flex; gap: 4px; }
+.top nav a { padding: 6px 12px; border-radius: 8px; color: var(--ink-2); font-size: 14.5px; }
+.top nav a:hover { color: var(--ink); background: var(--panel); }
+
+/* 히어로 */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(ellipse 70% 60% at 70% 30%, #000 20%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 30%, #000 20%, transparent 75%); opacity: .55; }
+.hero::after { content: ""; position: absolute; width: 620px; height: 620px; right: -160px; top: -260px; background: radial-gradient(circle, rgba(94,240,180,.18), transparent 62%); }
+.hero .wrap { position: relative; z-index: 1; padding-top: 88px; padding-bottom: 72px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; color: var(--mint); border: 1px solid rgba(94,240,180,.35); background: var(--mint-soft); padding: 4px 12px; border-radius: 999px; letter-spacing: .04em; }
+.hero h1 { margin: 20px 0 0; font-size: clamp(34px, 6vw, 64px); line-height: 1.12; letter-spacing: -.035em; font-weight: 800; }
+.hero h1 em { font-style: normal; background: linear-gradient(90deg, var(--mint), var(--sky)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p.lead { margin: 20px 0 0; max-width: 640px; color: var(--ink-2); font-size: clamp(16px, 2vw, 18.5px); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 15px; border: 1px solid var(--line-2); background: var(--panel); transition: border-color .15s, transform .15s; }
+.btn:hover { border-color: var(--mint); transform: translateY(-1px); }
+.btn.primary { background: var(--mint); color: #062018; border-color: var(--mint); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 56px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.stat { background: var(--bg-2); padding: 18px 20px; }
+.stat b { display: block; font-family: var(--mono); font-size: 28px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+.stat span { font-size: 13.5px; color: var(--ink-3); }
+
+/* 섹션 공통 */
+section.block { padding: 88px 0 24px; }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.sec-head .k { font-family: var(--mono); font-size: 12.5px; color: var(--mint); letter-spacing: .08em; }
+.sec-head h2 { margin: 6px 0 0; font-size: clamp(26px, 3.6vw, 38px); letter-spacing: -.03em; line-height: 1.2; }
+.sec-head p { margin: 0; max-width: 460px; color: var(--ink-2); font-size: 15.5px; }
+
+/* 사례 탭 */
+.case-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 18px; scrollbar-width: thin; }
+.case-tab { flex: none; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--bg-2); color: var(--ink-2); border-radius: 12px; padding: 10px 14px; cursor: pointer; font: inherit; font-size: 14.5px; text-align: left; transition: border-color .15s, color .15s, background .15s; }
+.case-tab .mono { font-size: 12px; color: var(--ink-3); }
+.case-tab:hover { color: var(--ink); border-color: var(--line-2); }
+.case-tab[aria-selected="true"] { color: var(--ink); border-color: var(--mint); background: var(--mint-soft); }
+.case-tab[aria-selected="true"] .mono { color: var(--mint); }
+
+.case { border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(180deg, var(--panel), var(--bg-2)); overflow: hidden; }
+.case-top { padding: 28px 30px 6px; }
+.tagrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tag { font-family: var(--mono); font-size: 12px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line-2); color: var(--ink-2); }
+.tag.domain { color: var(--amber); border-color: rgba(255,196,107,.35); background: rgba(255,196,107,.08); }
+.case h3 { margin: 14px 0 4px; font-size: clamp(22px, 2.8vw, 30px); letter-spacing: -.025em; }
+.case .one { margin: 0; color: var(--ink-2); font-size: 16px; }
+.ps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 22px 30px; }
+.ps > div { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; background: rgba(11,14,19,.5); }
+.ps h4 { margin: 0 0 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: var(--mono); letter-spacing: .06em; font-weight: 600; }
+.ps .p h4 { color: #ff8f8f; }
+.ps .s h4 { color: var(--mint); }
+.ps .head { margin: 0 0 10px; font-size: 16px; font-weight: 600; color: var(--ink); }
+.ps ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.ps li { position: relative; padding-left: 16px; color: var(--ink-2); font-size: 14.5px; }
+.ps li::before { content: ""; position: absolute; left: 2px; top: .7em; width: 6px; height: 6px; border-radius: 2px; background: var(--ink-3); }
+.ps .s li::before { background: var(--mint); }
+.quote { display: block; padding: 8px 12px; border-left: 2px solid var(--line-2); margin-bottom: 6px; color: var(--ink-2); font-size: 14.5px; }
+.quote b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+
+/* 시스템 설계 흐름 */
+.arch { margin: 0 30px 26px; border: 1px dashed var(--line-2); border-radius: 14px; padding: 18px 20px 20px; background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 16px 16px; }
+.arch-title { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); letter-spacing: .06em; margin-bottom: 14px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.lane { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.lane .lbl { flex: none; width: 88px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); }
+.node { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line-2); font-size: 14px; color: var(--ink); }
+.node.ai { border-color: var(--mint); background: var(--mint-soft); color: var(--mint); font-weight: 700; }
+.node.out { border-color: rgba(108,184,255,.5); background: var(--sky-soft); color: #cfe6ff; }
+.arrow { color: var(--ink-3); font-family: var(--mono); font-size: 13px; }
+.arrow::before { content: "──▶"; letter-spacing: -2px; }
+
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 30px 26px; }
+.feat { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(11,14,19,.5); }
+.feat b { display: block; font-size: 15px; margin-bottom: 8px; }
+.feat ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; display: grid; gap: 4px; }
+
+.nodes-wrap { padding: 0 30px 28px; overflow-x: auto; }
+.nodes { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+.nodes th, .nodes td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.nodes thead th { font-family: var(--mono); font-size: 12px; color: var(--mint); font-weight: 600; background: rgba(94,240,180,.06); }
+.nodes tbody th { color: var(--ink-3); font-weight: 600; font-size: 12.5px; white-space: nowrap; }
+.nodes td { color: var(--ink-2); }
+.chip { display: inline-block; font-family: var(--mono); font-size: 11.5px; padding: 1px 7px; margin: 0 4px 4px 0; border-radius: 5px; background: var(--panel-2); border: 1px solid var(--line-2); color: var(--ink-2); }
+
+/* 커리큘럼 */
+.modules { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 26px; }
+.mod { position: relative; border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--bg-2); overflow: hidden; }
+.mod::before { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 100%; background: linear-gradient(90deg, var(--mint), var(--sky)); opacity: var(--o, 1); }
+.mod .mono { font-size: 12px; color: var(--mint); }
+.mod b { display: block; margin-top: 4px; font-size: 15.5px; line-height: 1.35; }
+.mod span { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-3); }
+
+.days { display: grid; gap: 14px; }
+.day { display: grid; grid-template-columns: 120px 1fr; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg-2); }
+.day-h { padding: 20px 18px; border-right: 1px solid var(--line); background: var(--panel); }
+.day-h .mono { display: block; font-size: 12px; color: var(--ink-3); letter-spacing: .06em; }
+.day-h b { display: block; font-family: var(--mono); font-size: 30px; line-height: 1.1; color: var(--mint); }
+.day-h span { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-2); }
+.topics { list-style: none; margin: 0; padding: 0; }
+.topic { display: grid; grid-template-columns: 210px 1fr 54px; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--line); align-items: start; }
+.topic:last-child { border-bottom: 0; }
+.topic .t { font-weight: 600; font-size: 15px; }
+.topic .t small { display: block; font-family: var(--mono); font-weight: 400; font-size: 11.5px; color: var(--ink-3); margin-bottom: 2px; }
+.topic .d { color: var(--ink-2); font-size: 14px; }
+.topic .d .chip { margin-top: 2px; }
+.topic .h { text-align: right; font-family: var(--mono); font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+.projects { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+.proj { border: 1px solid rgba(255,196,107,.3); background: rgba(255,196,107,.06); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; color: var(--ink); }
+.proj .mono { display: block; font-size: 11px; color: var(--amber); }
+
+/* 마무리 */
+.closing { margin: 88px 0 0; border-top: 1px solid var(--line); background: radial-gradient(ellipse 60% 120% at 50% 0%, rgba(94,240,180,.10), transparent 70%); }
+.closing .wrap { padding-top: 64px; padding-bottom: 64px; text-align: center; }
+.closing h2 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.03em; }
+.closing p { margin: 10px 0 0; color: var(--ink-2); }
+.closing .cta { justify-content: center; }
+footer { border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
+footer .wrap { padding-top: 20px; padding-bottom: 28px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .modules { grid-template-columns: repeat(2, 1fr); }
+  .projects { grid-template-columns: repeat(2, 1fr); }
+  .features { grid-template-columns: 1fr; }
+  .topic { grid-template-columns: 1fr 44px; }
+  .topic .d { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px; }
+  .top nav a:not(.keep) { display: none; }
+  .hero .wrap { padding-top: 56px; padding-bottom: 48px; }
+  .ps { grid-template-columns: 1fr; padding: 18px; }
+  .case-top { padding: 22px 18px 4px; }
+  .arch { margin: 0 18px 20px; padding: 14px; }
+  .lane .lbl { width: 100%; }
+  .features, .nodes-wrap { padding-left: 18px; padding-right: 18px; }
+  .day { grid-template-columns: 1fr; }
+  .day-h { border-right: 0; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 10px; padding: 14px 16px; }
+  .day-h span { margin: 0; }
+  .topic { padding: 12px 16px; }
+  section.block { padding-top: 64px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn, .case-tab { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../hub/"><i></i>AI Agent</a>
+    <nav aria-label="페이지 안 이동">
+      <a href="#cases" class="keep">서비스 사례</a>
+      <a href="#curriculum" class="keep">커리큘럼</a>
+      <a href="../hub/">자료 모음</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">● AI AGENT · 교육과 개발</span>
+    <h1>일을 <em>맡기는</em> AI,<br>현장에서 일하는 AI Agent</h1>
+    <p class="lead">묻는 말에 답하는 챗봇을 넘어, 문서를 읽고 도구를 쓰고 결과물까지 만들어 내는 AI Agent를 설계합니다. 생산관리·안전관리·사무자동화 현장에 적용한 사례와, 직접 만들어 보는 5일 교육과정을 소개합니다.</p>
+    <div class="cta">
+      <a class="btn primary" href="#cases">서비스 사례 보기 →</a>
+      <a class="btn" href="#curriculum">커리큘럼 보기</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>05</b><span>현장 적용 서비스 사례</span></div>
+      <div class="stat"><b>05</b><span>일 과정 · 5개 모듈</span></div>
+      <div class="stat"><b>14</b><span>학습 주제</span></div>
+      <div class="stat"><b>05</b><span>조별 Agent 개발 과제</span></div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="block" id="cases">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="k">01 / SERVICE CASES</div><h2>문제에서 출발한 Agent 서비스 사례</h2></div>
+        <p>사례마다 현장의 문제, 해결 방안, 시스템 설계를 한 장에 담았습니다. 위의 탭을 눌러 사례를 바꿔 보세요.</p>
+      </div>
+      <div class="case-tabs" role="tablist" id="caseTabs"></div>
+      <div id="casePanel"></div>
+    </div>
+  </section>
+
+  <section class="block" id="curriculum">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="k">02 / CURRICULUM</div><h2>5일 만에 직접 만드는 AI Agent</h2></div>
+        <p>개념 이해에서 바이브코딩, RAG, Agent, 하네스 엔지니어링을 거쳐 조별 과제로 실제 Agent를 개발합니다.</p>
+      </div>
+      <div class="modules" id="modules"></div>
+      <div class="days" id="days"></div>
+    </div>
+  </section>
+</main>
+
+<section class="closing">
+  <div class="wrap">
+    <h2>우리 회사 업무에 맞는 AI Agent가 필요하다면</h2>
+    <p>교육과 개발 모두 상담해 드립니다. 문의: yes100@kakao.com</p>
+    <div class="cta">
+      <a class="btn primary" href="../" target="_blank" rel="noopener">연구원 소개 ↗</a>
+      <a class="btn" href="../hub/">자료 모음으로</a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>AI리터러시연구원 · AI Agent 교육과 개발</span><span class="mono">ai-agent / v1</span></div></footer>
+
+<script>
+// 서비스 사례 데이터
+const CASES = [
+  {
+    no: "01", domain: "영업·고객", title: "제품 추천 스마트 챗봇", one: "실적 데이터로 고객에게 맞는 제품을 추천하고 납기까지 예측합니다.",
+    tech: ["RAG", "LLM", "벡터 DB", "납기 예측 모델"],
+    problem: { head: "E-sales 시스템으로는 주문 제품의 생산 가능 여부와 납기를 실시간으로 확인할 수 없음", items: ["제품·납기 문의 같은 불필요한 소통이 많아 고객만족도 저하", "단순 반복 수작업으로 직원 피로도 증가"] },
+    solution: { head: "실적 데이터 기반 AI가 고객에게 정보를 바로 제공하고, 직원은 고부가가치 업무에 집중", items: ["RAG로 고객 맞춤형 제품 추천과 주문서 작성 자동화", "제품별 과거 수량·생산일정을 학습해 납기 예측"] },
+    lanes: [
+      { lbl: "지식 구축", nodes: ["제품문서 업로드", "임베딩", "제품 벡터 DB"] },
+      { lbl: "추천·주문", nodes: ["제품추천 문의", "*LLM", "^제품 추천", "^주문서 자동작성"] },
+      { lbl: "납기 예측", nodes: ["제품 납기실적 학습", "*납기일 예측 모델", "^납기일 안내"] }
+    ]
+  },
+  {
+    no: "02", domain: "안전관리", title: "위험성 평가 Agent", one: "P&ID 도면을 분석해 위험성 평가표를 작성합니다.",
+    tech: ["Vision", "그래프 DB", "RAG", "Gamma"],
+    problem: { head: "위험성 평가에서 가장 중요한 P&ID 도면 해석에 절반 이상의 시간이 들고, 위험요소 도출 정확도가 떨어짐", items: ["평가를 위한 사전 준비 자료가 과다함", "공정 이해 부족으로 도면 해석 오류와 시간 과다 소요"] },
+    solution: { head: "사람과 협업해 신속하고 정확하게 위험성 평가를 하는 AI Agent 개발", items: ["P&ID 도면 이미지에서 Symbol과 관련 데이터 추출", "RAG로 위험성 평가 진행, Gamma로 평가표 생성"] },
+    lanes: [
+      { lbl: "도면 분석", nodes: ["P&ID 도면", "*Symbol 추출", "Symbol 관계 분석", "그래프·벡터 DB"] },
+      { lbl: "평가 수행", nodes: ["위험성 평가 지시", "*AI Agent", "유사공정 빈도·강도 DB", "^위험성 평가표", "^배포자료"] }
+    ]
+  },
+  {
+    no: "03", domain: "건설·설계", title: "AI+BIM 기반 Agent", one: "2D 도면을 3D BIM 데이터로 자동 변환합니다.",
+    tech: ["객체인식", "Python", "Dynamo", "Revit"],
+    problem: { head: "초대형·고위험 프로젝트가 늘었지만 2D 자료 중심의 비효율적 관리로 비용이 증가", items: ["확정되지 않은 설계, 반복되는 수기 검토, 단절된 정보 구조", "BIM을 도입했지만 간섭 검토 용도에 머묾"] },
+    solution: { head: "AI와 BIM 자동화 기술로 2D 도면을 3D 데이터로 자동 변환", items: ["Agent가 2D 도면·이미지에서 공간·부재 정보 추출", "Dynamo–Revit으로 3D BIM 모델 생성"] },
+    lanes: [
+      { lbl: "모델 생성", nodes: ["2D 도면·이미지", "*AI Agent 객체인식", "CSV 생성·검수", "Dynamo–Revit", "^3D Revit 모델"] },
+      { lbl: "데이터 구조화", nodes: ["구조해석 데이터", "Python 데이터 처리", "^BIM DB"] }
+    ]
+  },
+  {
+    no: "04", domain: "사무자동화", title: "출장관리 Agent", one: "출장 규정 상담부터 항공·호텔 조회, 출장계획서 초안까지 한 번에 처리합니다.",
+    tech: ["챗봇", "Amadeus API", "ERP 연동", "문서 생성"],
+    voc: [["신입사원", "해외 출장 신청은 어떻게 하는 거지?"], ["경력직", "연달아 출장인데 한 번에 신청할 수 있을까?"], ["임원", "항공권과 호텔을 쉽고 빠르게 찾아 예약했으면…"]],
+    solution: { head: "AI Agent로 출장 업무를 한곳에서 처리", items: ["출장 규정 상담 챗봇과 실시간 항공권·호텔 조회", "ERP 결재 등 출장 업무 처리 일원화, 계획서 초안 작성"] },
+    features: [
+      ["출장 규정 상담", ["출장 규정에 근거한 답변", "업무별 담당자 찾기", "자주 묻는 질문 바로가기"]],
+      ["실시간 항공권·호텔 조회", ["Amadeus API 연동 실시간 조회", "실시간 데이터가 없으면 최근 3년 평균으로 대체", "규정 기준을 넘는 호텔 제외(요청 시 제공)"]],
+      ["출장계획서 초안 작성", ["조회 결과를 계획서에 반영", "규정 기준 식비·교통비 등 예산 반영", "HTML·Word 문서로 내려받아 메일 첨부"]]
+    ],
+    lanes: [
+      { lbl: "규정 상담", nodes: ["출장 규정 문의", "*AI 챗봇", "^규정 기반 답변"] },
+      { lbl: "예매·계획", nodes: ["예매 요청", "*AI Agent", "Amadeus API", "호텔·항공 조회", "^출장계획서"] }
+    ]
+  },
+  {
+    no: "05", domain: "경영기획", title: "경영기획 Agent", one: "사업전략 수립에 필요한 자료 수집·분석·기획을 Agent가 맡습니다.",
+    tech: ["LangChain", "LangGraph", "Tavily", "벡터 DB"],
+    problem: { head: "담당자의 경험과 시간이 부족해 적당한 수준의 전략 보고서에 만족해야 하는 구조적 한계", items: ["자료 조사와 이슈 트래킹에 많은 시간 투입", "전략적 사고·인사이트 도출에 쓸 시간 부족"] },
+    solution: { head: "AI Agent로 자료 수집부터 보고서 초안까지 자동화", items: ["전략 수립·이슈 트래킹 자료를 크롤링해 DB화", "산업동향 자료를 추출해 보고서 초안 생성"] },
+    lanes: [
+      { lbl: "수집", nodes: ["웹 크롤링", "자료 수집", "데이터베이스"] },
+      { lbl: "생성", nodes: ["보고서 생성 요청", "*AI Agent", "^전략 보고서"] }
+    ],
+    nodes: {
+      head: ["① 전략 로드맵", "② 경영계획 분석", "③ 산업동향 조사", "④ 입찰정보 메일", "⑤ 회의록 챗봇"],
+      rows: [
+        ["활용 기법", [["LangChain", "LangGraph", "Tavily 웹서치"], ["LangChain", "SQLDatabase", "CSV 분석"], ["LangChain", "LangGraph", "벡터 DB", "웹서치", "Supervisor"], ["LangChain", "LangGraph", "Tool(sendmail)", "Tavily 웹서치"], ["LangChain", "벡터 DB", "Reranker"]]],
+        ["입력 자료", ["전략방향(PDF)", "경영계획(CSV)", "산업동향(PDF)", "–", "회의록(Word)"]],
+        ["구현 내용", ["전략방향에 맞춘 3개년 로드맵 제안", "SQL로 경영계획 분석", "DB·웹서치로 산업동향 초안 작성", "입찰정보 확인 후 안내 메일 발송", "주요 이슈 질의응답"]]
+      ]
+    }
+  }
+];
+
+// 커리큘럼 데이터
+const MODULES = [
+  ["M1", "AI Agent 개발 방법론 이해", "AI·Agent 개념, 웹 구조"],
+  ["M2", "바이브코딩 활용 앱·웹 개발", "Cursor AI, 파이썬, Skill"],
+  ["M3", "RAG 구현", "LangChain, 임베딩, Retriever"],
+  ["M4", "Agent 구현", "CrewAI, LangGraph"],
+  ["M5", "하네스 엔지니어링", "케이스 스터디, 조별 과제"]
+];
+const DAYS = [
+  { d: "01", focus: "개념과 기초", topics: [
+    ["M1 · 01", "AI 개념 및 기술 이해", "AI 개념, AI Agent 이해, 주요 기술, 기업 활용사례", "1h"],
+    ["M1 · 02", "웹 이해", "프론트엔드와 백엔드, HTML/CSS/JS, 서버/DB, API/JSON", "0.5h"],
+    ["M2 · 03", "바이브코딩 환경 구축", "바이브코딩과 Cursor AI 개발 환경 이해, 활용 실습", "0.5h"],
+    ["M2 · 04", "파이썬 기초", "변수·함수·Class 작성, dictionary 자료형, Markdown·JSON 작성 실습", "4h"]
+  ]},
+  { d: "02", focus: "바이브코딩 개발", topics: [
+    ["M2 · 05", "바이브코딩 기반 앱 개발", "프롬프트 작성법, 웹과 앱의 차이, PDF 분할·병합, 이미지 크기·색상 조정, PDF→PPT 변환", "2h"],
+    ["M2 · 06", "바이브코딩 기반 웹 개발", "API Key 활용 PDF 번역 웹, DB 활용 물품공유 웹, 예측 프로그램, Google AI Studio 웹앱", "3h"],
+    ["M2 · 07", "바이브코딩 스킬 활용", "컨텍스트 윈도우·토큰·Skill 이해, 아이디어 구체화→프롬프트→웹 개발 실습", "1h"]
+  ]},
+  { d: "03", focus: "RAG", topics: [
+    ["M3 · 08", "LangChain 이해", "구성 요소, LLM API 호출, PromptTemplate, Output Parser", "2h"],
+    ["M3 · 09", "RAG 코드 리뷰", "Document Loader, Text Splitter, Embedding, Vectorstore, Retriever", "2h"],
+    ["M3 · 10", "RAG 구현", "General RAG, Local LLM·임베딩 모델 활용 RAG 실습", "2h"]
+  ]},
+  { d: "04", focus: "Agent", topics: [
+    ["M4 · 11", "Agent 개요", "프레임워크·동작 원리·흐름 제어, CrewAI 코드 리뷰, 아이디어 도출·VOC 분석 보고서 Agent 실습", "2h"],
+    ["M4 · 12", "LangGraph Ⅰ", "개요와 코드 리뷰, 도구 활용·PDF 요약·이미지 분석 Agent 실습", "2h"],
+    ["M4 · 12", "LangGraph Ⅱ", "재고관리 시스템 Agent(Codex 활용), 뉴스 수집·분석 Agent 실습", "2h"]
+  ]},
+  { d: "05", focus: "하네스·과제", topics: [
+    ["M5 · 13", "하네스 엔지니어링", "하네스 엔지니어링 개요, 코드 리뷰와 케이스 스터디", "2h"],
+    ["M5 · 14", "과제 수행", "조별 AI Agent 개발, 발표와 토론", "3h", ["이상 동작 감지", "영업기회 발굴", "설비장애 감시", "고객 리뷰 분석·대응전략", "채용 적합성 검토"]],
+    ["Wrap up", "과정 정리와 평가", "과정 Wrap up 및 평가", "1h"]
+  ]}
+];
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nodeHtml = (n) => {
+  const cls = n[0] === "*" ? "node ai" : n[0] === "^" ? "node out" : "node";
+  return '<span class="' + cls + '">' + esc(n.replace(/^[*^]/, "")) + "</span>";
+};
+const list = (arr) => "<ul>" + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>";
+
+function renderCase(c) {
+  let h = '<article class="case" role="tabpanel" aria-labelledby="tab-' + c.no + '">';
+  h += '<div class="case-top"><div class="tagrow"><span class="tag domain">' + esc(c.domain) + "</span>" + c.tech.map((t) => '<span class="tag">' + esc(t) + "</span>").join("") + "</div>";
+  h += "<h3>" + esc(c.title) + '</h3><p class="one">' + esc(c.one) + "</p></div>";
+  h += '<div class="ps"><div class="p"><h4>● PROBLEM · 문제</h4>';
+  if (c.voc) h += c.voc.map((v) => '<span class="quote"><b>' + esc(v[0]) + "</b>" + esc(v[1]) + "</span>").join("");
+  else h += '<p class="head">' + esc(c.problem.head) + "</p>" + list(c.problem.items);
+  h += '</div><div class="s"><h4>● SOLUTION · 해결 방안</h4><p class="head">' + esc(c.solution.head) + "</p>" + list(c.solution.items) + "</div></div>";
+  if (c.features) h += '<div class="features">' + c.features.map((f) => '<div class="feat"><b>' + esc(f[0]) + "</b>" + list(f[1]) + "</div>").join("") + "</div>";
+  h += '<div class="arch"><div class="arch-title"><span>SYSTEM ARCHITECTURE · 시스템 설계</span><span><i style="color:var(--mint);font-style:normal">■</i> AI 처리 <i style="color:var(--sky);font-style:normal">■</i> 결과물</span></div>';
+  h += c.lanes.map((l) => '<div class="lane"><span class="lbl">' + esc(l.lbl) + "</span>" + l.nodes.map(nodeHtml).join('<span class="arrow" aria-hidden="true"></span>') + "</div>").join("");
+  h += "</div>";
+  if (c.nodes) {
+    h += '<div class="nodes-wrap"><table class="nodes"><thead><tr><th>구현 노드</th>' + c.nodes.head.map((x) => "<th>" + esc(x) + "</th>").join("") + "</tr></thead><tbody>";
+    h += c.nodes.rows.map((r) => "<tr><th>" + esc(r[0]) + "</th>" + r[1].map((v) => "<td>" + (Array.isArray(v) ? v.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") : esc(v)) + "</td>").join("") + "</tr>").join("");
+    h += "</tbody></table></div>";
+  }
+  return h + "</article>";
+}
+
+const tabs = document.getElementById("caseTabs"), panel = document.getElementById("casePanel");
+tabs.innerHTML = CASES.map((c, i) => '<button type="button" class="case-tab" role="tab" id="tab-' + c.no + '" aria-selected="' + (i === 0) + '" data-i="' + i + '"><span class="mono">' + c.no + "</span>" + esc(c.title) + "</button>").join("");
+function showCase(i) {
+  tabs.querySelectorAll(".case-tab").forEach((b) => b.setAttribute("aria-selected", b.dataset.i == i));
+  panel.innerHTML = renderCase(CASES[i]);
+}
+tabs.addEventListener("click", (e) => { const b = e.target.closest(".case-tab"); if (b) showCase(+b.dataset.i); });
+showCase(0);
+
+document.getElementById("modules").innerHTML = MODULES.map((m, i) => '<div class="mod" style="--o:' + (0.45 + i * 0.14) + '"><span class="mono">' + m[0] + "</span><b>" + esc(m[1]) + "</b><span>" + esc(m[2]) + "</span></div>").join("");
+document.getElementById("days").innerHTML = DAYS.map((d) =>
+  '<div class="day"><div class="day-h"><span class="mono">DAY</span><b>' + d.d + "</b><span>" + esc(d.focus) + '</span></div><ul class="topics">' +
+  d.topics.map((t) => '<li class="topic"><div class="t"><small>' + esc(t[0]) + "</small>" + esc(t[1]) + '</div><div class="d">' + esc(t[2]) +
+    (t[4] ? '<div class="projects">' + t[4].map((p, i) => '<div class="proj"><span class="mono">과제 ' + (i + 1) + "</span>" + esc(p) + " Agent</div>").join("") + "</div>" : "") +
+    '</div><div class="h">' + esc(t[3]) + "</div></li>").join("") + "</ul></div>"
+).join("");
+</script>
+</body>
+</html>
