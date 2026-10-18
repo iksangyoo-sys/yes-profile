@@ -31,6 +31,7 @@ a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-rad
 .hello { display: inline-flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font-family: var(--serif); font-weight: 700; font-size: clamp(26px, 4vw, 44px); letter-spacing: -.02em; line-height: 1.25; }
 .hello small { font-family: var(--sans); font-weight: 500; font-size: 15px; color: var(--a); letter-spacing: 0; white-space: nowrap; }
 .hello:hover small { text-decoration: underline; }
+.hello-logo { width: 1.35em; height: 1.35em; align-self: center; flex: none; }
 .sub { margin: 10px 0 0; color: var(--ink-2); font-size: 16px; }
 
 /* 마인드맵 (넓은 화면) */
@@ -89,7 +90,7 @@ a.leaf-wrap:focus-visible { outline: none; }
 </head>
 <body>
 <div class="page">
-  <a class="hello" href="profile/" target="_blank" rel="noopener">반갑습니다. AI리터러시연구원입니다.<small>연구원 소개 ↗</small></a>
+  <a class="hello" href="profile/" target="_blank" rel="noopener"><img class="hello-logo" src="icon.svg" alt="" />반갑습니다. AI리터러시연구원입니다.<small>연구원 소개 ↗</small></a>
   <p class="sub">원을 누르면 해당 자료가 새 창으로 열립니다.</p>
 
   <div class="map" id="map" aria-hidden="false"></div>
